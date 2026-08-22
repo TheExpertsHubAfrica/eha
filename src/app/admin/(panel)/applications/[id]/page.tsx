@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ApplicationWorkflowForms } from "@/components/admin/application-workflow";
 import { WorkProfileRecord } from "@/components/apply/work-profile-record";
+import { DocumentFileActions } from "@/components/documents/document-preview";
 import { can } from "@/lib/admin/permissions";
 import { statusLabel } from "@/lib/admin/status";
 import { formatFileSize } from "@/lib/uploads/validate";
@@ -123,7 +124,7 @@ export default async function AdminApplicationDetailPage({
                 (item) => item.key === doc.requirementKey,
               );
               return (
-                <li key={doc.id} className="flex items-center justify-between gap-4 py-3 text-sm">
+                <li key={doc.id} className="flex flex-wrap items-center justify-between gap-4 py-3 text-sm">
                   <div>
                     <p className="font-medium text-navy">
                       {requirement?.name ?? doc.requirementKey}
@@ -132,12 +133,11 @@ export default async function AdminApplicationDetailPage({
                       {doc.originalFilename} · {formatFileSize(doc.sizeBytes)}
                     </p>
                   </div>
-                  <a
+                  <DocumentFileActions
                     href={`/admin/applications/${application.id}/documents/${doc.id}`}
-                    className="text-blue hover:underline"
-                  >
-                    Download
-                  </a>
+                    filename={doc.originalFilename}
+                    mimeType={doc.mimeType}
+                  />
                 </li>
               );
             })}

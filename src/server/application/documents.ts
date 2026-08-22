@@ -161,15 +161,19 @@ export async function readStoredDocument(documentId: string) {
   return { document: existing, body };
 }
 
-export async function readOwnedDocument(draft: DraftApplication, documentId: string) {
+export async function readOwnedDocument(
+  draft: DraftApplication,
+  documentId: string,
+  purpose: "download" | "preview" = "download",
+) {
   const existing = draft.documents.find((doc) => doc.id === documentId);
   if (!existing) return null;
   const body = await getObjectStorage().get(existing.storageKey);
   await writeAudit({
     actorId: draft.id,
-    action: "document.download",
+    action: purpose === "preview" ? "document.preview" : "document.download",
     targetId: existing.id,
-    metadata: { requirementKey: existing.requirementKey },
+    metadata: { requirementKey: existing.requirementKey, purpose },
   });
   return { document: existing, body };
 }

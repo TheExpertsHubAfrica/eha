@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FormBanner } from "@/components/apply/form-banner";
+import { DocumentFileActions } from "@/components/documents/document-preview";
 import type { DocumentRequirement } from "@/lib/catalog/types";
 import { missingRequiredDocuments } from "@/lib/apply/documents";
 import { acceptAttribute, formatFileSize } from "@/lib/uploads/validate";
@@ -184,9 +185,11 @@ export function DocumentsForm({
                   {typeLabel([current.mimeType])} · {formatFileSize(current.sizeBytes)}
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <Button asChild size="sm" variant="outline">
-                    <a href={`/api/apply/${offerId}/documents/${current.id}`}>Download</a>
-                  </Button>
+                  <DocumentFileActions
+                    href={`/api/apply/${offerId}/documents/${current.id}`}
+                    filename={current.originalFilename}
+                    mimeType={current.mimeType}
+                  />
                   <Button
                     size="sm"
                     variant="danger"

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { ApplyShell } from "@/components/apply/apply-shell";
 import { SubmitApplicationForm } from "@/components/apply/submit-form";
+import { DocumentFileActions } from "@/components/documents/document-preview";
 import { applyPath } from "@/lib/apply/steps";
 import { formatFileSize } from "@/lib/uploads/validate";
 import { dateInputValue } from "@/lib/utils";
@@ -155,11 +156,22 @@ export default async function ReviewStepPage({
             const uploaded = draft.documents.find((doc) => doc.requirementKey === requirement.key);
             if (uploaded) {
               return (
-                <Row
+                <div
                   key={requirement.key}
-                  label={requirement.name}
-                  value={`${uploaded.originalFilename} · ${formatFileSize(uploaded.sizeBytes)} · ${uploaded.mimeType}`}
-                />
+                  className="flex flex-wrap items-start justify-between gap-3 py-2"
+                >
+                  <div className="grid min-w-0 flex-1 gap-1 sm:grid-cols-[11rem_1fr]">
+                    <dt className="text-sm text-muted">{requirement.name}</dt>
+                    <dd className="text-sm text-navy">
+                      {uploaded.originalFilename} · {formatFileSize(uploaded.sizeBytes)}
+                    </dd>
+                  </div>
+                  <DocumentFileActions
+                    href={`/api/apply/${job.id}/documents/${uploaded.id}`}
+                    filename={uploaded.originalFilename}
+                    mimeType={uploaded.mimeType}
+                  />
+                </div>
               );
             }
             return (

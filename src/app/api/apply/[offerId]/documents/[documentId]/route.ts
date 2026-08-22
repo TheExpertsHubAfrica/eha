@@ -5,14 +5,14 @@ import {
 } from "@/server/application/documents";
 import { loadDraftForJob } from "@/server/application/service";
 import { getJobById } from "@/server/jobs";
+import {
+  contentDisposition,
+  isPreviewableMime,
+  parseDisposition,
+} from "@/lib/uploads/http";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-function contentDisposition(filename: string) {
-  const ascii = filename.replace(/[^\x20-\x7E]/g, "_").replace(/["\\]/g, "_") || "download";
-  return `attachment; filename="${ascii}"; filename*=UTF-8''${encodeURIComponent(filename)}`;
-}
 
 async function ownedDraft(offerId: string) {
   const job = await getJobById(offerId);
@@ -25,7 +25,7 @@ async function ownedDraft(offerId: string) {
 }
 
 export async function GET(
-  _request: Request,
+  request: Request,
   context: { params: Promise<{ offerId: string; documentId: string }> },
 ) {
   const { offerId, documentId } = await context.params;
@@ -33,15 +33,28 @@ export async function GET(
   if ("error" in loaded) {
     return NextResponse.json({ ok: false, error: loaded.error }, { status: loaded.status });
   }
-  const owned = await readOwnedDocument(loaded.draft, documentId);
+  let disposition = parseDisposition(request);
+  const owned = await readOwnedDocument(
+    loaded.draft,
+    documentId,
+    disposition === "inline" ? "preview" : "download",
+  );
   if (!owned) {
     return NextResponse.json({ ok: false, error: "Document not found." }, { status: 404 });
   }
+
+  if (disposition === "inline" && !isPreviewableMime(owned.document.mimeType)) {
+    disposition = "attachment";
+  }
+
   return new NextResponse(new Uint8Array(owned.body), {
     status: 200,
     headers: {
       "Content-Type": owned.document.mimeType,
-      "Content-Disposition": contentDisposition(owned.document.originalFilename),
+      "Content-Disposition": contentDisposition(
+        owned.document.originalFilename,
+        disposition,
+      ),
       "Content-Length": String(owned.body.length),
       "X-Content-Type-Options": "nosniff",
       "Cache-Control": "private, no-store",
