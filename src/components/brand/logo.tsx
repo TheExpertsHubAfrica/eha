@@ -5,12 +5,12 @@ import { siteConfig } from "@/lib/site-config";
 
 const logoAssets = {
   light: {
-    src: "/brand/logo-black.png",
+    src: "/brand/logo-white.png",
     width: 348,
     height: 134,
   },
   dark: {
-    src: "/brand/logo-white.png",
+    src: "/brand/logo-black.png",
     width: 348,
     height: 134,
   },
