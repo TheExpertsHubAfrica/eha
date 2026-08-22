@@ -38,11 +38,14 @@ export function AdminLoginForm({
         />
       </div>
       {state?.error ? (
-        <p className="rounded-md border border-danger/20 bg-danger/5 px-3 py-2 text-sm text-danger" role="alert">
+        <p
+          className="border border-danger/20 bg-danger/5 px-3 py-2 text-sm text-danger"
+          role="alert"
+        >
           {state.error}
         </p>
       ) : null}
-      <Button type="submit" className="w-full" disabled={pending}>
+      <Button type="submit" className="w-full rounded-none" disabled={pending}>
         {pending ? "Signing in…" : "Sign in"}
       </Button>
     </form>

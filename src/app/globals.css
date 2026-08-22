@@ -122,6 +122,19 @@ h4 {
   }
 }
 
+/* Keep browser autofill from painting blue/yellow over brand inputs */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--fg);
+  caret-color: var(--fg);
+  box-shadow: 0 0 0 1000px var(--white) inset;
+  transition: background-color 99999s ease-in-out 0s;
+}
+
 .prose-eha p + p {
   margin-top: 1rem;
 }

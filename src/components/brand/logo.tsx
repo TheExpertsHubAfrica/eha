@@ -21,16 +21,22 @@ export type LogoBackground = keyof typeof logoAssets;
 export function Logo({
   className,
   background = "light",
+  href = "/",
+  imageClassName,
+  priority = false,
 }: {
   className?: string;
   /** Background the logo sits on — picks black or white artwork automatically. */
   background?: LogoBackground;
+  href?: string;
+  imageClassName?: string;
+  priority?: boolean;
 }) {
   const logo = logoAssets[background];
 
   return (
     <Link
-      href="/"
+      href={href}
       className={cn("inline-flex shrink-0", className)}
       aria-label={`${siteConfig.name} home`}
     >
@@ -39,8 +45,8 @@ export function Logo({
         alt={siteConfig.name}
         width={logo.width}
         height={logo.height}
-        className="h-11 w-auto"
-        priority
+        className={cn("h-11 w-auto", imageClassName)}
+        priority={priority}
         unoptimized
       />
     </Link>

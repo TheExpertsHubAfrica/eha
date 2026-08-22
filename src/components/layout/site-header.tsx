@@ -22,7 +22,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-white">
       <div className="container-wide flex h-[72px] items-center justify-between gap-4">
-        <Logo background="light" />
+        <Logo background="light" priority />
         <nav
           className="hidden items-center gap-1 lg:flex"
           aria-label="Primary"
