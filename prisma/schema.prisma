@@ -1,0 +1,516 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PublishStatus {
+  draft
+  published
+  archived
+}
+
+enum JobAvailability {
+  open
+  limited
+  closed
+}
+
+enum TravelAccent {
+  navy
+  blue
+  teal
+  sand
+  rose
+}
+
+model Job {
+  id                        String           @id @default(cuid())
+  slug                      String
+  citySlug                  String           @map("city_slug")
+  title                     String
+  category                  String
+  country                   String
+  countryCode               String           @map("country_code")
+  city                      String
+  salaryAmount              Decimal          @map("salary_amount") @db.Decimal(12, 2)
+  salaryCurrency            String           @map("salary_currency")
+  convertedAmount           Decimal?         @map("converted_amount") @db.Decimal(12, 2)
+  convertedCurrency         String?          @map("converted_currency")
+  conversionNote            String?          @map("conversion_note")
+  conversionSource          String?          @map("conversion_source")
+  conversionAt              DateTime?        @map("conversion_at")
+  benefits                  String[]
+  includesAccommodation     Boolean          @default(false) @map("includes_accommodation")
+  includesFlight            Boolean          @default(false) @map("includes_flight")
+  includesVisaSupport       Boolean          @default(false) @map("includes_visa_support")
+  featured                  Boolean          @default(false)
+  status                    PublishStatus    @default(draft)
+  availability              JobAvailability  @default(open)
+  overview                  String
+  description               String
+  responsibilities          String[]
+  requirements              String[]
+  accommodation             String
+  flight                    String
+  visa                      String
+  workingConditions         String           @map("working_conditions")
+  applicationRequirements   String[]         @map("application_requirements")
+  importantInformation      String[]         @map("important_information")
+  publishedAt               DateTime?        @map("published_at")
+  createdAt                 DateTime         @default(now()) @map("created_at")
+  updatedAt                 DateTime         @updatedAt @map("updated_at")
+  faqs                      JobFaq[]
+  documentRequirements      JobDocumentRequirement[]
+  profileSectionRequirements JobProfileSectionRequirement[]
+  applications              Application[]
+
+  @@unique([citySlug, slug])
+  @@index([status, featured])
+  @@index([status, publishedAt])
+  @@index([countryCode])
+  @@index([category])
+  @@index([availability])
+  @@index([salaryAmount])
+  @@map("jobs")
+}
+
+model JobFaq {
+  id        String   @id @default(cuid())
+  jobId     String   @map("job_id")
+  question  String
+  answer    String
+  sortOrder Int      @default(0) @map("sort_order")
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+  @@map("job_faqs")
+}
+
+model JobDocumentRequirement {
+  id             String   @id @default(cuid())
+  jobId          String   @map("job_id")
+  key            String
+  name           String
+  description    String
+  required       Boolean  @default(true)
+  acceptedTypes  String[] @map("accepted_types")
+  maxSizeMb      Int      @default(5) @map("max_size_mb")
+  instructions   String?
+  sortOrder      Int      @default(0) @map("sort_order")
+  job            Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, key])
+  @@index([jobId])
+  @@map("job_document_requirements")
+}
+
+model JobProfileSectionRequirement {
+  id       String  @id @default(cuid())
+  jobId    String  @map("job_id")
+  section  String
+  required Boolean @default(true)
+  job      Job     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, section])
+  @@index([jobId])
+  @@map("job_profile_section_requirements")
+}
+
+model TravelPackage {
+  id          String         @id @default(cuid())
+  slug        String         @unique
+  destination String
+  country     String
+  name        String
+  duration    String
+  summary     String
+  featured    Boolean        @default(false)
+  status      PublishStatus  @default(draft)
+  includes    String[]
+  excludes    String[]
+  accent      TravelAccent
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+
+  @@index([status, featured])
+  @@map("travel_packages")
+}
+
+model StudyOpportunity {
+  id        String        @id @default(cuid())
+  slug      String        @unique
+  name      String
+  region    String
+  summary   String
+  featured  Boolean       @default(false)
+  status    PublishStatus @default(draft)
+  support   String[]
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+
+  @@index([status, featured])
+  @@map("study_opportunities")
+}
+
+enum AdminRole {
+  super_admin
+  admin
+  officer
+  content
+  analyst
+}
+
+model AdminUser {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  name         String
+  passwordHash String     @map("password_hash")
+  role         AdminRole
+  active       Boolean    @default(true)
+  lastLoginAt  DateTime?  @map("last_login_at")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  notes        AdminNote[]
+
+  @@map("admin_users")
+}
+
+model AdminNote {
+  id            String      @id @default(cuid())
+  applicationId String      @map("application_id")
+  authorId      String      @map("author_id")
+  body          String
+  createdAt     DateTime    @default(now()) @map("created_at")
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  author        AdminUser   @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([applicationId])
+  @@map("admin_notes")
+}
+
+enum ApplicationStatus {
+  draft
+  submitted
+  under_review
+  documents_required
+  shortlisted
+  processing
+  approved
+  rejected
+  withdrawn
+  completed
+}
+
+enum MaritalStatus {
+  single
+  married
+  divorced
+  widowed
+  separated
+}
+
+model Application {
+  id               String            @id @default(cuid())
+  tokenHash        String            @unique @map("token_hash")
+  jobId            String            @map("job_id")
+  status           ApplicationStatus @default(draft)
+  currentStep      String            @default("personal") @map("current_step")
+  stepsCompleted   String[]          @map("steps_completed")
+  profileCompletedAt DateTime?       @map("profile_completed_at")
+  referenceNumber  String?           @unique @map("reference_number")
+  submittedAt      DateTime?         @map("submitted_at")
+  declarationAcceptedAt DateTime?    @map("declaration_accepted_at")
+  expiresAt        DateTime          @map("expires_at")
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+  job              Job               @relation(fields: [jobId], references: [id], onDelete: Restrict)
+  profile          ApplicantProfile?
+  education        EducationRecord[]
+  employment       EmploymentRecord[]
+  travelHistory    TravelHistoryRecord[]
+  dependants       DependantRecord[]
+  emergencyContacts EmergencyContact[]
+  military         MilitaryRecord?
+  statusHistory    ApplicationStatusHistory[]
+  documents        UploadedDocument[]
+  emailLogs        EmailLog[]
+  adminNotes       AdminNote[]
+
+  @@index([jobId, status])
+  @@index([expiresAt])
+  @@map("applications")
+}
+
+model ApplicantProfile {
+  id                  String         @id @default(cuid())
+  applicationId       String         @unique @map("application_id")
+  fullName            String         @map("full_name")
+  dateOfBirth         DateTime       @map("date_of_birth") @db.Date
+  placeOfBirth        String         @map("place_of_birth")
+  nationality         String
+  passportNumber      String         @map("passport_number")
+  previousNationality String?        @map("previous_nationality")
+  maritalStatus       MaritalStatus  @map("marital_status")
+  phone               String
+  email               String
+  countryOfResidence  String         @map("country_of_residence")
+  currentCity         String         @map("current_city")
+  spouseName          String?        @map("spouse_name")
+  spouseNationality   String?        @map("spouse_nationality")
+  spousePlaceOfBirth  String?        @map("spouse_place_of_birth")
+  spouseDateOfBirth   DateTime?      @map("spouse_date_of_birth") @db.Date
+  personalStatement   String?        @map("personal_statement")
+  visitedAbroad       Boolean        @default(false) @map("visited_abroad")
+  militaryService     Boolean        @default(false) @map("military_service")
+  createdAt           DateTime       @default(now()) @map("created_at")
+  updatedAt           DateTime       @updatedAt @map("updated_at")
+  application         Application    @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([email])
+  @@index([passportNumber])
+  @@map("applicant_profiles")
+}
+
+model EducationRecord {
+  id             String      @id @default(cuid())
+  applicationId  String      @map("application_id")
+  qualification  String
+  institution    String
+  programme      String?
+  graduationYear Int?        @map("graduation_year")
+  languages      String?
+  certifications String?
+  sortOrder      Int         @default(0) @map("sort_order")
+  application    Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+  @@map("education_records")
+}
+
+model EmploymentRecord {
+  id               String      @id @default(cuid())
+  applicationId    String      @map("application_id")
+  employer         String
+  position         String
+  country          String
+  startDate        DateTime    @map("start_date") @db.Date
+  endDate          DateTime?   @map("end_date") @db.Date
+  current          Boolean     @default(false)
+  responsibilities String
+  reasonForLeaving String?     @map("reason_for_leaving")
+  sortOrder        Int         @default(0) @map("sort_order")
+  application      Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+  @@map("employment_records")
+}
+
+model TravelHistoryRecord {
+  id            String      @id @default(cuid())
+  applicationId String      @map("application_id")
+  country       String
+  purpose       String
+  year          Int
+  duration      String
+  sortOrder     Int         @default(0) @map("sort_order")
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+  @@map("travel_history")
+}
+
+model DependantRecord {
+  id            String      @id @default(cuid())
+  applicationId String      @map("application_id")
+  fullName      String      @map("full_name")
+  dateOfBirth   DateTime    @map("date_of_birth") @db.Date
+  relationship  String
+  sortOrder     Int         @default(0) @map("sort_order")
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+  @@map("dependants")
+}
+
+model EmergencyContact {
+  id            String      @id @default(cuid())
+  applicationId String      @map("application_id")
+  name          String
+  relationship  String
+  phone         String
+  email         String?
+  country       String
+  city          String
+  kind          String      @default("home")
+  sortOrder     Int         @default(0) @map("sort_order")
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+  @@map("emergency_contacts")
+}
+
+model MilitaryRecord {
+  id            String      @id @default(cuid())
+  applicationId String      @unique @map("application_id")
+  country       String
+  serviceType   String      @map("service_type")
+  rank          String?
+  duration      String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@map("military_records")
+}
+
+model ApplicationStatusHistory {
+  id            String             @id @default(cuid())
+  applicationId String             @map("application_id")
+  fromStatus    ApplicationStatus? @map("from_status")
+  toStatus      ApplicationStatus  @map("to_status")
+  note          String?
+  actorId       String?            @map("actor_id")
+  createdAt     DateTime           @default(now()) @map("created_at")
+  application   Application        @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+  @@map("application_status_history")
+}
+
+model UploadedDocument {
+  id                String      @id @default(cuid())
+  applicationId     String      @map("application_id")
+  requirementKey    String      @map("requirement_key")
+  originalFilename  String      @map("original_filename")
+  storageKey        String      @unique @map("storage_key")
+  mimeType          String      @map("mime_type")
+  sizeBytes         Int         @map("size_bytes")
+  checksumSha256    String      @map("checksum_sha256")
+  createdAt         DateTime    @default(now()) @map("created_at")
+  application       Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@unique([applicationId, requirementKey])
+  @@index([applicationId])
+  @@map("uploaded_documents")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorType  String   @map("actor_type")
+  actorId    String?  @map("actor_id")
+  action     String
+  targetType String   @map("target_type")
+  targetId   String?  @map("target_id")
+  metadata   Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([targetType, targetId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model EmailLog {
+  id            String       @id @default(cuid())
+  applicationId String?      @map("application_id")
+  template      String
+  toAddress     String       @map("to_address")
+  subject       String
+  status        String
+  providerId    String?      @map("provider_id")
+  error         String?
+  createdAt     DateTime     @default(now()) @map("created_at")
+  application   Application? @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+
+  @@index([applicationId])
+  @@index([template, status])
+  @@map("email_logs")
+}
+
+model ApplicationReferenceSequence {
+  year Int @id
+  last Int @default(0)
+
+  @@map("application_reference_sequences")
+}
+
+model AnalyticsEvent {
+  id         String   @id @default(cuid())
+  name       String
+  targetType String?  @map("target_type")
+  targetId   String?  @map("target_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([name, createdAt])
+  @@index([targetType, targetId])
+  @@map("analytics_events")
+}
+
+model BlogPost {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  title       String
+  excerpt     String
+  body        String
+  status      PublishStatus @default(draft)
+  publishedAt DateTime?     @map("published_at")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  @@index([status, publishedAt])
+  @@map("blog_posts")
+}
+
+model FaqItem {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  sortOrder Int      @default(0) @map("sort_order")
+  published Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([published, sortOrder])
+  @@map("faq_items")
+}
+
+model LegalPage {
+  slug      String   @id
+  title     String
+  body      String
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("legal_pages")
+}
+
+model SiteSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_settings")
+}
+
+model EmailTemplate {
+  key       String   @id
+  name      String
+  subject   String
+  bodyText  String   @map("body_text")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("email_templates")
+}
+
+model Testimonial {
+  id           String   @id @default(cuid())
+  quote        String
+  attribution  String
+  sortOrder    Int      @default(0) @map("sort_order")
+  published    Boolean  @default(false)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([published, sortOrder])
+  @@map("testimonials")
+}

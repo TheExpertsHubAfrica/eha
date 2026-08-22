@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+:root {
+  --navy: #0b1f3a;
+  --navy-deep: #071526;
+  --blue: #1d4ed8;
+  --blue-hover: #1a44be;
+  --sky: #e8f1fb;
+  --sky-deep: #d5e4f6;
+  --gold: #c4a35a;
+  --gold-soft: #f4ead4;
+  --surface: #f7f8fa;
+  --card: #ffffff;
+  --border: #e5e8ee;
+  --muted: #5b6573;
+  --fg: #142033;
+  --fg-soft: #334155;
+  --danger: #b42318;
+  --success: #0f7a4c;
+  --ring: #1d4ed8;
+  --radius: 8px;
+  --header-h: 72px;
+}
+
+@theme inline {
+  --color-navy: var(--navy);
+  --color-navy-deep: var(--navy-deep);
+  --color-blue: var(--blue);
+  --color-blue-hover: var(--blue-hover);
+  --color-sky: var(--sky);
+  --color-sky-deep: var(--sky-deep);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-fg: var(--fg);
+  --color-fg-soft: var(--fg-soft);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-background: var(--surface);
+  --color-foreground: var(--fg);
+  --font-sans: var(--font-jakarta);
+  --radius-sm: 6px;
+  --radius-md: var(--radius);
+  --radius-lg: 12px;
+  --radius-xl: 20px;
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--surface);
+  color: var(--fg);
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--sky);
+  color: var(--navy);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: var(--navy);
+  letter-spacing: -0.02em;
+  font-weight: 650;
+  line-height: 1.15;
+}
+
+.container-page {
+  width: min(1120px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+.container-wide {
+  width: min(1200px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+@media (min-width: 640px) {
+  .container-page,
+  .container-wide {
+    width: min(1120px, calc(100% - 3rem));
+  }
+
+  .container-wide {
+    width: min(1200px, calc(100% - 3rem));
+  }
+}
+
+.prose-eha p + p {
+  margin-top: 1rem;
+}
+
+.prose-eha ul {
+  margin: 0.75rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.prose-eha li + li {
+  margin-top: 0.4rem;
+}
