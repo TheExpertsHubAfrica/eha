@@ -40,10 +40,10 @@ export function SiteFooter({ site }: { site: PublicSite }) {
   const socials = Object.entries(site.social).filter(([, url]) => url);
 
   return (
-    <footer className="bg-navy-deep text-white">
+    <footer className="bg-black text-white">
       <div className="container-wide grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-6">
         <div className="lg:col-span-2">
-          <Logo invert />
+          <Logo background="dark" />
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/70">
             {site.tagline}
           </p>

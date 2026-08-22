@@ -16,11 +16,11 @@ export function PageHero({
     <section className="border-b border-border bg-white">
       <div className="container-page py-12 sm:py-16">
         {eyebrow ? (
-          <p className="text-xs font-semibold tracking-[0.16em] text-blue uppercase">
+          <p className="text-xs font-semibold tracking-[0.16em] text-fg-soft uppercase">
             {eyebrow}
           </p>
         ) : null}
-        <h1 className="mt-3 max-w-3xl text-3xl font-semibold text-navy sm:text-4xl">
+        <h1 className="mt-3 max-w-3xl text-3xl font-bold text-black sm:text-4xl">
           {title}
         </h1>
         {description ? (
@@ -54,11 +54,11 @@ export function SectionHeading({
     >
       <div className="max-w-2xl">
         {eyebrow ? (
-          <p className="text-xs font-semibold tracking-[0.16em] text-blue uppercase">
+          <p className="text-xs font-semibold tracking-[0.16em] text-fg-soft uppercase">
             {eyebrow}
           </p>
         ) : null}
-        <h2 className="mt-2 text-2xl font-semibold text-navy sm:text-3xl">
+        <h2 className="mt-2 text-2xl font-bold text-black sm:text-3xl">
           {title}
         </h2>
         {description ? (

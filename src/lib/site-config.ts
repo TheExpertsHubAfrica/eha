@@ -4,10 +4,13 @@ function env(key: string) {
 
 const name = env("NEXT_PUBLIC_SITE_NAME") || "The Experts Hub Africa";
 const shortName = env("NEXT_PUBLIC_SITE_SHORT_NAME") || "TEHA";
+const brandTagline =
+  env("NEXT_PUBLIC_BRAND_TAGLINE") || "TECH. INNOVATION. TRAVEL.";
 
 export type PublicSite = {
   name: string;
   shortName: string;
+  brandTagline: string;
   tagline: string;
   description: string;
   url: string;
@@ -28,6 +31,7 @@ export type PublicSite = {
 export const siteConfig: PublicSite = {
   name,
   shortName,
+  brandTagline,
   tagline:
     "Work, travel and study opportunities abroad — guided from start to finish.",
   description: `${name} helps applicants discover overseas work, travel packages, and study pathways, then complete a structured application with document guidance.`,
@@ -49,6 +53,7 @@ export const siteConfig: PublicSite = {
 export function overlaySiteConfig(overrides: Partial<Record<string, string>>): PublicSite {
   return {
     ...siteConfig,
+    brandTagline: overrides.brandTagline ?? siteConfig.brandTagline,
     tagline: overrides.tagline ?? siteConfig.tagline,
     phone: overrides.phone ?? siteConfig.phone,
     email: overrides.email ?? siteConfig.email,

@@ -22,7 +22,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-white">
       <div className="container-wide flex h-[72px] items-center justify-between gap-4">
-        <Logo />
+        <Logo background="light" />
         <nav
           className="hidden items-center gap-1 lg:flex"
           aria-label="Primary"
@@ -32,10 +32,10 @@ export function SiteHeader() {
               key={item.href}
               href={item.href}
               className={cn(
-                "rounded-md px-2.5 py-2 text-[13px] font-medium xl:px-3 xl:text-sm",
+                "px-2.5 py-2 text-[11px] font-semibold tracking-[0.12em] uppercase xl:px-3",
                 isActive(pathname, item.href)
-                  ? "text-blue"
-                  : "text-fg-soft hover:text-navy",
+                  ? "text-black"
+                  : "text-fg-soft hover:text-black",
               )}
             >
               {item.label}
@@ -43,7 +43,7 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="flex items-center gap-2">
-          <Button asChild size="sm" className="hidden sm:inline-flex">
+          <Button asChild size="sm" className="hidden uppercase tracking-[0.08em] sm:inline-flex">
             <Link href="/work-abroad">Apply Now</Link>
           </Button>
           <Sheet open={open} onOpenChange={setOpen}>
@@ -65,17 +65,17 @@ export function SiteHeader() {
                     href={item.href}
                     onClick={() => setOpen(false)}
                     className={cn(
-                      "rounded-md px-3 py-3 text-[15px] font-medium",
+                      "rounded-sm px-3 py-3 text-[13px] font-semibold tracking-[0.08em] uppercase",
                       isActive(pathname, item.href)
-                        ? "bg-sky text-blue"
-                        : "text-navy hover:bg-surface",
+                        ? "bg-black text-white"
+                        : "text-black hover:bg-surface",
                     )}
                   >
                     {item.label}
                   </Link>
                 ))}
               </nav>
-              <Button asChild className="mt-8 w-full" size="lg">
+              <Button asChild className="mt-8 w-full uppercase tracking-[0.08em]" size="lg">
                 <Link href="/work-abroad" onClick={() => setOpen(false)}>
                   Apply Now
                 </Link>

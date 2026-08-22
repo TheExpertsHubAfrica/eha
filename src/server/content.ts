@@ -8,6 +8,7 @@ export async function getFeaturedTravel(): Promise<TravelPackage[]> {
   const rows = await prisma.travelPackage.findMany({
     where: { ...published, featured: true },
     orderBy: { destination: "asc" },
+    take: 4,
   });
   return rows.map(toTravelPackage);
 }

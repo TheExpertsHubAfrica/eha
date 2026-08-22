@@ -4,20 +4,20 @@ import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-sm font-semibold transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         primary:
-          "bg-blue text-white hover:bg-blue-hover focus-visible:outline-blue",
+          "bg-black text-white hover:bg-gray-900 focus-visible:outline-black",
         secondary:
-          "bg-navy text-white hover:bg-navy-deep focus-visible:outline-navy",
+          "bg-black text-white hover:bg-gray-900 focus-visible:outline-black",
         outline:
-          "border border-border bg-white text-navy hover:bg-sky/60",
-        ghost: "text-navy hover:bg-sky/70",
-        gold: "bg-gold text-navy hover:bg-gold/90",
+          "border border-black bg-transparent text-black hover:bg-black/5",
+        ghost: "text-black hover:bg-black/5",
+        gold: "bg-gray-700 text-white hover:bg-gray-800",
         danger: "bg-danger text-white hover:bg-danger/90",
-        link: "h-auto rounded-none px-0 text-blue underline-offset-4 hover:underline",
+        link: "h-auto rounded-none px-0 text-black underline-offset-4 hover:underline",
       },
       size: {
         sm: "h-9 px-3 text-sm",

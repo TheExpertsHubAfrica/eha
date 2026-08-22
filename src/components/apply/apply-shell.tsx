@@ -21,18 +21,18 @@ export function ApplyShell({
     <div className="flex min-h-full flex-col bg-surface">
       <header className="border-b border-border bg-white">
         <div className="container-page flex h-16 items-center justify-between gap-4">
-          <Logo />
-          <Link href={jobPath(job)} className="text-sm font-medium text-blue">
+          <Logo background="light" />
+          <Link href={jobPath(job)} className="text-sm font-medium text-black hover:underline">
             Save and exit
           </Link>
         </div>
       </header>
       <main id="main-content" className="flex-1">
         <div className="container-page py-8 sm:py-10">
-          <p className="text-xs font-semibold tracking-[0.16em] text-blue uppercase">
+          <p className="text-xs font-semibold tracking-[0.16em] text-fg-soft uppercase">
             Application
           </p>
-          <h1 className="mt-2 text-2xl font-semibold text-navy">{job.title}</h1>
+          <h1 className="mt-2 text-2xl font-bold text-black">{job.title}</h1>
           <p className="mt-1 text-sm text-muted">
             {job.city}, {job.country}
           </p>

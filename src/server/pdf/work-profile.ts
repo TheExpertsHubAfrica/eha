@@ -4,9 +4,9 @@ import { siteConfig } from "@/lib/site-config";
 import { formatDisplayDate, formatMoney } from "@/lib/utils";
 import type { DraftApplication } from "@/server/application/service";
 
-const NAVY = rgb(0.043, 0.122, 0.227);
-const MUTED = rgb(0.357, 0.396, 0.451);
-const LINE = rgb(0.898, 0.91, 0.933);
+const BLACK = rgb(0, 0, 0);
+const MUTED = rgb(0.45, 0.45, 0.45);
+const LINE = rgb(0.898, 0.898, 0.898);
 const PAGE_WIDTH = 595.28;
 const PAGE_HEIGHT = 841.89;
 const MARGIN_LEFT = 48;
@@ -25,7 +25,7 @@ function drawPageHeader(page: ReturnType<PDFDocument["addPage"]>, font: PDFFont,
     y: bottom,
     width: PAGE_WIDTH,
     height: HEADER_HEIGHT,
-    color: NAVY,
+    color: BLACK,
   });
   const baseline = bottom + HEADER_HEIGHT / 2 - 4;
   page.drawText(siteConfig.name.toUpperCase(), {
@@ -42,7 +42,7 @@ function drawPageHeader(page: ReturnType<PDFDocument["addPage"]>, font: PDFFont,
     y: baseline,
     size: labelSize,
     font,
-    color: rgb(0.91, 0.945, 0.984),
+    color: rgb(0.82, 0.82, 0.82),
   });
 }
 
@@ -89,7 +89,7 @@ export async function buildWorkProfilePdf(application: ProfileDoc, job: JobOffer
   function heading(text: string) {
     ensure(28);
     y -= 10;
-    page.drawText(text.toUpperCase(), { x: left, y, size: 9, font: bold, color: NAVY });
+    page.drawText(text.toUpperCase(), { x: left, y, size: 9, font: bold, color: BLACK });
     y -= 6;
     page.drawLine({
       start: { x: left, y },
@@ -112,7 +112,7 @@ export async function buildWorkProfilePdf(application: ProfileDoc, job: JobOffer
         y: y - index * 13,
         size: 10,
         font,
-        color: NAVY,
+        color: BLACK,
       });
     });
     y -= 13 * lines.length + 6;
@@ -120,7 +120,7 @@ export async function buildWorkProfilePdf(application: ProfileDoc, job: JobOffer
 
   drawPageHeader(page, font, bold);
 
-  page.drawText(application.referenceNumber ?? "", { x: left, y, size: 16, font: bold, color: NAVY });
+  page.drawText(application.referenceNumber ?? "", { x: left, y, size: 16, font: bold, color: BLACK });
   y -= 20;
   page.drawText(
     `Submitted ${formatDisplayDate(application.submittedAt) || "—"} · ${job.title}, ${job.city}`,

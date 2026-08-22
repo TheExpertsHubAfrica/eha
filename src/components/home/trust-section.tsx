@@ -27,19 +27,19 @@ const reasons = [
 
 export function TrustSection() {
   return (
-    <section className="bg-navy text-white">
+    <section className="bg-black text-white">
       <div className="container-wide py-14 sm:py-16">
-        <p className="text-xs font-semibold tracking-[0.16em] text-gold uppercase">
+        <p className="text-xs font-semibold tracking-[0.16em] text-white/60 uppercase">
           Why applicants choose us
         </p>
-        <h2 className="mt-2 max-w-xl text-2xl font-semibold text-white sm:text-3xl">
+        <h2 className="mt-2 max-w-xl text-2xl font-bold text-white sm:text-3xl">
           Organised, careful, and built around a complete application — not a
           crowded homepage.
         </h2>
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {reasons.map((item, index) => (
             <article key={item.title} className="border-t border-white/15 pt-5">
-              <p className="text-xs tracking-wide text-gold">
+              <p className="text-xs tracking-wide text-white/50">
                 {String(index + 1).padStart(2, "0")}
               </p>
               <h3 className="mt-2 text-lg font-semibold text-white">

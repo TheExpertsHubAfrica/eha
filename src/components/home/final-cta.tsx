@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 
 export function FinalCta() {
   return (
-    <section className="bg-sky">
+    <section className="border-y border-border bg-white">
       <div className="container-page py-16 text-center sm:py-20">
-        <h2 className="text-2xl font-semibold text-navy sm:text-3xl">
+        <h2 className="text-2xl font-bold text-black sm:text-3xl">
           Ready to explore your next opportunity?
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-muted">

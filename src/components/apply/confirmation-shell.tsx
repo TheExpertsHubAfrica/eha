@@ -8,8 +8,8 @@ export function ConfirmationShell({ children }: { children: ReactNode }) {
     <div className="flex min-h-full flex-col bg-surface">
       <header className="border-b border-border bg-white print:hidden">
         <div className="container-page flex h-16 items-center justify-between gap-4">
-          <Logo />
-          <Link href="/" className="text-sm font-medium text-blue">
+          <Logo background="light" />
+          <Link href="/" className="text-sm font-medium text-black hover:underline">
             {siteConfig.shortName} home
           </Link>
         </div>
