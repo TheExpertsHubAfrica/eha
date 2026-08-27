@@ -20,7 +20,8 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-white">
+    <header className="sticky top-0 z-40 border-b border-border bg-white/95 backdrop-blur-sm">
+      <div className="h-0.5 bg-linear-to-r from-gold via-gold-bright to-ash-200" aria-hidden="true" />
       <div className="container-wide flex h-[72px] items-center justify-between gap-4">
         <Logo background="light" priority />
         <nav
@@ -32,18 +33,21 @@ export function SiteHeader() {
               key={item.href}
               href={item.href}
               className={cn(
-                "px-2.5 py-2 text-[11px] font-semibold tracking-[0.12em] uppercase xl:px-3",
+                "relative px-2.5 py-2 text-[11px] font-semibold tracking-[0.12em] uppercase xl:px-3",
                 isActive(pathname, item.href)
                   ? "text-black"
                   : "text-fg-soft hover:text-black",
               )}
             >
               {item.label}
+              {isActive(pathname, item.href) ? (
+                <span className="absolute inset-x-2.5 -bottom-0.5 h-0.5 bg-gold xl:inset-x-3" />
+              ) : null}
             </Link>
           ))}
         </nav>
         <div className="flex items-center gap-2">
-          <Button asChild size="sm" className="hidden uppercase tracking-[0.08em] sm:inline-flex">
+          <Button asChild size="sm" variant="gold" className="hidden uppercase tracking-[0.08em] sm:inline-flex">
             <Link href="/work-abroad">Apply Now</Link>
           </Button>
           <Sheet open={open} onOpenChange={setOpen}>
@@ -75,7 +79,7 @@ export function SiteHeader() {
                   </Link>
                 ))}
               </nav>
-              <Button asChild className="mt-8 w-full uppercase tracking-[0.08em]" size="lg">
+              <Button asChild variant="gold" className="mt-8 w-full uppercase tracking-[0.08em]" size="lg">
                 <Link href="/work-abroad" onClick={() => setOpen(false)}>
                   Apply Now
                 </Link>

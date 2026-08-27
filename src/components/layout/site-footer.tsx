@@ -12,7 +12,7 @@ function Column({
 }) {
   return (
     <div>
-      <h2 className="text-sm font-semibold tracking-wide text-white">{title}</h2>
+      <h2 className="text-sm font-semibold tracking-wide text-gold-bright">{title}</h2>
       <ul className="mt-4 space-y-2.5">
         {links.map((link) => (
           <li key={`${title}-${link.href}-${link.label}`}>
@@ -41,6 +41,7 @@ export function SiteFooter({ site }: { site: PublicSite }) {
 
   return (
     <footer className="bg-black text-white">
+      <div className="h-0.5 bg-linear-to-r from-gold via-gold-bright to-transparent" aria-hidden="true" />
       <div className="container-wide grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-6">
         <div className="lg:col-span-2">
           <Logo background="dark" />
@@ -88,7 +89,7 @@ export function SiteFooter({ site }: { site: PublicSite }) {
         </div>
       </div>
       <div className="border-t border-white/10">
-        <div className="container-wide flex flex-col gap-2 py-5 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
+        <div className="container-wide flex flex-col gap-2 py-5 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {new Date().getFullYear()} {site.name}. All rights reserved.
           </p>

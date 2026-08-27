@@ -18,9 +18,9 @@ import { EmptyState } from "@/components/ui/empty-state";
 
 export function JobCard({ job }: { job: JobOffer }) {
   return (
-    <article className="flex h-full flex-col rounded-lg border border-border bg-white p-6">
+    <article className="flex h-full flex-col border border-border bg-white p-6 transition-colors hover:border-gold/40">
       <div className="flex items-start justify-between gap-3">
-        <Badge tone="blue">{job.category}</Badge>
+        <Badge tone="gold">{job.category}</Badge>
         <Badge tone={job.availability === "open" ? "success" : "muted"}>
           {job.availability === "open" ? "Open" : job.availability}
         </Badge>

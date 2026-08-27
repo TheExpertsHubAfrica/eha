@@ -23,12 +23,12 @@ export function ApplyStepper({
           const isCurrent = step.id === current;
           const clickable = done || isCurrent;
           const className = cn(
-            "flex min-w-fit items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium sm:text-sm",
+            "flex min-w-fit items-center gap-2 rounded-sm px-3 py-1.5 text-xs font-medium sm:text-sm",
             isCurrent
-              ? "bg-navy text-white"
+              ? "bg-black text-white"
               : done
-                ? "bg-sky text-blue"
-                : "bg-white text-muted",
+                ? "bg-gold-soft text-gold-deep"
+                : "border border-border bg-white text-muted",
           );
           return (
             <li key={step.id}>

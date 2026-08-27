@@ -50,12 +50,17 @@ function sortOrder(sort?: JobListQuery["sort"]): Prisma.JobOrderByWithRelationIn
 }
 
 export async function getFeaturedJobs(): Promise<JobOffer[]> {
-  const rows = await prisma.job.findMany({
-    where: { ...published, featured: true },
-    include: jobInclude,
-    orderBy: [{ publishedAt: "desc" }, { title: "asc" }],
-  });
-  return rows.map(toJobOffer);
+  try {
+    const rows = await prisma.job.findMany({
+      where: { ...published, featured: true },
+      include: jobInclude,
+      orderBy: [{ publishedAt: "desc" }, { title: "asc" }],
+    });
+    return rows.map(toJobOffer);
+  } catch (error) {
+    console.error("getFeaturedJobs: database unavailable", error);
+    return [];
+  }
 }
 
 export async function getPublishedJobs(): Promise<JobOffer[]> {

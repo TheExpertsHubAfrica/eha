@@ -17,10 +17,10 @@ export default async function AdminPanelLayout({
   const user = await requireAdmin();
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-surface">
+    <div className="flex h-dvh flex-col overflow-hidden bg-surface md:flex-row">
       <AdminSidebar user={{ name: user.name, role: user.role }} />
-      <div className="min-w-0 flex-1 overflow-y-auto">
-        <div id="main-content" className="mx-auto max-w-6xl px-6 py-8 sm:px-8">
+      <div className="min-h-0 min-w-0 flex-1 overflow-y-auto">
+        <div id="main-content" className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
           {children}
         </div>
       </div>

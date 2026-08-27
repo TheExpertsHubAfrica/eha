@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { SiteShell } from "@/components/layout/site-shell";
+import { ErrorShell } from "@/components/layout/error-shell";
 
 export default function ErrorPage({
   reset,
@@ -11,7 +11,7 @@ export default function ErrorPage({
   reset: () => void;
 }) {
   return (
-    <SiteShell>
+    <ErrorShell>
       <div className="container-page py-24 text-center">
         <p className="text-sm font-semibold tracking-wide text-blue">Error</p>
         <h1 className="mt-3 text-3xl font-semibold text-navy">
@@ -30,6 +30,6 @@ export default function ErrorPage({
           </Button>
         </div>
       </div>
-    </SiteShell>
+    </ErrorShell>
   );
 }

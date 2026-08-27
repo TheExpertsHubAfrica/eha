@@ -28,11 +28,12 @@ export default async function AdminLoginPage({
   return (
     <main className="flex min-h-dvh items-center justify-center bg-black px-4 py-12">
       <div className="w-full max-w-md border border-white/10 bg-white p-8 sm:p-10">
+        <div className="h-0.5 w-10 bg-gold" aria-hidden="true" />
         <Logo
           background="light"
           href="/admin/login"
           priority
-          imageClassName="h-10 w-auto"
+          imageClassName="mt-6 h-10 w-auto"
         />
         <h1 className="mt-8 text-2xl font-bold tracking-tight text-black">
           Admin console

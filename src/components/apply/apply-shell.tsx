@@ -29,10 +29,9 @@ export function ApplyShell({
       </header>
       <main id="main-content" className="flex-1">
         <div className="container-page py-8 sm:py-10">
-          <p className="text-xs font-semibold tracking-[0.16em] text-fg-soft uppercase">
-            Application
-          </p>
-          <h1 className="mt-2 text-2xl font-bold text-black">{job.title}</h1>
+          <p className="eyebrow">Application</p>
+          <div className="gold-rule mt-3" aria-hidden="true" />
+          <h1 className="mt-4 text-2xl font-bold text-black">{job.title}</h1>
           <p className="mt-1 text-sm text-muted">
             {job.city}, {job.country}
           </p>

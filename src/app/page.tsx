@@ -12,11 +12,16 @@ import { prisma } from "@/server/db";
 
 export default async function HomePage() {
   await recordEvent({ name: "homepage_viewed" });
-  const quotes = await prisma.testimonial.findMany({
-    where: { published: true },
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-    take: 6,
-  });
+  const quotes = await prisma.testimonial
+    .findMany({
+      where: { published: true },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+      take: 6,
+    })
+    .catch((error) => {
+      console.error("homepage testimonials: database unavailable", error);
+      return [];
+    });
 
   return (
     <SiteShell>
@@ -27,21 +32,25 @@ export default async function HomePage() {
       <StudySection />
       <TrustSection />
       {quotes.length > 0 ? (
-        <section className="container-wide py-14">
-          <p className="text-xs font-semibold tracking-[0.16em] text-blue uppercase">
-            From applicants
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold text-navy">Published feedback</h2>
-          <p className="mt-2 max-w-xl text-sm text-muted">
-            These quotes are added in the admin CMS. There are no placeholder testimonials.
-          </p>
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
-            {quotes.map((item) => (
-              <blockquote key={item.id} className="rounded-lg border border-border bg-white p-6">
-                <p className="text-navy">{item.quote}</p>
-                <footer className="mt-3 text-sm text-muted">{item.attribution}</footer>
-              </blockquote>
-            ))}
+        <section className="bg-surface">
+          <div className="container-wide py-14">
+            <p className="eyebrow">From applicants</p>
+            <div className="gold-rule mt-3" aria-hidden="true" />
+            <h2 className="mt-4 text-2xl font-semibold text-navy">Published feedback</h2>
+            <p className="mt-2 max-w-xl text-sm text-muted">
+              These quotes are added in the admin CMS. There are no placeholder testimonials.
+            </p>
+            <div className="mt-8 grid gap-6 md:grid-cols-2">
+              {quotes.map((item) => (
+                <blockquote
+                  key={item.id}
+                  className="border border-border border-l-gold bg-white p-6"
+                >
+                  <p className="text-navy">{item.quote}</p>
+                  <footer className="mt-3 text-sm text-muted">{item.attribution}</footer>
+                </blockquote>
+              ))}
+            </div>
           </div>
         </section>
       ) : null}

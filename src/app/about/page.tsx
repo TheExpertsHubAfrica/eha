@@ -43,10 +43,11 @@ export default function AboutPage() {
           ].map((item) => (
             <article
               key={item.title}
-              className="rounded-lg border border-border bg-white p-6"
+              className="border border-border bg-white p-6"
             >
-              <h3 className="text-lg font-semibold">{item.title}</h3>
-              <p className="mt-2 text-sm text-muted">{item.text}</p>
+              <p className="eyebrow">{item.title}</p>
+              <div className="gold-rule mt-3" aria-hidden="true" />
+              <p className="mt-4 text-sm text-muted">{item.text}</p>
             </article>
           ))}
         </div>

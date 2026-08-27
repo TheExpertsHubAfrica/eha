@@ -1,32 +1,52 @@
 @import "tailwindcss";
 
 :root {
-  --black: #000000;
-  --black-soft: #171717;
-  --gray-900: #1a1a1a;
-  --gray-700: #404040;
-  --gray-500: #737373;
-  --gray-300: #d4d4d4;
-  --gray-200: #e5e5e5;
-  --gray-100: #f5f5f5;
+  /* Core */
+  --black: #0a0a0a;
+  --black-soft: #171614;
   --white: #ffffff;
+
+  /* Ash — warm neutral atmosphere */
+  --ash-50: #f4f3f0;
+  --ash-100: #ebe9e4;
+  --ash-200: #d8d5ce;
+  --ash-300: #c2beb4;
+  --ash-400: #9a968c;
+  --ash-500: #736f67;
+  --ash-600: #5a574f;
+  --ash-700: #45423c;
+  --ash-800: #2e2c28;
+  --ash-900: #1c1b18;
+
+  /* Brushed gold accent */
+  --gold: #b8953a;
+  --gold-deep: #8f7330;
+  --gold-bright: #d4b56a;
+  --gold-soft: #efe6cf;
+  --gold-mist: rgb(184 149 58 / 0.12);
+
+  /* Semantic aliases (legacy class names keep working) */
+  --gray-900: var(--ash-900);
+  --gray-700: var(--ash-700);
+  --gray-500: var(--ash-500);
+  --gray-300: var(--ash-300);
+  --gray-200: var(--ash-200);
+  --gray-100: var(--ash-100);
   --navy: var(--black);
-  --navy-deep: var(--black);
+  --navy-deep: var(--black-soft);
   --blue: var(--black);
-  --blue-hover: var(--gray-900);
-  --sky: var(--gray-100);
-  --sky-deep: var(--gray-200);
-  --gold: var(--gray-700);
-  --gold-soft: var(--gray-200);
-  --surface: var(--gray-100);
+  --blue-hover: var(--ash-800);
+  --sky: var(--ash-100);
+  --sky-deep: var(--ash-200);
+  --surface: var(--ash-50);
   --card: var(--white);
-  --border: var(--gray-200);
-  --muted: var(--gray-500);
+  --border: var(--ash-200);
+  --muted: var(--ash-500);
   --fg: var(--black);
-  --fg-soft: var(--gray-700);
+  --fg-soft: var(--ash-700);
   --danger: #b42318;
   --success: #0f7a4c;
-  --ring: var(--black);
+  --ring: var(--gold);
   --radius: 2px;
   --header-h: 72px;
 }
@@ -39,7 +59,21 @@
   --color-sky: var(--sky);
   --color-sky-deep: var(--sky-deep);
   --color-gold: var(--gold);
+  --color-gold-deep: var(--gold-deep);
+  --color-gold-bright: var(--gold-bright);
   --color-gold-soft: var(--gold-soft);
+  --color-ash-50: var(--ash-50);
+  --color-ash-100: var(--ash-100);
+  --color-ash-200: var(--ash-200);
+  --color-ash-300: var(--ash-300);
+  --color-ash-400: var(--ash-400);
+  --color-ash-500: var(--ash-500);
+  --color-ash-600: var(--ash-600);
+  --color-ash-700: var(--ash-700);
+  --color-ash-800: var(--ash-800);
+  --color-ash-900: var(--ash-900);
+  --color-black: var(--black);
+  --color-white: var(--white);
   --color-surface: var(--surface);
   --color-card: var(--card);
   --color-border: var(--border);
@@ -50,8 +84,8 @@
   --color-success: var(--success);
   --color-background: var(--surface);
   --color-foreground: var(--fg);
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-inter);
+  --font-sans: var(--font-outfit);
+  --font-display: var(--font-outfit);
   --radius-sm: 2px;
   --radius-md: var(--radius);
   --radius-lg: 4px;
@@ -69,14 +103,14 @@ html {
 body {
   background: var(--surface);
   color: var(--fg);
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
   font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: var(--gray-200);
+  background: var(--gold-soft);
   color: var(--black);
 }
 
@@ -96,9 +130,29 @@ h4 {
 
 .bg-grid-pattern {
   background-image:
-    linear-gradient(to right, rgb(0 0 0 / 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(0 0 0 / 0.045) 1px, transparent 1px);
+    linear-gradient(to right, rgb(46 44 40 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(46 44 40 / 0.05) 1px, transparent 1px);
   background-size: 28px 28px;
+}
+
+.bg-ash-wash {
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 0%, rgb(184 149 58 / 0.08), transparent 55%),
+    linear-gradient(180deg, var(--white) 0%, var(--ash-50) 100%);
+}
+
+.eyebrow {
+  color: var(--gold-deep);
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.gold-rule {
+  height: 2px;
+  width: 2.5rem;
+  background: var(--gold);
 }
 
 .container-page {

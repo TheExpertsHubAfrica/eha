@@ -29,23 +29,24 @@ export function TrustSection() {
   return (
     <section className="bg-black text-white">
       <div className="container-wide py-14 sm:py-16">
-        <p className="text-xs font-semibold tracking-[0.16em] text-white/60 uppercase">
+        <p className="text-xs font-semibold tracking-[0.16em] text-gold-bright uppercase">
           Why applicants choose us
         </p>
-        <h2 className="mt-2 max-w-xl text-2xl font-bold text-white sm:text-3xl">
+        <div className="mt-3 h-0.5 w-10 bg-gold" aria-hidden="true" />
+        <h2 className="mt-5 max-w-xl text-2xl font-bold text-white sm:text-3xl">
           Organised, careful, and built around a complete application — not a
           crowded homepage.
         </h2>
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {reasons.map((item, index) => (
-            <article key={item.title} className="border-t border-white/15 pt-5">
-              <p className="text-xs tracking-wide text-white/50">
+            <article key={item.title} className="border-t border-white/10 pt-5">
+              <p className="text-xs font-semibold tracking-wide text-gold-bright">
                 {String(index + 1).padStart(2, "0")}
               </p>
               <h3 className="mt-2 text-lg font-semibold text-white">
                 {item.title}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-white/70">
+              <p className="mt-2 text-sm leading-relaxed text-white/65">
                 {item.text}
               </p>
             </article>

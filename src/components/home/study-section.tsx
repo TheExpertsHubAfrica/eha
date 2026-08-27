@@ -40,9 +40,9 @@ export async function StudySection() {
               <Link
                 key={item.id}
                 href={`/study-abroad/${item.slug}`}
-                className="rounded-lg border border-border bg-surface p-5 hover:border-blue/30"
+                className="border border-border bg-surface p-5 transition-colors hover:border-gold/40 hover:bg-gold-soft/25"
               >
-                <p className="text-xs font-medium tracking-wide text-muted uppercase">
+                <p className="text-xs font-medium tracking-wide text-gold-deep uppercase">
                   {item.region}
                 </p>
                 <h3 className="mt-2 text-lg font-semibold text-navy">

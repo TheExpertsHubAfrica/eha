@@ -2,11 +2,11 @@ import { cn } from "@/lib/utils";
 import type { TravelPackage } from "@/lib/catalog/types";
 
 const accents: Record<TravelPackage["accent"], string> = {
-  navy: "from-[#0B1F3A] to-[#1D4ED8]",
-  blue: "from-[#1D4ED8] to-[#5B8DEF]",
-  teal: "from-[#0F4C5C] to-[#2A9D8F]",
-  sand: "from-[#7A5C2E] to-[#C4A35A]",
-  rose: "from-[#5C2A3A] to-[#C45C6A]",
+  navy: "from-[#1C1B18] to-[#45423C]",
+  blue: "from-[#2E2C28] to-[#5A574F]",
+  teal: "from-[#2E2C28] to-[#8F7330]",
+  sand: "from-[#8F7330] to-[#B8953A]",
+  rose: "from-[#45423C] to-[#9A968C]",
 };
 
 export function DestinationPanel({

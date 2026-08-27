@@ -13,14 +13,11 @@ export function PageHero({
   children?: ReactNode;
 }) {
   return (
-    <section className="border-b border-border bg-white">
+    <section className="border-b border-border bg-ash-wash">
       <div className="container-page py-12 sm:py-16">
-        {eyebrow ? (
-          <p className="text-xs font-semibold tracking-[0.16em] text-fg-soft uppercase">
-            {eyebrow}
-          </p>
-        ) : null}
-        <h1 className="mt-3 max-w-3xl text-3xl font-bold text-black sm:text-4xl">
+        {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
+        <div className="gold-rule mt-4" aria-hidden="true" />
+        <h1 className="mt-5 max-w-3xl text-3xl font-bold text-black sm:text-4xl">
           {title}
         </h1>
         {description ? (
@@ -53,12 +50,9 @@ export function SectionHeading({
       )}
     >
       <div className="max-w-2xl">
-        {eyebrow ? (
-          <p className="text-xs font-semibold tracking-[0.16em] text-fg-soft uppercase">
-            {eyebrow}
-          </p>
-        ) : null}
-        <h2 className="mt-2 text-2xl font-bold text-black sm:text-3xl">
+        {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
+        <div className="gold-rule mt-3" aria-hidden="true" />
+        <h2 className="mt-4 text-2xl font-bold text-black sm:text-3xl">
           {title}
         </h2>
         {description ? (
