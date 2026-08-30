@@ -4,6 +4,7 @@ import { HARD_MAX_BYTES } from "@/lib/uploads/validate";
 import { saveUploadedDocument } from "@/server/application/documents";
 import { loadDraftForJob } from "@/server/application/service";
 import { getJobById } from "@/server/jobs";
+import { ObjectStorageNotConfiguredError } from "@/server/storage";
 import { consumeUploadSlot } from "@/server/uploads/rate-limit";
 
 export const runtime = "nodejs";
@@ -57,15 +58,34 @@ export async function POST(
   }
 
   const bytes = Buffer.from(await file.arrayBuffer());
-  const result = await saveUploadedDocument({
-    job,
-    draft,
-    requirementKey,
-    filename: file.name,
-    bytes,
-  });
-  if (!result.ok) {
-    return NextResponse.json({ ok: false, error: result.error }, { status: result.status });
+  try {
+    const result = await saveUploadedDocument({
+      job,
+      draft,
+      requirementKey,
+      filename: file.name,
+      bytes,
+    });
+    if (!result.ok) {
+      return NextResponse.json({ ok: false, error: result.error }, { status: result.status });
+    }
+    return NextResponse.json({ ok: true, document: result.document });
+  } catch (error) {
+    if (error instanceof ObjectStorageNotConfiguredError) {
+      console.error("document upload: storage not configured", error.message);
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            "Document storage is not set up on this server yet. Please contact support or try again later.",
+        },
+        { status: 503 },
+      );
+    }
+    console.error("document upload failed", error);
+    return NextResponse.json(
+      { ok: false, error: "The file could not be uploaded. Please try again." },
+      { status: 500 },
+    );
   }
-  return NextResponse.json({ ok: true, document: result.document });
 }
