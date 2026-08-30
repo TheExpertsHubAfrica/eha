@@ -4,6 +4,7 @@ import { jobs } from "../src/lib/catalog/jobs";
 import { travelPackages } from "../src/lib/catalog/travel";
 import { studyDestinations } from "../src/lib/catalog/study";
 import { randomBytes, scryptSync } from "node:crypto";
+import { PASSPORT_SIZE_PHOTO } from "../src/lib/apply/document-requirements";
 
 config({ path: ".env.local" });
 config({ path: ".env" });
@@ -33,6 +34,17 @@ function documentKey(name: string) {
 function documentMeta(name: string) {
   const key = documentKey(name);
   const pdfOnly = key === "cv" || key === "academic_transcript";
+  if (key === PASSPORT_SIZE_PHOTO.key) {
+    return {
+      key,
+      name: PASSPORT_SIZE_PHOTO.name,
+      description: PASSPORT_SIZE_PHOTO.description,
+      required: true,
+      acceptedTypes: [...PASSPORT_SIZE_PHOTO.acceptedTypes],
+      maxSizeMb: PASSPORT_SIZE_PHOTO.maxSizeMb,
+      instructions: PASSPORT_SIZE_PHOTO.instructions,
+    };
+  }
   return {
     key,
     name,
@@ -112,6 +124,17 @@ async function main() {
       },
     });
   }
+
+  await prisma.jobDocumentRequirement.updateMany({
+    where: { key: PASSPORT_SIZE_PHOTO.key },
+    data: {
+      name: PASSPORT_SIZE_PHOTO.name,
+      description: PASSPORT_SIZE_PHOTO.description,
+      instructions: PASSPORT_SIZE_PHOTO.instructions,
+      acceptedTypes: [...PASSPORT_SIZE_PHOTO.acceptedTypes],
+      maxSizeMb: PASSPORT_SIZE_PHOTO.maxSizeMb,
+    },
+  });
 
   for (const item of travelPackages) {
     await prisma.travelPackage.upsert({

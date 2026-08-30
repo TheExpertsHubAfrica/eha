@@ -12,7 +12,7 @@ type SeedJob = Omit<
 
 const dubaiDocs = [
   "Passport bio page",
-  "Passport photograph",
+  "Passport-size photograph",
   "Curriculum vitae (PDF)",
 ];
 
@@ -85,7 +85,7 @@ export const jobs: SeedJob[] = [
       {
         question: "What documents do I need?",
         answer:
-          "For this offer: passport bio page, passport photograph, and a PDF CV. Additional documents may be requested after review.",
+          "For this offer: passport bio page, passport-size photograph on a white background, and a PDF CV. Additional documents may be requested after review.",
       },
       {
         question: "When should I upload documents?",

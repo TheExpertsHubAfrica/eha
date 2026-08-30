@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin, writeAdminAudit } from "@/server/admin/auth";
+import { passportPhotoDocumentMeta } from "@/lib/apply/document-requirements";
 import { prisma } from "@/server/db";
 
 function lines(value: FormDataEntryValue | null) {
@@ -109,16 +110,7 @@ export async function saveJobAction(jobId: string | null, formData: FormData) {
                 instructions: "PDF, JPG, or PNG, maximum 5 MB.",
                 sortOrder: 0,
               },
-              {
-                key: "passport_photo",
-                name: "Passport photograph",
-                description: "Passport photograph for this opportunity.",
-                required: true,
-                acceptedTypes: ["application/pdf", "image/jpeg", "image/png"],
-                maxSizeMb: 5,
-                instructions: "PDF, JPG, or PNG, maximum 5 MB.",
-                sortOrder: 1,
-              },
+              passportPhotoDocumentMeta(1),
               {
                 key: "cv",
                 name: "Curriculum vitae (PDF)",
