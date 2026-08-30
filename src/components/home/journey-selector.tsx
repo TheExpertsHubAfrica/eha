@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Briefcase, GraduationCap, Plane } from "lucide-react";
+import { ContentImage } from "@/components/ui/content-image";
+import { siteImages } from "@/lib/site-images";
 
 const journeys = [
   {
@@ -8,6 +10,8 @@ const journeys = [
     title: "Work abroad",
     text: "Browse current job offers, understand benefits and requirements, then start a structured application.",
     cta: "Explore jobs",
+    image: siteImages.home.pathwayWork,
+    imageAlt: "Work abroad jobs and overseas employment opportunities",
   },
   {
     href: "/study-abroad",
@@ -15,6 +19,8 @@ const journeys = [
     title: "Study abroad",
     text: "Explore study destinations and the admission, document, and visa guidance we provide.",
     cta: "Explore study opportunities",
+    image: siteImages.home.pathwayStudy,
+    imageAlt: "Study abroad programs and international university pathways",
   },
   {
     href: "/travel",
@@ -22,6 +28,8 @@ const journeys = [
     title: "Travel",
     text: "Review curated travel packages by destination, duration, and what’s included.",
     cta: "Explore packages",
+    image: siteImages.home.pathwayTravel,
+    imageAlt: "Curated international travel packages and holiday destinations",
   },
 ] as const;
 
@@ -39,21 +47,29 @@ export function JourneySelector() {
             <Link
               key={item.href}
               href={item.href}
-              className="group flex flex-col border border-border bg-white p-6 transition-colors hover:border-gold/50 hover:bg-gold-soft/20"
+              className="group flex flex-col overflow-hidden border border-border bg-white transition-colors hover:border-gold/50 hover:bg-gold-soft/20"
             >
-              <span className="inline-flex size-11 items-center justify-center bg-ash-100 text-gold-deep transition-colors group-hover:bg-gold-soft group-hover:text-gold-deep">
-                <item.icon className="size-5" aria-hidden="true" />
-              </span>
-              <h3 className="mt-5 text-lg font-semibold text-navy">
-                {item.title}
-              </h3>
-              <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">
-                {item.text}
-              </p>
-              <span className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-gold-deep">
-                {item.cta}
-                <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-              </span>
+              <ContentImage
+                src={item.image}
+                alt={item.imageAlt}
+                aspect="video"
+                className="border-b border-border"
+              />
+              <div className="flex flex-1 flex-col p-6">
+                <span className="inline-flex size-11 items-center justify-center bg-ash-100 text-gold-deep transition-colors group-hover:bg-gold-soft group-hover:text-gold-deep">
+                  <item.icon className="size-5" aria-hidden="true" />
+                </span>
+                <h3 className="mt-5 text-lg font-semibold text-navy">
+                  {item.title}
+                </h3>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">
+                  {item.text}
+                </p>
+                <span className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-gold-deep">
+                  {item.cta}
+                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </div>
             </Link>
           ))}
         </div>

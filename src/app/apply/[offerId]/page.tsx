@@ -1,12 +1,14 @@
 import { notFound, redirect } from "next/navigation";
 import { ApplyShell } from "@/components/apply/apply-shell";
 import { StartApplicationButton } from "@/components/apply/start-button";
+import { ContentImage } from "@/components/ui/content-image";
 import { getFirstIncompleteStep } from "@/lib/apply/steps";
 import { startApplicationAction } from "@/server/application/actions";
 import { loadDraftForJob, loadSubmittedForJob } from "@/server/application/service";
 import { confirmationPath } from "@/lib/apply/reference";
 import { getJobById } from "@/server/jobs";
 import { jobPath } from "@/lib/catalog";
+import { siteImages } from "@/lib/site-images";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -36,7 +38,14 @@ export default async function ApplyStartPage({
 
   return (
     <ApplyShell job={job}>
-      <div className="max-w-xl rounded-lg border border-border bg-white p-6 sm:p-8">
+      <div className="max-w-xl overflow-hidden rounded-lg border border-border bg-white">
+        <ContentImage
+          src={siteImages.apply.start}
+          alt="Start your guided work abroad application"
+          aspect="video"
+          className="border-b border-border"
+        />
+        <div className="p-6 sm:p-8">
         <h2 className="text-xl font-semibold text-navy">Start a guided application</h2>
         <p className="mt-3 text-muted">
           Your answers are saved as a private draft on this device after you begin.
@@ -57,6 +66,7 @@ export default async function ApplyStartPage({
             Back to the opportunity
           </Link>
         </p>
+        </div>
       </div>
     </ApplyShell>
   );

@@ -3,7 +3,9 @@ import { Suspense } from "react";
 import { ContactForm } from "@/components/contact/contact-form";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ContentImage } from "@/components/ui/content-image";
 import { PageHero } from "@/components/ui/page-hero";
+import { siteImages } from "@/lib/site-images";
 import { siteConfig, whatsappHref } from "@/lib/site-config";
 import { getResolvedSite } from "@/server/settings";
 
@@ -22,6 +24,8 @@ export default async function ContactPage() {
         eyebrow="Contact"
         title="Talk to the team."
         description="Use the form for a written enquiry, or the published phone, email, and WhatsApp channels when they are configured."
+        image={siteImages.contact.place}
+        imageAlt="The Experts Hub Africa office location — contact our team"
       />
       <section className="container-page grid gap-10 py-12 lg:grid-cols-[1fr_0.85fr] lg:py-16">
         <div className="rounded-lg border border-border bg-white p-6 sm:p-8">
@@ -38,6 +42,11 @@ export default async function ContactPage() {
           </div>
         </div>
         <aside className="space-y-6">
+          <ContentImage
+            src={siteImages.contact.place}
+            alt="The Experts Hub Africa office location — contact our team"
+            aspect="video"
+          />
           <div className="rounded-lg border border-border bg-white p-6">
             <h2 className="text-lg font-semibold text-navy">Details</h2>
             <dl className="mt-4 space-y-4 text-sm">

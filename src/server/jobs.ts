@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import type { JobListFacets, JobListQuery, JobOffer } from "@/lib/catalog/types";
 import { prisma } from "@/server/db";
 import { toJobOffer } from "@/server/mappers";
+import { safeQuery } from "@/server/safe-query";
 
 const published = { status: "published" as const };
 
@@ -50,17 +51,18 @@ function sortOrder(sort?: JobListQuery["sort"]): Prisma.JobOrderByWithRelationIn
 }
 
 export async function getFeaturedJobs(): Promise<JobOffer[]> {
-  try {
-    const rows = await prisma.job.findMany({
-      where: { ...published, featured: true },
-      include: jobInclude,
-      orderBy: [{ publishedAt: "desc" }, { title: "asc" }],
-    });
-    return rows.map(toJobOffer);
-  } catch (error) {
-    console.error("getFeaturedJobs: database unavailable", error);
-    return [];
-  }
+  return safeQuery(
+    "getFeaturedJobs",
+    async () => {
+      const rows = await prisma.job.findMany({
+        where: { ...published, featured: true },
+        include: jobInclude,
+        orderBy: [{ publishedAt: "desc" }, { title: "asc" }],
+      });
+      return rows.map(toJobOffer);
+    },
+    [],
+  );
 }
 
 export async function getPublishedJobs(): Promise<JobOffer[]> {

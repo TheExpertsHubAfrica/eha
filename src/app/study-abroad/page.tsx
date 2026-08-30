@@ -4,6 +4,7 @@ import { SiteShell } from "@/components/layout/site-shell";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHero } from "@/components/ui/page-hero";
 import { getPublishedStudy } from "@/lib/catalog";
+import { siteImages } from "@/lib/site-images";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -22,6 +23,8 @@ export default async function StudyAbroadPage() {
         eyebrow="Study abroad"
         title="Destination guidance first. Programme catalogues can grow later."
         description="We currently publish destination-level support: admission assistance, application guidance, visa orientation, and document checklists. Individual universities and intakes will be added through the admin CMS."
+        image={siteImages.study.hero}
+        imageAlt="Study abroad programs and international education pathways"
       />
       <section className="container-page py-12 sm:py-16">
         {destinations.length === 0 ? (
@@ -30,6 +33,8 @@ export default async function StudyAbroadPage() {
             description="Published study pathways will appear here. Contact us if you want to start a conversation now."
             actionHref="/contact"
             actionLabel="Contact us"
+            image={siteImages.study.empty}
+            imageAlt="Study abroad destinations coming soon"
           />
         ) : (
           <div className="grid gap-5 md:grid-cols-2">

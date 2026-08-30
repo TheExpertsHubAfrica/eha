@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SectionHeading } from "@/components/ui/page-hero";
 import { DestinationPanel } from "@/components/travel/destination-panel";
-import { getFeaturedTravel, travelPath } from "@/lib/catalog";
+import { travelPath } from "@/lib/catalog";
+import { siteImages } from "@/lib/site-images";
 import type { TravelPackage } from "@/lib/catalog/types";
 
 export function TravelCard({ item }: { item: TravelPackage }) {
@@ -29,9 +30,7 @@ export function TravelCard({ item }: { item: TravelPackage }) {
   );
 }
 
-export async function FeaturedTravel() {
-  const packages = await getFeaturedTravel();
-
+export function FeaturedTravel({ packages }: { packages: TravelPackage[] }) {
   return (
     <section className="bg-surface">
       <div className="container-wide py-14 sm:py-16">
@@ -51,6 +50,8 @@ export async function FeaturedTravel() {
             description="Travel packages will appear here when they are published."
             actionHref="/contact"
             actionLabel="Contact us"
+            image={siteImages.travel.empty}
+            imageAlt="No travel packages published yet"
           />
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ConfirmationShell } from "@/components/apply/confirmation-shell";
 import { Button } from "@/components/ui/button";
+import { ContentImage } from "@/components/ui/content-image";
 import { siteConfig } from "@/lib/site-config";
+import { siteImages } from "@/lib/site-images";
 import { formatDisplayDate } from "@/lib/utils";
 import { jobPath } from "@/lib/catalog";
 import { applicantEmailStatus, requireSubmittedAccess } from "@/server/application/access";
@@ -37,7 +39,14 @@ export default async function ApplicationSuccessPage({
 
   return (
     <ConfirmationShell>
-      <div className="max-w-2xl rounded-lg border border-border bg-white p-6 sm:p-8">
+      <div className="max-w-2xl overflow-hidden rounded-lg border border-border bg-white">
+        <ContentImage
+          src={siteImages.apply.success}
+          alt="Application submitted successfully"
+          aspect="video"
+          className="border-b border-border"
+        />
+        <div className="p-6 sm:p-8">
         <p className="text-xs font-semibold tracking-[0.16em] text-blue uppercase">Application submitted</p>
         <h1 className="mt-2 text-3xl font-semibold text-navy">Application received</h1>
         <p className="mt-3 text-muted">
@@ -91,6 +100,7 @@ export default async function ApplicationSuccessPage({
             Back to the opportunity
           </Link>
         </p>
+        </div>
       </div>
     </ConfirmationShell>
   );

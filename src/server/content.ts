@@ -1,17 +1,9 @@
 import type { StudyDestination, TravelPackage } from "@/lib/catalog/types";
 import { prisma } from "@/server/db";
 import { toStudyDestination, toTravelPackage } from "@/server/mappers";
+import { safeQuery } from "@/server/safe-query";
 
 const published = { status: "published" as const };
-
-async function safeQuery<T>(label: string, run: () => Promise<T>, fallback: T): Promise<T> {
-  try {
-    return await run();
-  } catch (error) {
-    console.error(`${label}: database unavailable`, error);
-    return fallback;
-  }
-}
 
 export async function getFeaturedTravel(): Promise<TravelPackage[]> {
   return safeQuery(

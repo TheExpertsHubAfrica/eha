@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { SiteShell } from "@/components/layout/site-shell";
 import { PageHero } from "@/components/ui/page-hero";
 import { formatDisplayDate } from "@/lib/utils";
+import { siteImages } from "@/lib/site-images";
 import { getPublishedPost } from "@/server/public-content";
 
 export const dynamic = "force-dynamic";
@@ -37,6 +38,8 @@ export default async function BlogPostPage({
         eyebrow="Blog"
         title={post.title}
         description={`${formatDisplayDate(post.publishedAt)} · ${post.excerpt}`}
+        image={siteImages.blog.default}
+        imageAlt={`${post.title} — TEHA blog on work, travel and study abroad`}
       />
       <article className="container-page space-y-5 py-12 text-muted">
         {paragraphs.map((block) => (

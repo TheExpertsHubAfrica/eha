@@ -1,3 +1,5 @@
+import { siteImages } from "@/lib/site-images";
+
 const reasons = [
   {
     title: "Guided application process",
@@ -27,8 +29,13 @@ const reasons = [
 
 export function TrustSection() {
   return (
-    <section className="bg-black text-white">
-      <div className="container-wide py-14 sm:py-16">
+    <section className="relative overflow-hidden bg-black text-white">
+      <div
+        className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-20"
+        style={{ backgroundImage: `url(${siteImages.home.trustTexture})` }}
+        aria-hidden="true"
+      />
+      <div className="relative container-wide py-14 sm:py-16">
         <p className="text-xs font-semibold tracking-[0.16em] text-gold-bright uppercase">
           Why applicants choose us
         </p>

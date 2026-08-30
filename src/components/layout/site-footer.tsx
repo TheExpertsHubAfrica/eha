@@ -44,7 +44,9 @@ export function SiteFooter({ site }: { site: PublicSite }) {
       <div className="h-0.5 bg-linear-to-r from-gold via-gold-bright to-transparent" aria-hidden="true" />
       <div className="container-wide grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-6">
         <div className="lg:col-span-2">
-          <Logo background="dark" />
+          <div className="inline-flex bg-white px-3 py-2.5">
+            <Logo background="light" />
+          </div>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/70">
             {site.tagline}
           </p>

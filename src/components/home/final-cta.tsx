@@ -1,10 +1,17 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { siteImages } from "@/lib/site-images";
 
 export function FinalCta() {
   return (
-    <section className="border-y border-border bg-ash-wash">
-      <div className="container-page py-16 text-center sm:py-20">
+    <section className="relative overflow-hidden border-y border-border">
+      <div
+        className="pointer-events-none absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${siteImages.home.finalCta})` }}
+        aria-hidden="true"
+      />
+      <div className="absolute inset-0 bg-white/88" aria-hidden="true" />
+      <div className="relative container-page py-16 text-center sm:py-20">
         <p className="eyebrow justify-self-center">Next step</p>
         <div className="gold-rule mx-auto mt-3" aria-hidden="true" />
         <h2 className="mt-5 text-2xl font-bold text-black sm:text-3xl">

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { ContentImage } from "@/components/ui/content-image";
 import { cn } from "@/lib/utils";
 
 export function PageHero({
@@ -6,14 +7,29 @@ export function PageHero({
   title,
   description,
   children,
+  image,
+  imageAlt,
+  priorityImage = false,
 }: {
   eyebrow?: string;
   title: string;
   description?: string;
   children?: ReactNode;
+  image?: string;
+  imageAlt?: string;
+  priorityImage?: boolean;
 }) {
   return (
     <section className="border-b border-border bg-ash-wash">
+      {image ? (
+        <ContentImage
+          src={image}
+          alt={imageAlt ?? title}
+          aspect="wide"
+          priority={priorityImage}
+          className="max-h-72 sm:max-h-80"
+        />
+      ) : null}
       <div className="container-page py-12 sm:py-16">
         {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
         <div className="gold-rule mt-4" aria-hidden="true" />

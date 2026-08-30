@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHero } from "@/components/ui/page-hero";
+import { siteImages } from "@/lib/site-images";
 import { siteConfig } from "@/lib/site-config";
 import { formatDisplayDate } from "@/lib/utils";
 import { getPublishedPosts } from "@/server/public-content";
@@ -26,6 +27,8 @@ export default async function BlogPage() {
             ? "Published by the team. Each article is a real update, not filler."
             : "No articles yet. This space is reserved for application guidance and destination notes."
         }
+        image={siteImages.blog.default}
+        imageAlt="TEHA blog — advice on work abroad, travel and study overseas"
       />
       <section className="container-page py-12">
         {posts.length === 0 ? (
@@ -34,6 +37,8 @@ export default async function BlogPage() {
             description="When the content team publishes articles, they will appear on this page."
             actionHref="/contact"
             actionLabel="Contact us"
+            image={siteImages.admin.emptyBlog}
+            imageAlt="Blog articles coming soon"
           />
         ) : (
           <ul className="space-y-8">

@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Button } from "@/components/ui/button";
+import { ContentImage } from "@/components/ui/content-image";
 import { PageHero } from "@/components/ui/page-hero";
+import { siteImages } from "@/lib/site-images";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -15,8 +17,10 @@ export default function AboutPage() {
     <SiteShell>
       <PageHero
         eyebrow="About"
-        title={`A professional platform for pursuing opportunities abroad.`}
+        title="A professional platform for pursuing opportunities abroad."
         description={`${siteConfig.name} helps applicants discover overseas work, travel packages, and study pathways — then complete a structured application with guidance from our team.`}
+        image={siteImages.about.team}
+        imageAlt="The Experts Hub Africa team providing work, travel and study abroad support"
       />
       <section className="container-page prose-eha py-12 sm:py-16">
         <h2 className="text-2xl">What we do</h2>
@@ -26,6 +30,18 @@ export default function AboutPage() {
           application: you browse published opportunities, read the terms, and
           only then start a profile and document upload for a specific offer.
         </p>
+        <div className="mt-10 grid gap-8 lg:grid-cols-2">
+          <ContentImage
+            src={siteImages.about.team}
+            alt="The Experts Hub Africa team providing work, travel and study abroad support"
+            aspect="video"
+          />
+          <ContentImage
+            src={siteImages.about.process}
+            alt="Guided job and study abroad application process with document support"
+            aspect="video"
+          />
+        </div>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {[
             {

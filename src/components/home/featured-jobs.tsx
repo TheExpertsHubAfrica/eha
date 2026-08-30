@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ContentImage } from "@/components/ui/content-image";
 import { SectionHeading } from "@/components/ui/page-hero";
-import { getFeaturedJobs, jobPath } from "@/lib/catalog";
+import { jobPath } from "@/lib/catalog";
 import type { JobOffer } from "@/lib/catalog/types";
+import { workCoverForJob } from "@/lib/site-images";
 import { formatMoney } from "@/lib/utils";
+import { EmptyState } from "@/components/ui/empty-state";
+import { siteImages } from "@/lib/site-images";
 
 function publishedLabel(date?: Date | null) {
   if (!date) return null;
@@ -14,55 +18,61 @@ function publishedLabel(date?: Date | null) {
     year: "numeric",
   }).format(date);
 }
-import { EmptyState } from "@/components/ui/empty-state";
 
 export function JobCard({ job }: { job: JobOffer }) {
+  const cover = workCoverForJob(job);
   return (
-    <article className="flex h-full flex-col border border-border bg-white p-6 transition-colors hover:border-gold/40">
-      <div className="flex items-start justify-between gap-3">
-        <Badge tone="gold">{job.category}</Badge>
-        <Badge tone={job.availability === "open" ? "success" : "muted"}>
-          {job.availability === "open" ? "Open" : job.availability}
-        </Badge>
-      </div>
-      <h3 className="mt-4 text-xl font-semibold text-navy">{job.title}</h3>
-      <p className="mt-1 text-sm text-muted">
-        {job.city}, {job.country}
-      </p>
-      {publishedLabel(job.publishedAt) ? (
-        <p className="mt-1 text-xs text-muted">
-          Published {publishedLabel(job.publishedAt)}
+    <article className="flex h-full flex-col overflow-hidden border border-border bg-white transition-colors hover:border-gold/40">
+      <ContentImage
+        src={cover}
+        alt={`${job.title} work abroad job in ${job.city}, ${job.country}`}
+        aspect="video"
+        className="border-b border-border"
+      />
+      <div className="flex flex-1 flex-col p-6">
+        <div className="flex items-start justify-between gap-3">
+          <Badge tone="gold">{job.category}</Badge>
+          <Badge tone={job.availability === "open" ? "success" : "muted"}>
+            {job.availability === "open" ? "Open" : job.availability}
+          </Badge>
+        </div>
+        <h3 className="mt-4 text-xl font-semibold text-navy">{job.title}</h3>
+        <p className="mt-1 text-sm text-muted">
+          {job.city}, {job.country}
         </p>
-      ) : null}
-      <p className="mt-4 text-lg font-semibold text-navy">
-        {formatMoney(job.salary.amount, job.salary.currency)}
-        <span className="ml-1 text-sm font-normal text-muted">/ month</span>
-      </p>
-      {job.convertedSalary ? (
-        <p className="text-sm text-muted">
-          ≈ {formatMoney(job.convertedSalary.amount, job.convertedSalary.currency)}{" "}
-          <span className="text-xs">(indicative)</span>
+        {publishedLabel(job.publishedAt) ? (
+          <p className="mt-1 text-xs text-muted">
+            Published {publishedLabel(job.publishedAt)}
+          </p>
+        ) : null}
+        <p className="mt-4 text-lg font-semibold text-navy">
+          {formatMoney(job.salary.amount, job.salary.currency)}
+          <span className="ml-1 text-sm font-normal text-muted">/ month</span>
         </p>
-      ) : null}
-      <ul className="mt-5 flex flex-wrap gap-2">
-        {job.benefits.map((benefit) => (
-          <li key={benefit}>
-            <Badge tone="outline">{benefit}</Badge>
-          </li>
-        ))}
-      </ul>
-      <div className="mt-auto pt-6">
-        <Button asChild variant="outline" className="w-full">
-          <Link href={jobPath(job)}>View opportunity</Link>
-        </Button>
+        {job.convertedSalary ? (
+          <p className="text-sm text-muted">
+            ≈ {formatMoney(job.convertedSalary.amount, job.convertedSalary.currency)}{" "}
+            <span className="text-xs">(indicative)</span>
+          </p>
+        ) : null}
+        <ul className="mt-5 flex flex-wrap gap-2">
+          {job.benefits.map((benefit) => (
+            <li key={benefit}>
+              <Badge tone="outline">{benefit}</Badge>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-auto pt-6">
+          <Button asChild variant="outline" className="w-full">
+            <Link href={jobPath(job)}>View opportunity</Link>
+          </Button>
+        </div>
       </div>
     </article>
   );
 }
 
-export async function FeaturedJobs() {
-  const jobs = await getFeaturedJobs();
-
+export function FeaturedJobs({ jobs }: { jobs: JobOffer[] }) {
   return (
     <section className="bg-white">
       <div className="container-wide py-14 sm:py-16">
@@ -82,6 +92,8 @@ export async function FeaturedJobs() {
             description="We don’t currently have an opportunity to feature. Check back soon or contact our team."
             actionHref="/contact"
             actionLabel="Contact us"
+            image={siteImages.work.empty}
+            imageAlt="No current work abroad job listings available"
           />
         ) : (
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">

@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { PageHero } from "@/components/ui/page-hero";
 import { getJobFacets, searchJobs } from "@/lib/catalog";
 import { hasActiveFilters, parseJobFilters } from "@/lib/jobs/filters";
+import { siteImages } from "@/lib/site-images";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -31,6 +32,8 @@ export default async function WorkAbroadPage({
         eyebrow="Work abroad"
         title="Roles with salary, benefits, and requirements in one place."
         description="Filter published offers, then open a role for the full details. Documents are not uploaded on this page."
+        image={siteImages.work.hero}
+        imageAlt="Browse overseas jobs and work abroad opportunities with TEHA"
       />
       <section className="container-wide grid gap-8 py-12 lg:grid-cols-[280px_minmax(0,1fr)] sm:py-16">
         <JobFilters filters={filters} facets={facets} resultCount={jobs.length} />
@@ -45,6 +48,8 @@ export default async function WorkAbroadPage({
               }
               actionHref="/contact"
               actionLabel="Contact us"
+              image={siteImages.work.empty}
+              imageAlt="No current work abroad job listings available"
             />
           ) : (
             <div className="grid gap-5 md:grid-cols-2">

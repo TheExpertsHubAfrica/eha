@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { headers } from "next/headers";
 import { Logo } from "@/components/brand/logo";
 import { AdminLoginForm } from "@/components/admin/login-form";
+import { siteImages } from "@/lib/site-images";
 import { bootstrapAdminExists } from "@/server/admin/actions";
 import { loadAdminUser } from "@/server/admin/auth";
 import { redirect } from "next/navigation";
@@ -26,8 +28,18 @@ export default async function AdminLoginPage({
   const host = (await headers()).get("host") ?? "this server";
 
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-black px-4 py-12">
-      <div className="w-full max-w-md border border-white/10 bg-white p-8 sm:p-10">
+    <main className="relative flex min-h-dvh items-center justify-center overflow-hidden bg-black px-4 py-12">
+      <Image
+        src={siteImages.admin.loginBg}
+        alt=""
+        fill
+        className="object-cover opacity-30"
+        sizes="100vw"
+        priority
+        aria-hidden
+      />
+      <div className="absolute inset-0 bg-black/70" aria-hidden="true" />
+      <div className="relative z-10 w-full max-w-md border border-white/10 bg-white p-8 sm:p-10">
         <div className="h-0.5 w-10 bg-gold" aria-hidden="true" />
         <Logo
           background="light"

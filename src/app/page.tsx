@@ -7,29 +7,20 @@ import { JourneySelector } from "@/components/home/journey-selector";
 import { StudySection } from "@/components/home/study-section";
 import { TrustSection } from "@/components/home/trust-section";
 import { SiteShell } from "@/components/layout/site-shell";
+import { getHomepageData } from "@/server/homepage";
 import { recordEvent } from "@/server/analytics/events";
-import { prisma } from "@/server/db";
 
 export default async function HomePage() {
-  await recordEvent({ name: "homepage_viewed" });
-  const quotes = await prisma.testimonial
-    .findMany({
-      where: { published: true },
-      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-      take: 6,
-    })
-    .catch((error) => {
-      console.error("homepage testimonials: database unavailable", error);
-      return [];
-    });
+  const { jobs, travel, study, quotes } = await getHomepageData();
+  void recordEvent({ name: "homepage_viewed" });
 
   return (
     <SiteShell>
       <HomeHero />
       <JourneySelector />
-      <FeaturedJobs />
-      <FeaturedTravel />
-      <StudySection />
+      <FeaturedJobs jobs={jobs} />
+      <FeaturedTravel packages={travel} />
+      <StudySection destinations={study} />
       <TrustSection />
       {quotes.length > 0 ? (
         <section className="bg-surface">
