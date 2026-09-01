@@ -193,6 +193,15 @@ textarea:-webkit-autofill:focus {
   margin-top: 1rem;
 }
 
+.prose-eha .legal-body > *:first-child {
+  margin-top: 0;
+}
+
+.prose-eha .legal-body h2 + p,
+.prose-eha .legal-body h3 + p {
+  margin-top: 0.5rem;
+}
+
 .prose-eha ul {
   margin: 0.75rem 0 0;
   padding-left: 1.1rem;

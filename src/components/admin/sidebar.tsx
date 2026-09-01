@@ -98,11 +98,13 @@ function AdminNavPanel({
     <div className={cn("flex h-full flex-col overflow-hidden bg-black text-white", className)}>
       <div className="flex shrink-0 items-start justify-between gap-3 border-b border-white/10 px-5 py-5">
         <div className="min-w-0">
-          <Logo
-            background="dark"
-            href="/admin"
-            imageClassName="h-8 w-auto"
-          />
+          <div className="inline-flex bg-white px-3 py-2">
+            <Logo
+              background="light"
+              href="/admin"
+              imageClassName="h-8 w-auto"
+            />
+          </div>
           <p className="mt-3 text-[11px] font-semibold tracking-[0.18em] uppercase text-white/55">
             Admin console
           </p>

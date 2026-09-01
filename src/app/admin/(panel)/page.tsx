@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AdminApplicationRow } from "@/components/admin/application-table-row";
 import { Card, CardBody } from "@/components/ui/card";
 import { BarList, Sparkline } from "@/components/admin/charts";
 import { can } from "@/lib/admin/permissions";
@@ -56,14 +57,17 @@ export default async function AdminDashboardPage({
         </p>
       ) : null}
       {stats ? (
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
           {cards.map((card) => (
-            <Card key={card.label}>
-              <CardBody>
-                <p className="text-sm text-muted">{card.label}</p>
-                <p className="mt-2 text-2xl font-semibold text-navy">{card.value}</p>
-              </CardBody>
-            </Card>
+            <div
+              key={card.label}
+              className="rounded-lg border border-border bg-white px-3 py-2.5 sm:px-4 sm:py-3"
+            >
+              <p className="text-[11px] leading-snug text-muted sm:text-xs">{card.label}</p>
+              <p className="mt-0.5 text-lg font-semibold tabular-nums text-navy sm:mt-1 sm:text-xl">
+                {card.value}
+              </p>
+            </div>
           ))}
         </div>
       ) : (
@@ -119,18 +123,20 @@ export default async function AdminDashboardPage({
                 </thead>
                 <tbody>
                   {recent.map((item) => (
-                    <tr key={item.id} className="border-b border-border last:border-0">
-                      <td className="px-4 py-3">
-                        <Link href={`/admin/applications/${item.id}`} className="font-medium text-blue hover:underline">
-                          {item.referenceNumber ?? "—"}
-                        </Link>
+                    <AdminApplicationRow
+                      key={item.id}
+                      href={`/admin/applications/${item.id}`}
+                      label={item.referenceNumber ?? "Draft"}
+                    >
+                      <td className="px-4 py-3 font-medium text-navy group-hover:text-blue">
+                        {item.referenceNumber ?? "—"}
                       </td>
                       <td className="px-4 py-3">{item.profile?.fullName ?? "Incomplete profile"}</td>
                       <td className="px-4 py-3">
                         {item.job.title}, {item.job.city}
                       </td>
                       <td className="px-4 py-3 capitalize">{statusLabel(item.status)}</td>
-                    </tr>
+                    </AdminApplicationRow>
                   ))}
                 </tbody>
               </table>

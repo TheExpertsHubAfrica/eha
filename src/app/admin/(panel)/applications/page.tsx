@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import type { ApplicationStatus, Prisma } from "@prisma/client";
+import { AdminApplicationRow } from "@/components/admin/application-table-row";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/select";
@@ -136,11 +136,13 @@ export default async function AdminApplicationsPage({
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={row.id} className="border-b border-border last:border-0">
-                  <td className="px-4 py-3">
-                    <Link href={`/admin/applications/${row.id}`} className="font-medium text-blue hover:underline">
-                      {row.referenceNumber ?? "Draft"}
-                    </Link>
+                <AdminApplicationRow
+                  key={row.id}
+                  href={`/admin/applications/${row.id}`}
+                  label={row.referenceNumber ?? "Draft"}
+                >
+                  <td className="px-4 py-3 font-medium text-navy group-hover:text-blue">
+                    {row.referenceNumber ?? "Draft"}
                   </td>
                   <td className="px-4 py-3">{row.profile?.fullName ?? "—"}</td>
                   <td className="px-4 py-3">
@@ -155,7 +157,7 @@ export default async function AdminApplicationsPage({
                   </td>
                   <td className="px-4 py-3 capitalize">{statusLabel(row.status)}</td>
                   <td className="px-4 py-3">{formatDisplayDate(row.submittedAt) || "—"}</td>
-                </tr>
+                </AdminApplicationRow>
               ))}
             </tbody>
           </table>

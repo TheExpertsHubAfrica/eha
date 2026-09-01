@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
@@ -20,13 +21,32 @@ export function SiteSettingsForm({
 }: {
   values: Record<string, string>;
 }) {
+  const router = useRouter();
   const [pending, setPending] = useState(false);
-  async function onSubmit(formData: FormData) {
+  const [error, setError] = useState<string>();
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     setPending(true);
-    await saveSiteSettingsAction(formData);
-    toast.success("Contact details saved.");
-    setPending(false);
+    setError(undefined);
+    try {
+      const result = await saveSiteSettingsAction(new FormData(event.currentTarget));
+      if (!result.ok) {
+        setError(result.error);
+        toast.error(result.error);
+        return;
+      }
+      toast.success("Contact details saved.");
+      router.refresh();
+    } catch {
+      const message = "Could not save settings. Please try again.";
+      setError(message);
+      toast.error(message);
+    } finally {
+      setPending(false);
+    }
   }
+
   const fields: { key: string; label: string }[] = [
     { key: "tagline", label: "Tagline" },
     { key: "phone", label: "Phone" },
@@ -40,7 +60,7 @@ export function SiteSettingsForm({
     { key: "youtube", label: "YouTube URL" },
   ];
   return (
-    <form action={onSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
       {fields.map((field) => (
         <div key={field.key}>
           <Label htmlFor={field.key}>{field.label}</Label>
@@ -50,6 +70,11 @@ export function SiteSettingsForm({
       <p className="text-sm text-muted">
         Leave a field blank to hide it. API keys and the email From address stay in environment variables.
       </p>
+      {error ? (
+        <p className="text-sm text-danger" role="alert">
+          {error}
+        </p>
+      ) : null}
       <Button type="submit" disabled={pending}>
         {pending ? "Saving…" : "Save contact details"}
       </Button>
@@ -66,22 +91,34 @@ export function LegalPageForm({
   title: string;
   body: string;
 }) {
+  const router = useRouter();
   const [error, setError] = useState<string>();
   const [pending, setPending] = useState(false);
-  async function onSubmit(formData: FormData) {
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     setPending(true);
-    const result = await saveLegalPageAction(slug, formData);
-    if (result && !result.ok) {
-      setError(result.error);
-      toast.error(result.error);
+    setError(undefined);
+    try {
+      const result = await saveLegalPageAction(slug, new FormData(event.currentTarget));
+      if (!result.ok) {
+        setError(result.error);
+        toast.error(result.error);
+        return;
+      }
+      toast.success("Legal page saved.");
+      router.refresh();
+    } catch {
+      const message = "Could not save this legal page. Please try again.";
+      setError(message);
+      toast.error(message);
+    } finally {
       setPending(false);
-      return;
     }
-    toast.success("Legal page saved.");
-    setPending(false);
   }
+
   return (
-    <form action={onSubmit} className="space-y-3">
+    <form onSubmit={handleSubmit} className="space-y-3">
       <div>
         <Label htmlFor={`${slug}-title`}>Title</Label>
         <Input id={`${slug}-title`} name="title" defaultValue={title} required />
@@ -89,6 +126,11 @@ export function LegalPageForm({
       <div>
         <Label htmlFor={`${slug}-body`}>Body</Label>
         <Textarea id={`${slug}-body`} name="body" defaultValue={body} className="min-h-40" required />
+        <p className="mt-1.5 text-xs text-muted">
+          Use blank lines between sections. Numbered titles like{" "}
+          <span className="font-medium">1. Purpose:</span> become section headings. Lines
+          starting with <span className="font-medium"># </span> also create headings.
+        </p>
       </div>
       {error ? <p className="text-sm text-danger">{error}</p> : null}
       <Button type="submit" size="sm" disabled={pending}>
@@ -109,22 +151,37 @@ export function EmailTemplateForm({
   subject: string;
   bodyText: string;
 }) {
+  const router = useRouter();
   const [error, setError] = useState<string>();
   const [pending, setPending] = useState(false);
-  async function onSubmit(formData: FormData) {
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     setPending(true);
-    const result = await saveEmailTemplateAction(templateKey, formData);
-    if (result && !result.ok) {
-      setError(result.error);
-      toast.error(result.error);
+    setError(undefined);
+    try {
+      const result = await saveEmailTemplateAction(
+        templateKey,
+        new FormData(event.currentTarget),
+      );
+      if (!result.ok) {
+        setError(result.error);
+        toast.error(result.error);
+        return;
+      }
+      toast.success("Template saved.");
+      router.refresh();
+    } catch {
+      const message = "Could not save this template. Please try again.";
+      setError(message);
+      toast.error(message);
+    } finally {
       setPending(false);
-      return;
     }
-    toast.success("Template saved.");
-    setPending(false);
   }
+
   return (
-    <form action={onSubmit} className="space-y-3">
+    <form onSubmit={handleSubmit} className="space-y-3">
       <p className="text-sm font-medium text-navy">{name}</p>
       <div>
         <Label htmlFor={`${templateKey}-subject`}>Subject</Label>

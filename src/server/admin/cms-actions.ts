@@ -15,25 +15,33 @@ function isUniqueConflict(error: unknown) {
 
 export async function saveSiteSettingsAction(formData: FormData) {
   const admin = await requireAdmin("settings.write");
-  await prisma.$transaction(
-    SETTING_KEYS.map((key) =>
-      prisma.siteSetting.upsert({
-        where: { key },
-        update: { value: String(formData.get(key) ?? "").trim() },
-        create: { key, value: String(formData.get(key) ?? "").trim() },
-      }),
-    ),
-  );
-  await writeAdminAudit({
-    actorId: admin.id,
-    action: "settings.update",
-    targetType: "SiteSetting",
-    targetId: "contact",
-  });
-  revalidatePath("/");
-  revalidatePath("/contact");
-  revalidatePath("/admin/settings");
-  return { ok: true as const };
+  try {
+    await prisma.$transaction(
+      SETTING_KEYS.map((key) =>
+        prisma.siteSetting.upsert({
+          where: { key },
+          update: { value: String(formData.get(key) ?? "").trim() },
+          create: { key, value: String(formData.get(key) ?? "").trim() },
+        }),
+      ),
+    );
+    await writeAdminAudit({
+      actorId: admin.id,
+      action: "settings.update",
+      targetType: "SiteSetting",
+      targetId: "contact",
+    });
+    revalidatePath("/");
+    revalidatePath("/contact");
+    revalidatePath("/admin/settings");
+    return { ok: true as const };
+  } catch (error) {
+    console.error("saveSiteSettingsAction failed", error);
+    return {
+      ok: false as const,
+      error: "Could not save settings. Check the database connection and try again.",
+    };
+  }
 }
 
 export async function saveLegalPageAction(slug: string, formData: FormData) {
@@ -41,20 +49,28 @@ export async function saveLegalPageAction(slug: string, formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
   const body = String(formData.get("body") ?? "").trim();
   if (!title || !body) return { ok: false as const, error: "Title and body are required." };
-  await prisma.legalPage.upsert({
-    where: { slug },
-    update: { title, body },
-    create: { slug, title, body },
-  });
-  await writeAdminAudit({
-    actorId: admin.id,
-    action: "legal.update",
-    targetType: "LegalPage",
-    targetId: slug,
-  });
-  revalidatePath(`/${slug === "terms" ? "terms" : slug}`);
-  revalidatePath("/admin/settings");
-  return { ok: true as const };
+  try {
+    await prisma.legalPage.upsert({
+      where: { slug },
+      update: { title, body },
+      create: { slug, title, body },
+    });
+    await writeAdminAudit({
+      actorId: admin.id,
+      action: "legal.update",
+      targetType: "LegalPage",
+      targetId: slug,
+    });
+    revalidatePath(`/${slug === "terms" ? "terms" : slug}`);
+    revalidatePath("/admin/settings");
+    return { ok: true as const };
+  } catch (error) {
+    console.error("saveLegalPageAction failed", error);
+    return {
+      ok: false as const,
+      error: "Could not save this legal page. Check the database connection and try again.",
+    };
+  }
 }
 
 export async function saveEmailTemplateAction(key: string, formData: FormData) {
@@ -64,19 +80,27 @@ export async function saveEmailTemplateAction(key: string, formData: FormData) {
   const subject = String(formData.get("subject") ?? "").trim();
   const bodyText = String(formData.get("bodyText") ?? "").trim();
   if (!subject || !bodyText) return { ok: false as const, error: "Subject and body are required." };
-  await prisma.emailTemplate.upsert({
-    where: { key },
-    update: { subject, bodyText, name: fallback.name },
-    create: { key, name: fallback.name, subject, bodyText },
-  });
-  await writeAdminAudit({
-    actorId: admin.id,
-    action: "email_template.update",
-    targetType: "EmailTemplate",
-    targetId: key,
-  });
-  revalidatePath("/admin/settings");
-  return { ok: true as const };
+  try {
+    await prisma.emailTemplate.upsert({
+      where: { key },
+      update: { subject, bodyText, name: fallback.name },
+      create: { key, name: fallback.name, subject, bodyText },
+    });
+    await writeAdminAudit({
+      actorId: admin.id,
+      action: "email_template.update",
+      targetType: "EmailTemplate",
+      targetId: key,
+    });
+    revalidatePath("/admin/settings");
+    return { ok: true as const };
+  } catch (error) {
+    console.error("saveEmailTemplateAction failed", error);
+    return {
+      ok: false as const,
+      error: "Could not save this email template. Check the database connection and try again.",
+    };
+  }
 }
 
 export async function saveBlogAction(id: string | null, formData: FormData) {
