@@ -24,8 +24,8 @@ export default async function ContactPage() {
         eyebrow="Contact"
         title="Talk to the team."
         description="Use the form for a written enquiry, or the published phone, email, and WhatsApp channels when they are configured."
-        image={siteImages.contact.place}
-        imageAlt="The Experts Hub Africa office location — contact our team"
+        image={siteImages.contact.hero}
+        imageAlt="TEHA advisor helping an applicant — friendly support for your enquiry"
       />
       <section className="container-page grid gap-10 py-12 lg:grid-cols-[1fr_0.85fr] lg:py-16">
         <div className="rounded-lg border border-border bg-white p-6 sm:p-8">
@@ -43,8 +43,8 @@ export default async function ContactPage() {
         </div>
         <aside className="space-y-6">
           <ContentImage
-            src={siteImages.contact.place}
-            alt="The Experts Hub Africa office location — contact our team"
+            src={siteImages.contact.aside}
+            alt="The Experts Hub Africa team collaborating — here to guide your journey"
             aspect="video"
           />
           <div className="rounded-lg border border-border bg-white p-6">

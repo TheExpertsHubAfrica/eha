@@ -40,7 +40,8 @@ export const siteImages = {
     visa: "/images/services/visa.jpg",
   },
   contact: {
-    place: "/images/contact/place.jpg",
+    hero: "/images/study/support.jpg",
+    aside: "/images/about/team.jpg",
   },
   blog: {
     default: "/images/blog/default.jpg",
