@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Button } from "@/components/ui/button";
+import { StudyDestinationPanel } from "@/components/study/destination-card";
 import { getStudyBySlug } from "@/lib/catalog";
 import { recordEvent } from "@/server/analytics/events";
 
@@ -33,6 +34,7 @@ export default async function StudyDetailPage({
 
   return (
     <SiteShell>
+      <StudyDestinationPanel destination={item} className="border-b border-border" />
       <div className="container-page py-10 sm:py-14">
         <p className="text-sm text-muted">
           <Link href="/study-abroad" className="hover:text-navy">

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Button } from "@/components/ui/button";
 import { ContentImage } from "@/components/ui/content-image";
-import { PageHero } from "@/components/ui/page-hero";
+import { ServicesPageHero } from "@/components/services/services-hero";
 import { siteImages } from "@/lib/site-images";
 import { siteConfig } from "@/lib/site-config";
 
@@ -54,13 +54,7 @@ const services = [
 export default function ServicesPage() {
   return (
     <SiteShell>
-      <PageHero
-        eyebrow="Services"
-        title="Support across work, study, travel, and visas."
-        description="Each service has its own pages and a staged application or enquiry — not a single form trying to do everything."
-        image={siteImages.services.work}
-        imageAlt="Overseas job placement and work abroad application services"
-      />
+      <ServicesPageHero />
       <section className="container-page grid gap-8 py-12 sm:py-16">
         {services.map((item) => (
           <article

@@ -50,6 +50,17 @@ function sortOrder(sort?: JobListQuery["sort"]): Prisma.JobOrderByWithRelationIn
   return [{ publishedAt: "desc" }, { createdAt: "desc" }];
 }
 
+/** Default listing order: factory worker first when using the default sort. */
+const PINNED_LISTING_JOB_ID = "job_factory_worker_dubai";
+
+function pinDefaultListing(jobs: JobOffer[], sort?: JobListQuery["sort"]) {
+  if (sort && sort !== "newest") return jobs;
+  const index = jobs.findIndex((job) => job.id === PINNED_LISTING_JOB_ID);
+  if (index <= 0) return jobs;
+  const pinned = jobs[index];
+  return [pinned, ...jobs.slice(0, index), ...jobs.slice(index + 1)];
+}
+
 export async function getFeaturedJobs(): Promise<JobOffer[]> {
   return safeQuery(
     "getFeaturedJobs",
@@ -113,7 +124,7 @@ export async function searchJobs(filters: JobListQuery = {}): Promise<JobOffer[]
     include: jobInclude,
     orderBy: sortOrder(filters.sort),
   });
-  return rows.map(toJobOffer);
+  return pinDefaultListing(rows.map(toJobOffer), filters.sort);
 }
 
 export async function getJobFacets(): Promise<JobListFacets> {

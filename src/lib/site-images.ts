@@ -33,6 +33,7 @@ export const siteImages = {
     process: "/images/about/process.jpg",
   },
   services: {
+    hero: "/images/services/hero.jpg",
     work: "/images/services/work.jpg",
     study: "/images/services/study.jpg",
     travel: "/images/services/travel.jpg",

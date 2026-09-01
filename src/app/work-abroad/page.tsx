@@ -31,11 +31,10 @@ export default async function WorkAbroadPage({
       <PageHero
         eyebrow="Work abroad"
         title="Roles with salary, benefits, and requirements in one place."
-        description="Filter published offers, then open a role for the full details. Documents are not uploaded on this page."
         image={siteImages.work.hero}
         imageAlt="Browse overseas jobs and work abroad opportunities with TEHA"
       />
-      <section className="container-wide grid gap-8 py-12 lg:grid-cols-[280px_minmax(0,1fr)] sm:py-16">
+      <section className="container-wide grid gap-6 py-10 sm:py-12 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-8 lg:py-16">
         <JobFilters filters={filters} facets={facets} resultCount={jobs.length} />
         <div>
           {jobs.length === 0 ? (

@@ -4,8 +4,6 @@ import { ArrowRight, FileCheck, Headphones, Route } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { siteImages } from "@/lib/site-images";
 import { siteConfig } from "@/lib/site-config";
-import { cn } from "@/lib/utils";
-
 const highlights = [
   {
     icon: Route,
@@ -22,12 +20,6 @@ const highlights = [
     title: "Applicant support",
     text: "Clear guidance from enquiry to submission",
   },
-] as const;
-
-const pathways = [
-  { href: "/work-abroad", label: "Work abroad" },
-  { href: "/study-abroad", label: "Study abroad" },
-  { href: "/travel", label: "Travel packages" },
 ] as const;
 
 function splitBrandName(name: string) {
@@ -51,7 +43,7 @@ export function HomeHero() {
 
       <div className="container-wide relative py-10 sm:py-12 lg:py-16 xl:py-20">
         <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12 xl:gap-16">
-          <div className="order-2 lg:order-1 lg:col-span-5 xl:col-span-5">
+          <div className="lg:col-span-5 xl:col-span-5">
             <p className="eyebrow">Work · Travel · Study</p>
             <div className="gold-rule mt-4" aria-hidden="true" />
 
@@ -70,7 +62,7 @@ export function HomeHero() {
               our team.
             </p>
 
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-nowrap">
+            <div className="mt-7">
               <Button
                 asChild
                 size="lg"
@@ -82,27 +74,6 @@ export function HomeHero() {
                   <ArrowRight />
                 </Link>
               </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="w-full whitespace-nowrap uppercase tracking-[0.08em] sm:w-auto"
-              >
-                <Link href="/work-abroad">Browse opportunities</Link>
-              </Button>
-            </div>
-
-            <div className="mt-5 flex flex-wrap gap-2">
-              {pathways.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="inline-flex items-center gap-1.5 border border-border bg-white/80 px-3 py-1.5 text-sm font-medium text-fg-soft transition-colors hover:border-gold/50 hover:bg-gold-soft/30 hover:text-black"
-                >
-                  {item.label}
-                  <ArrowRight className="size-3.5 opacity-60" aria-hidden="true" />
-                </Link>
-              ))}
             </div>
 
             <ul className="mt-10 grid gap-3 sm:grid-cols-3">
@@ -121,7 +92,7 @@ export function HomeHero() {
             </ul>
           </div>
 
-          <div className="order-1 lg:order-2 lg:col-span-7 xl:col-span-7">
+          <div className="lg:col-span-7 xl:col-span-7">
             <div className="relative">
               <div
                 className="absolute -top-3 -left-3 hidden h-16 w-16 border-t-2 border-l-2 border-gold lg:block"
@@ -151,28 +122,14 @@ export function HomeHero() {
                 />
 
                 <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
-                  <div className="flex flex-wrap items-end justify-between gap-4">
-                    <div className="max-w-xs">
-                      <p className="text-[0.65rem] font-semibold tracking-[0.18em] text-gold-bright uppercase">
-                        Your journey starts here
-                      </p>
-                      <p className="mt-1 text-sm leading-snug text-white/90">
-                        Work placements, study pathways, and curated travel — one
-                        guided platform.
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      {["Work", "Study", "Travel"].map((label) => (
-                        <span
-                          key={label}
-                          className={cn(
-                            "border border-white/25 bg-black/35 px-2.5 py-1 text-[0.65rem] font-semibold tracking-[0.12em] text-white uppercase backdrop-blur-sm",
-                          )}
-                        >
-                          {label}
-                        </span>
-                      ))}
-                    </div>
+                  <div className="max-w-xs">
+                    <p className="text-[0.65rem] font-semibold tracking-[0.18em] text-gold-bright uppercase">
+                      Your journey starts here
+                    </p>
+                    <p className="mt-1 text-sm leading-snug text-white/90">
+                      Work placements, study pathways, and curated travel — one
+                      guided platform.
+                    </p>
                   </div>
                 </div>
               </div>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ContentImage } from "@/components/ui/content-image";
 import { SectionHeading } from "@/components/ui/page-hero";
+import { StudyDestinationCard } from "@/components/study/destination-card";
 import type { StudyDestination } from "@/lib/catalog/types";
 import { siteImages } from "@/lib/site-images";
 
@@ -44,19 +45,7 @@ export function StudySection({ destinations }: { destinations: StudyDestination[
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {destinations.map((item) => (
-              <Link
-                key={item.id}
-                href={`/study-abroad/${item.slug}`}
-                className="border border-border bg-surface p-5 transition-colors hover:border-gold/40 hover:bg-gold-soft/25"
-              >
-                <p className="text-xs font-medium tracking-wide text-gold-deep uppercase">
-                  {item.region}
-                </p>
-                <h3 className="mt-2 text-lg font-semibold text-navy">
-                  {item.name}
-                </h3>
-                <p className="mt-2 text-sm text-muted">{item.summary}</p>
-              </Link>
+              <StudyDestinationCard key={item.id} destination={item} />
             ))}
           </div>
         </div>
