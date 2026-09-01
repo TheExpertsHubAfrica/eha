@@ -10,7 +10,7 @@ export const contactSchema = z.object({
     .trim()
     .min(20, "Please include a little more detail (at least 20 characters).")
     .max(4000, "Please keep the message under 4,000 characters."),
-  website: z.string().max(0).optional(),
+  _gotcha: z.string().optional(),
   offer: z.string().optional(),
   intent: z.string().optional(),
 });

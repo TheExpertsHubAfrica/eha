@@ -145,3 +145,53 @@ export function applicationStatusChangedEmail(vars: {
     text,
   };
 }
+
+export function contactEnquiryEmail(vars: {
+  name: string;
+  email: string;
+  phone?: string;
+  subject: string;
+  message: string;
+  intent?: string;
+  offer?: string;
+}) {
+  const extras = [
+    vars.phone ? `<strong>Phone:</strong> ${escapeHtml(vars.phone)}` : "",
+    vars.intent ? `<strong>Intent:</strong> ${escapeHtml(vars.intent)}` : "",
+    vars.offer ? `<strong>Opportunity:</strong> ${escapeHtml(vars.offer)}` : "",
+  ].filter(Boolean);
+
+  const html = layout(
+    "New contact enquiry",
+    `
+      <p style="margin:0 0 12px;line-height:1.6;">A message was submitted through the contact form.</p>
+      <p style="margin:0 0 12px;line-height:1.6;">
+        <strong>From:</strong> ${escapeHtml(vars.name)}<br />
+        <strong>Email:</strong> ${escapeHtml(vars.email)}<br />
+        ${extras.length ? `${extras.join("<br />")}<br />` : ""}
+        <strong>Subject:</strong> ${escapeHtml(vars.subject)}
+      </p>
+      <p style="margin:0 0 8px;line-height:1.6;font-weight:600;">Message</p>
+      <p style="margin:0;line-height:1.6;white-space:pre-wrap;">${escapeHtml(vars.message)}</p>
+    `,
+  );
+
+  const text = [
+    `Contact enquiry from ${vars.name} <${vars.email}>`,
+    vars.phone ? `Phone: ${vars.phone}` : "",
+    vars.intent ? `Intent: ${vars.intent}` : "",
+    vars.offer ? `Opportunity: ${vars.offer}` : "",
+    `Subject: ${vars.subject}`,
+    "",
+    vars.message,
+  ]
+    .filter((line) => line !== "")
+    .join("\n");
+
+  return {
+    template: "contact_enquiry" as const,
+    subject: `Contact enquiry — ${vars.subject}`,
+    html,
+    text,
+  };
+}

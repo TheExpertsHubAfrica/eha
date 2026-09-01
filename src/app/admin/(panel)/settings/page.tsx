@@ -64,6 +64,7 @@ export default async function AdminSettingsPage() {
             From address and API key are environment-only.
             {email.from ? " Outbound mail is configured." : " Outbound mail is not configured yet."}
             {email.adminTo ? " Admin notifications are enabled." : " Admin notification recipient is not set."}
+            {" "}Contact form messages go to the admin notification address, or the public email above if that is unset.
           </p>
           <div className="mt-6 space-y-8">
             {DEFAULT_EMAIL_TEMPLATES.map((item) => {

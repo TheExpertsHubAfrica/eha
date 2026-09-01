@@ -9,6 +9,7 @@ export type OutboundEmail = {
   subject: string;
   html: string;
   text: string;
+  replyTo?: string;
   attachments?: { filename: string; content: Buffer }[];
 };
 
@@ -49,6 +50,7 @@ export async function deliverEmail(message: OutboundEmail) {
       subject: message.subject,
       html: message.html,
       text: message.text,
+      replyTo: message.replyTo,
       attachments: message.attachments?.map((item) => ({
         filename: item.filename,
         content: item.content,

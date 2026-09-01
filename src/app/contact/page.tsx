@@ -37,7 +37,7 @@ export default async function ContactPage() {
           </p>
           <div className="mt-6">
             <Suspense fallback={<Skeleton className="h-96 w-full" />}>
-              <ContactForm mailTo={site.email} />
+              <ContactForm />
             </Suspense>
           </div>
         </div>
