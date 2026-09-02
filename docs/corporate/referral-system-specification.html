@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>TEHA Referral System Specification</title>
+    <link rel="stylesheet" href="styles/proposal.css" />
+  </head>
+  <body>
+  <!-- COVER -->
+  <section class="page cover">
+    <div class="cover-top">
+      <div class="cover-brand">The Experts Hub Africa</div>
+      <div class="cover-meta">
+        Confidential<br />
+        September 2026<br />
+        Companion Document
+      </div>
+    </div>
+    <div class="cover-main">
+      <div class="cover-rule"></div>
+      <h1>Agent &amp; Ambassador Referral System</h1>
+      <p class="subtitle">
+        Functional specification for TEHA’s strategic client acquisition and referral
+        infrastructure.
+      </p>
+    </div>
+    <div class="cover-footer">
+      Prepared for The Experts Hub Africa (TEHA) &nbsp;|&nbsp; Technical Specification Document
+    </div>
+  </section>
+
+  <!-- TOC -->
+  <section class="page">
+    <div class="page-inner">
+      <div class="page-header">
+        <span class="doc-title">Referral System Specification</span>
+        <span class="page-no">Contents</span>
+      </div>
+      <h2>Contents</h2>
+      <ol class="toc">
+        <li><span class="num">01</span> Executive Overview</li>
+        <li><span class="num">02</span> Business Objectives</li>
+        <li><span class="num">03</span> Agent Registration</li>
+        <li><span class="num">04</span> Ambassador Registration</li>
+        <li><span class="num">05</span> Referral Links &amp; Attribution</li>
+        <li><span class="num">06</span> Partner Dashboards</li>
+        <li><span class="num">07</span> Administrative Dashboard</li>
+        <li><span class="num">08</span> Integration with Existing Platform</li>
+        <li><span class="num">09</span> Data, Security &amp; Compliance</li>
+        <li><span class="num">10</span> Recommended Implementation Phases</li>
+        <li><span class="num">11</span> Success Metrics &amp; Business Outcomes</li>
+      </ol>
+      <div class="callout">
+        <strong>Status:</strong> This module is planned for implementation and integrates with the
+        existing TEHA platform architecture. It is documented separately from the main Partnership
+        Proposal.
+      </div>
+    </div>
+    <div class="page-footer">
+      <span>The Experts Hub Africa — Referral System Specification</span>
+      <span>Confidential</span>
+    </div>
+  </section>
+
+  <!-- 1-2 -->
+  <section class="page">
+    <div class="page-inner">
+      <div class="page-header">
+        <span class="doc-title">Referral System Specification</span>
+        <span class="page-no">01 – 02</span>
+      </div>
+
+      <span class="tag">01 — Overview</span>
+      <h2>Executive Overview</h2>
+      <p class="lead">
+        The Agent &amp; Ambassador Referral Management System is a strategic client acquisition
+        channel for TEHA — not merely an additional website feature.
+      </p>
+      <p>
+        It enables accredited travel agents and motivated ambassadors to register on the platform,
+        promote TEHA through unique referral links, bring potential clients into TEHA’s existing
+        application and enquiry workflows, and track performance through dedicated dashboards.
+      </p>
+      <p>
+        Administrators gain full visibility into the referral ecosystem — supporting partnership
+        decisions, commission validation, marketing strategy, and performance management.
+      </p>
+
+      <span class="tag">02 — Objectives</span>
+      <h2>Business Objectives</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Objective</th>
+            <th>Expected outcome</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Scale client acquisition</td>
+            <td>Grow beyond TEHA’s direct marketing reach through partner networks</td>
+          </tr>
+          <tr>
+            <td>Measure partner contribution</td>
+            <td>Attribute applications and successful clients to the correct source</td>
+          </tr>
+          <tr>
+            <td>Maintain quality &amp; trust</td>
+            <td>Distinguish accredited agents from general ambassadors</td>
+          </tr>
+          <tr>
+            <td>Reduce manual tracking</td>
+            <td>Replace informal referral claims with system-recorded attribution</td>
+          </tr>
+          <tr>
+            <td>Support commission decisions</td>
+            <td>Provide data for fair, evidence-based partner rewards</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-footer">
+      <span>The Experts Hub Africa — Referral System Specification</span>
+      <span>Confidential</span>
+    </div>
+  </section>
+
+  <!-- 3-4 -->
+  <section class="page">
+    <div class="page-inner">
+      <div class="page-header">
+        <span class="doc-title">Referral System Specification</span>
+        <span class="page-no">03 – 04</span>
+      </div>
+
+      <span class="tag">03 — Agents</span>
+      <h2>Agent Registration</h2>
+      <p>
+        <strong>Agents</strong> are individuals or organisations accredited by the appropriate
+        government authority to engage in travel-related services.
+      </p>
+      <h3>Registration requirements</h3>
+      <ul>
+        <li>Complete registration form with personal or organisational details</li>
+        <li>Provide contact information and business identifiers as required</li>
+        <li><strong>Upload a valid accreditation or registration certificate</strong></li>
+        <li>Accept TEHA’s partner terms and referral policies</li>
+      </ul>
+      <h3>Approval workflow</h3>
+      <ul>
+        <li>Submission enters a pending review queue</li>
+        <li>Administrator reviews registration details and uploaded certificate</li>
+        <li>Account approved or rejected with reason recorded</li>
+        <li>Approved agents receive dashboard access and referral capabilities</li>
+      </ul>
+      <div class="callout">
+        <strong>Purpose of certificate requirement:</strong> To distinguish accredited travel agents
+        from general referral partners and protect TEHA’s brand and compliance standards.
+      </div>
+
+      <span class="tag">04 — Ambassadors</span>
+      <h2>Ambassador Registration</h2>
+      <p>
+        <strong>Ambassadors</strong> are individuals who wish to promote TEHA and refer potential
+        clients but may not hold formal travel-agent accreditation.
+      </p>
+      <h3>Registration requirements</h3>
+      <ul>
+        <li>Similar registration flow to agents (personal details, contact information)</li>
+        <li><strong>No accreditation certificate required</strong></li>
+        <li>Accept partner terms and referral policies</li>
+      </ul>
+      <h3>Approval workflow</h3>
+      <ul>
+        <li>Registration submitted for administrative review</li>
+        <li>Approved ambassadors receive dashboard access</li>
+        <li>Can generate and share referral links immediately after approval</li>
+      </ul>
+
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Agent</th>
+            <th>Ambassador</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Accreditation certificate</td>
+            <td><strong>Required</strong></td>
+            <td>Not required</td>
+          </tr>
+          <tr>
+            <td>Referral links</td>
+            <td>Yes</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>Performance dashboard</td>
+            <td>Yes</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>Typical profile</td>
+            <td>Licensed travel agent / agency</td>
+            <td>Individual promoter, influencer, community leader</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-footer">
+      <span>The Experts Hub Africa — Referral System Specification</span>
+      <span>Confidential</span>
+    </div>
+  </section>
+
+  <!-- 5-6 -->
+  <section class="page">
+    <div class="page-inner">
+      <div class="page-header">
+        <span class="doc-title">Referral System Specification</span>
+        <span class="page-no">05 – 06</span>
+      </div>
+
+      <span class="tag">05 — Referral System</span>
+      <h2>Referral Links &amp; Attribution</h2>
+      <h3>Unique referral links</h3>
+      <p>Each approved agent and ambassador receives a unique referral identifier embedded in shareable links, enabling TEHA to track:</p>
+      <ul>
+        <li>Visitors arriving via the partner’s link</li>
+        <li>Enquiries and applications originating from that referral</li>
+        <li>Conversion through to successful client outcomes</li>
+      </ul>
+      <h3>Attribution rules (recommended)</h3>
+      <ul>
+        <li><strong>First-touch attribution</strong> within an agreed window (e.g. 90 days)</li>
+        <li>Referral recorded when a visitor first arrives via a valid partner link</li>
+        <li>Attribution persists through application submission and processing</li>
+        <li>Admin override available for disputed cases, with audit logging</li>
+      </ul>
+      <h3>Promotion channels</h3>
+      <p>Partners may share links through:</p>
+      <ul class="compact">
+        <li>Social media campaigns</li>
+        <li>WhatsApp and messaging groups</li>
+        <li>Professional networks and events</li>
+        <li>Email and community outreach</li>
+      </ul>
+
+      <span class="tag">06 — Partner Dashboards</span>
+      <h2>Agent &amp; Ambassador Dashboards</h2>
+      <p>Dedicated partner portals providing:</p>
+      <div class="grid-2">
+        <div class="card">
+          <h4>Referral tools</h4>
+          <ul class="compact">
+            <li>Generate / copy unique referral link</li>
+            <li>Share-ready referral messaging</li>
+            <li>QR code (optional phase)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Performance metrics</h4>
+          <ul class="compact">
+            <li>Link clicks / visits</li>
+            <li>Enquiries generated</li>
+            <li>Applications submitted</li>
+            <li>Successful outcomes (where applicable)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Account management</h4>
+          <ul class="compact">
+            <li>View registration status</li>
+            <li>Update contact details</li>
+            <li>Re-upload certificate (agents)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Reporting</h4>
+          <ul class="compact">
+            <li>Date-range performance summary</li>
+            <li>Client/application list attributed to partner</li>
+            <li>Export summary (optional phase)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span>The Experts Hub Africa — Referral System Specification</span>
+      <span>Confidential</span>
+    </div>
+  </section>
+
+  <!-- 7-8 -->
+  <section class="page">
+    <div class="page-inner">
+      <div class="page-header">
+        <span class="doc-title">Referral System Specification</span>
+        <span class="page-no">07 – 08</span>
+      </div>
+
+      <span class="tag">07 — Admin Dashboard</span>
+      <h2>Administrative Dashboard</h2>
+      <p>TEHA administrators will have full visibility and control over the referral ecosystem:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Agent management</td>
+            <td>View all registered agents, review details, approve/reject/suspend accounts</td>
+          </tr>
+          <tr>
+            <td>Certificate review</td>
+            <td>Preview and verify uploaded accreditation documents</td>
+          </tr>
+          <tr>
+            <td>Ambassador management</td>
+            <td>View, approve, and manage ambassador accounts</td>
+          </tr>
+          <tr>
+            <td>Referral activity</td>
+            <td>Monitor link usage, visits, and conversion funnel by partner</td>
+          </tr>
+          <tr>
+            <td>Application attribution</td>
+            <td>See which agent/ambassador sourced each application</td>
+          </tr>
+          <tr>
+            <td>Performance rankings</td>
+            <td>Identify top-performing partners for rewards and partnerships</td>
+          </tr>
+          <tr>
+            <td>Reporting</td>
+            <td>Export referral performance data for business decisions</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <span class="tag">08 — Platform Integration</span>
+      <h2>Integration with Existing TEHA Platform</h2>
+      <p>The referral system will build on infrastructure already in place:</p>
+      <ul>
+        <li>
+          <strong>Application workflow</strong> — referred clients enter existing work-abroad application
+          flows with attribution recorded at entry
+        </li>
+        <li>
+          <strong>Contact &amp; enquiry forms</strong> — study and travel leads capture referral source
+        </li>
+        <li>
+          <strong>Reference numbers</strong> — applications retain traceable identifiers linked to partners
+        </li>
+        <li>
+          <strong>Analytics engine</strong> — referral events feed into existing reporting patterns
+        </li>
+        <li>
+          <strong>Admin RBAC</strong> — referral management permissions integrated with current role system
+        </li>
+        <li>
+          <strong>Audit logging</strong> — partner approvals, document access, and attribution overrides logged
+        </li>
+        <li>
+          <strong>Secure document storage</strong> — agent certificates stored using existing upload infrastructure
+        </li>
+        <li>
+          <strong>Email notifications</strong> — registration confirmations, approvals, and status updates via Resend
+        </li>
+      </ul>
+    </div>
+    <div class="page-footer">
+      <span>The Experts Hub Africa — Referral System Specification</span>
+      <span>Confidential</span>
+    </div>
+  </section>
+
+  <!-- 9-11 -->
+  <section class="page">
+    <div class="page-inner">
+      <div class="page-header">
+        <span class="doc-title">Referral System Specification</span>
+        <span class="page-no">09 – 11</span>
+      </div>
+
+      <span class="tag">09 — Security</span>
+      <h2>Data, Security &amp; Compliance</h2>
+      <ul>
+        <li>Partner accounts protected by secure authentication (separate from admin and applicant flows)</li>
+        <li>Accreditation certificates stored privately with admin-only access</li>
+        <li>Personal data handled in line with TEHA’s existing privacy policy</li>
+        <li>Referral attribution data retained for agreed reporting and commission periods</li>
+        <li>Rate limiting and validation on registration and login forms</li>
+        <li>Audit trail for approval decisions and attribution overrides</li>
+      </ul>
+
+      <span class="tag">10 — Phases</span>
+      <h2>Recommended Implementation Phases</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Phase</th>
+            <th>Deliverables</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Phase 1 — Foundation</strong></td>
+            <td>Agent &amp; ambassador registration, certificate upload, admin approval workflow</td>
+          </tr>
+          <tr>
+            <td><strong>Phase 2 — Referral engine</strong></td>
+            <td>Unique links, visit tracking, attribution on applications and enquiries</td>
+          </tr>
+          <tr>
+            <td><strong>Phase 3 — Dashboards</strong></td>
+            <td>Partner performance dashboards and admin referral reporting</td>
+          </tr>
+          <tr>
+            <td><strong>Phase 4 — Optimisation</strong></td>
+            <td>QR codes, export reports, commission reconciliation tools (as agreed)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <span class="tag">11 — Outcomes</span>
+      <h2>Success Metrics &amp; Business Outcomes</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h4>Metrics to track</h4>
+          <ul class="compact">
+            <li>Active agents and ambassadors</li>
+            <li>Referral link clicks and conversion rate</li>
+            <li>Applications per partner</li>
+            <li>Successful clients per partner</li>
+            <li>Cost per acquired client via referrals</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Business outcomes</h4>
+          <ul class="compact">
+            <li>Scalable word-of-mouth growth</li>
+            <li>Geographic market expansion</li>
+            <li>Data-driven partner management</li>
+            <li>Fair, auditable commission basis</li>
+            <li>Stronger TEHA partner ecosystem</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+      <p class="muted" style="font-size: 9pt">
+        This specification is confidential and intended for The Experts Hub Africa management and
+        authorised stakeholders. Implementation details may be refined during development while
+        preserving the business objectives described herein.
+      </p>
+    </div>
+    <div class="page-footer">
+      <span>The Experts Hub Africa — Referral System Specification</span>
+      <span>Confidential</span>
+    </div>
+  </section>
+  </body>
+</html>

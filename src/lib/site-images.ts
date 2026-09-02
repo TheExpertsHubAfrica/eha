@@ -1,6 +1,6 @@
 export const siteImages = {
   home: {
-    hero: "/images/home/hero.jpg",
+    hero: "/images/home/hero.png",
     pathwayWork: "/images/home/pathway-work.jpg",
     pathwayStudy: "/images/home/pathway-study.jpg",
     pathwayTravel: "/images/home/pathway-travel.jpg",
@@ -12,7 +12,7 @@ export const siteImages = {
     empty: "/images/work/empty.jpg",
     covers: [
       "/images/work/cover-01.jpg",
-      "/images/work/cover-02.jpg",
+      "/images/work/cover-02-new.jpeg",
       "/images/work/cover-03.jpg",
       "/images/work/cover-04.jpg",
       "/images/work/cover-05.jpg",
@@ -58,9 +58,14 @@ export const siteImages = {
   },
 } as const;
 
+const jobCoverOverrides: Record<string, string> = {
+  job_sales_assistant_dubai: "/images/work/cover-05.jpg",
+  "sales-assistant": "/images/work/cover-05.jpg",
+};
+
 const categoryCovers: Record<string, (typeof siteImages.work.covers)[number]> = {
   Hospitality: "/images/work/cover-01.jpg",
-  Manufacturing: "/images/work/cover-02.jpg",
+  Manufacturing: "/images/work/cover-02-new.jpeg",
   Healthcare: "/images/work/cover-03.jpg",
   "Professional services": "/images/work/cover-04.jpg",
   Retail: "/images/work/cover-05.jpg",
@@ -75,7 +80,10 @@ function hashJobId(jobId: string) {
   return hash;
 }
 
-export function workCoverForJob(job: { id: string; category: string }) {
+export function workCoverForJob(job: { id: string; category: string; slug?: string }) {
+  const byJob = jobCoverOverrides[job.id] ?? (job.slug ? jobCoverOverrides[job.slug] : undefined);
+  if (byJob) return byJob;
+
   const byCategory = categoryCovers[job.category];
   if (byCategory) return byCategory;
 

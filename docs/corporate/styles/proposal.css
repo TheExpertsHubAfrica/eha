@@ -1,0 +1,291 @@
+@page {
+  size: A4;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.55;
+  color: #2e2c28;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 0;
+  page-break-after: always;
+  position: relative;
+  background: #fff;
+}
+
+.page:last-child {
+  page-break-after: auto;
+}
+
+.page-inner {
+  padding: 18mm 20mm 22mm;
+}
+
+.cover {
+  min-height: 297mm;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(160deg, #1c1b18 0%, #2e2c28 55%, #45423c 100%);
+  color: #fff;
+  padding: 22mm 20mm;
+}
+
+.cover-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.cover-brand {
+  font-size: 11pt;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #d4b56a;
+}
+
+.cover-meta {
+  text-align: right;
+  font-size: 8.5pt;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.6;
+}
+
+.cover-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 18mm 0 10mm;
+}
+
+.cover-rule {
+  width: 56px;
+  height: 3px;
+  background: #b8953a;
+  margin-bottom: 18px;
+}
+
+.cover h1 {
+  margin: 0 0 12px;
+  font-size: 28pt;
+  line-height: 1.12;
+  font-weight: 700;
+  max-width: 16ch;
+}
+
+.cover .subtitle {
+  margin: 0;
+  font-size: 12pt;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.86);
+  max-width: 38ch;
+}
+
+.cover-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  padding-top: 14px;
+  font-size: 8.5pt;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #b8953a;
+  padding-bottom: 8px;
+  margin-bottom: 18px;
+}
+
+.page-header .doc-title {
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8f7330;
+}
+
+.page-header .page-no {
+  font-size: 8pt;
+  color: #736f67;
+}
+
+.page-footer {
+  position: absolute;
+  left: 20mm;
+  right: 20mm;
+  bottom: 12mm;
+  display: flex;
+  justify-content: space-between;
+  font-size: 7.5pt;
+  color: #9a968c;
+  border-top: 1px solid #ebe9e4;
+  padding-top: 8px;
+}
+
+h2 {
+  margin: 22px 0 10px;
+  font-size: 14pt;
+  color: #1c1b18;
+  line-height: 1.25;
+}
+
+h2:first-child {
+  margin-top: 0;
+}
+
+h3 {
+  margin: 16px 0 8px;
+  font-size: 11pt;
+  color: #45423c;
+}
+
+p {
+  margin: 0 0 10px;
+}
+
+ul,
+ol {
+  margin: 0 0 12px;
+  padding-left: 18px;
+}
+
+li {
+  margin-bottom: 5px;
+}
+
+.lead {
+  font-size: 11pt;
+  color: #45423c;
+  margin-bottom: 14px;
+}
+
+.callout {
+  background: #efe6cf;
+  border-left: 4px solid #b8953a;
+  padding: 12px 14px;
+  margin: 14px 0 16px;
+  border-radius: 0 4px 4px 0;
+}
+
+.callout strong {
+  color: #8f7330;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 12px 0 16px;
+}
+
+.card {
+  border: 1px solid #d8d5ce;
+  border-radius: 4px;
+  padding: 12px 14px;
+  background: #f4f3f0;
+}
+
+.card h4 {
+  margin: 0 0 6px;
+  font-size: 9.5pt;
+  color: #8f7330;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.card p,
+.card ul {
+  margin: 0;
+  font-size: 9.5pt;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 16px;
+  font-size: 9.5pt;
+}
+
+th,
+td {
+  border: 1px solid #d8d5ce;
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: #1c1b18;
+  color: #fff;
+  font-weight: 600;
+}
+
+tr:nth-child(even) td {
+  background: #f4f3f0;
+}
+
+.toc {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.toc li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px dotted #d8d5ce;
+  font-size: 10pt;
+}
+
+.toc .num {
+  color: #8f7330;
+  font-weight: 700;
+  min-width: 24px;
+}
+
+.muted {
+  color: #736f67;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8f7330;
+  background: #efe6cf;
+  padding: 3px 8px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+
+.section-divider {
+  height: 1px;
+  background: #ebe9e4;
+  margin: 18px 0;
+}
+
+.compact li {
+  margin-bottom: 3px;
+}

@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
+    "generate:proposals": "node scripts/generate-corporate-pdfs.mjs",
     "test:uploads": "node --import tsx --test src/lib/uploads/validate.test.ts",
     "test:apply": "node --import tsx --test src/lib/apply/reference.test.ts",
     "db:generate": "prisma generate",
