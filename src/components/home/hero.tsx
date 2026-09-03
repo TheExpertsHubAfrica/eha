@@ -76,7 +76,7 @@ export function HomeHero() {
               </Button>
             </div>
 
-            <ul className="mt-10 grid gap-3 sm:grid-cols-3">
+            <ul className="mt-10 hidden gap-3 sm:grid sm:grid-cols-3">
               {highlights.map((item) => (
                 <li
                   key={item.title}

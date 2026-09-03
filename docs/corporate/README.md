@@ -7,6 +7,7 @@ Professional proposal and specification documents for The Experts Hub Africa.
 | File | Description |
 |------|-------------|
 | `partnership-proposal.html` | Partnership & performance proposal (GH₵1,000 commission arrangement) |
+| `partnership-agreement.html` | Executed-style partnership & commission agreement (GH₵500 per successful applicant) |
 | `referral-system-specification.html` | Agent & Ambassador Referral System functional specification |
 
 ## Generated PDFs
@@ -14,6 +15,7 @@ Professional proposal and specification documents for The Experts Hub Africa.
 After running the generator, PDFs are saved to `output/`:
 
 - `TEHA-Partnership-Proposal.pdf`
+- `TEHA-Partnership-Agreement.pdf`
 - `TEHA-Referral-System-Specification.pdf`
 
 ## Regenerate PDFs

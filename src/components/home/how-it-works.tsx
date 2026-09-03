@@ -1,23 +1,43 @@
 const steps = [
   {
     n: "01",
-    title: "Explore",
-    text: "Find an opportunity that matches your goals.",
+    title: "Profile submission",
+    text: "CV, passport bio page, academic credentials, and passport photo on a white background.",
   },
   {
     n: "02",
-    title: "Apply",
-    text: "Complete your work profile and provide the required documents for that offer.",
+    title: "Training",
+    text: "Prepare for the role and process with guided training from our team.",
   },
   {
     n: "03",
-    title: "Review",
-    text: "Our team reviews your submission and follows up if anything is missing.",
+    title: "Interview",
+    text: "Meet with employers or partners as part of the selection pathway.",
   },
   {
     n: "04",
-    title: "Next steps",
-    text: "Receive updates and guidance on processing for your application.",
+    title: "Selection",
+    text: "Successful candidates are confirmed for the next stage.",
+  },
+  {
+    n: "05",
+    title: "Remaining documents",
+    text: "Police clearance, medical exam, and yellow card.",
+  },
+  {
+    n: "06",
+    title: "Offer signing",
+    text: "Review and sign your offer before visa processing begins.",
+  },
+  {
+    n: "07",
+    title: "Visa processing",
+    text: "We guide you through visa submission and follow-up.",
+  },
+  {
+    n: "08",
+    title: "Orientation & departure",
+    text: "Final briefing and support before you travel.",
   },
 ];
 
@@ -28,14 +48,11 @@ export function HowItWorks() {
         <p className="eyebrow">How it works</p>
         <div className="gold-rule mt-3" aria-hidden="true" />
         <h2 className="mt-4 max-w-xl text-2xl font-bold text-black sm:text-3xl">
-          Four clear stages from discovery to next steps.
+          Our application process is simple.
         </h2>
-        <ol className="mt-10 grid gap-0 md:grid-cols-4">
-          {steps.map((step, index) => (
-            <li
-              key={step.n}
-              className="relative border-t border-border py-6 md:border-t-0 md:border-l md:border-ash-200 md:px-6 md:py-0 first:md:border-l-0 first:md:pl-0"
-            >
+        <ol className="mt-10 grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+          {steps.map((step) => (
+            <li key={step.n}>
               <p className="text-sm font-semibold tracking-wide text-gold">
                 {step.n}
               </p>
@@ -43,12 +60,12 @@ export function HowItWorks() {
                 {step.title}
               </h3>
               <p className="mt-2 text-sm text-muted">{step.text}</p>
-              {index < steps.length - 1 ? (
-                <span className="sr-only">Then</span>
-              ) : null}
             </li>
           ))}
         </ol>
+        <p className="mt-10 border-t border-border pt-6 text-sm font-medium text-fg-soft">
+          Entire process takes 15–30 days.
+        </p>
       </div>
     </section>
   );

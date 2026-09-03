@@ -136,6 +136,10 @@ async function main() {
     },
   });
 
+  await prisma.travelPackage.deleteMany({
+    where: { id: { in: ["pkg_istanbul", "pkg_maldives"] } },
+  });
+
   for (const item of travelPackages) {
     await prisma.travelPackage.upsert({
       where: { id: item.id },

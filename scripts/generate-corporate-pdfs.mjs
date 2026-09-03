@@ -17,6 +17,7 @@ const outputDir = path.join(corporateDir, "output");
 
 const documents = [
   { html: "partnership-proposal.html", pdf: "TEHA-Partnership-Proposal.pdf" },
+  { html: "partnership-agreement.html", pdf: "TEHA-Partnership-Agreement.pdf" },
   { html: "referral-system-specification.html", pdf: "TEHA-Referral-System-Specification.pdf" },
 ];
 
