@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { TeamSection } from "@/components/about/team-section";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Button } from "@/components/ui/button";
 import { ContentImage } from "@/components/ui/content-image";
@@ -67,6 +68,7 @@ export default function AboutPage() {
             </article>
           ))}
         </div>
+        <TeamSection />
         <h2 className="mt-14 text-2xl">How we talk about visas and jobs</h2>
         <p className="mt-4 text-muted">
           Support with placement and visa processing is part of many offers. We

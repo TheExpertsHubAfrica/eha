@@ -31,6 +31,9 @@ export const siteImages = {
   about: {
     team: "/images/about/team.jpg",
     process: "/images/about/process.jpg",
+    princeOkoampah: "/images/about/Prince-Okoampah.jpg",
+    gyanBimpong: "/images/about/Stephen-Gyan.jpg",
+    jenniferDorh: "/images/about/Jennifer-Dorh.jpg",
   },
   services: {
     hero: "/images/services/hero.jpg",
