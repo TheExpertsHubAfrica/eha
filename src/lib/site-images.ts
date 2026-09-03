@@ -27,6 +27,12 @@ export const siteImages = {
     hero: "/images/study/hero.jpg",
     support: "/images/study/support.jpg",
     empty: "/images/study/support.jpg",
+    destinations: {
+      canada: "/images/study/destinations/canada.jpg",
+      unitedStates: "/images/study/destinations/united-states.jpg",
+      unitedKingdom: "/images/study/destinations/united-kingdom.jpg",
+      schengen: "/images/study/destinations/schengen.jpg",
+    },
   },
   about: {
     team: "/images/about/team.jpg",

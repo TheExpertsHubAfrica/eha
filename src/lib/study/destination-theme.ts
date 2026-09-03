@@ -1,31 +1,37 @@
 import type { StudyDestination } from "@/lib/catalog/types";
+import { siteImages } from "@/lib/site-images";
 
 export type StudyDestinationTheme = {
   countryCode: string;
   flag: string;
-  gradient: string;
+  image: string;
+  imageAlt: string;
   panelText: string;
 };
 
 const themes: Record<string, Omit<StudyDestinationTheme, "flag">> = {
   canada: {
     countryCode: "CA",
-    gradient: "from-[#D52B1E] via-[#B91C1C] to-[#1C1B18]",
+    image: siteImages.study.destinations.canada,
+    imageAlt: "CN Tower on the Toronto waterfront, Canada",
     panelText: "text-white",
   },
   "united-states": {
     countryCode: "US",
-    gradient: "from-[#3C3B6E] via-[#B22234] to-[#1C1B18]",
+    image: siteImages.study.destinations.unitedStates,
+    imageAlt: "Statue of Liberty in New York Harbor, United States",
     panelText: "text-white",
   },
   "united-kingdom": {
     countryCode: "GB",
-    gradient: "from-[#012169] via-[#C8102E]/85 to-[#1C1B18]",
+    image: siteImages.study.destinations.unitedKingdom,
+    imageAlt: "Tower Bridge over the River Thames, United Kingdom",
     panelText: "text-white",
   },
   schengen: {
     countryCode: "EU",
-    gradient: "from-[#003399] via-[#003399]/90 to-[#8F7330]",
+    image: siteImages.study.destinations.schengen,
+    imageAlt: "Eiffel Tower in Paris, France — Schengen / Europe",
     panelText: "text-white",
   },
 };
@@ -33,7 +39,8 @@ const themes: Record<string, Omit<StudyDestinationTheme, "flag">> = {
 const defaultTheme: StudyDestinationTheme = {
   countryCode: "",
   flag: "🎓",
-  gradient: "from-ash-800 via-ash-700 to-gold-deep",
+  image: siteImages.study.hero,
+  imageAlt: "Study abroad destination",
   panelText: "text-white",
 };
 

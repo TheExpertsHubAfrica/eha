@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import type { StudyDestination } from "@/lib/catalog/types";
@@ -15,35 +16,38 @@ export function StudyDestinationPanel({
   return (
     <div
       className={cn(
-        "relative overflow-hidden bg-linear-to-br px-5 py-6 sm:px-6 sm:py-7",
-        theme.gradient,
+        "relative overflow-hidden px-5 py-6 sm:px-6 sm:py-7",
         className,
       )}
     >
-      <div
-        className="pointer-events-none absolute -top-6 -right-4 size-28 rounded-full bg-white/10"
-        aria-hidden="true"
+      <Image
+        src={theme.image}
+        alt={theme.imageAlt}
+        fill
+        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
       />
       <div
-        className="pointer-events-none absolute right-8 bottom-0 h-16 w-32 bg-white/5"
-        style={{ clipPath: "polygon(0 100%, 100% 0, 100% 100%)" }}
+        className="absolute inset-0 bg-linear-to-t from-black/75 via-black/45 to-black/20"
         aria-hidden="true"
       />
-      <span className="text-4xl sm:text-5xl" aria-hidden="true">
-        {theme.flag}
-      </span>
-      <p
-        className={cn(
-          "mt-4 text-[0.65rem] font-semibold tracking-[0.16em] uppercase sm:text-xs",
-          theme.panelText,
-          "opacity-90",
-        )}
-      >
-        {destination.region}
-      </p>
-      <p className={cn("mt-1 text-lg font-semibold sm:text-xl", theme.panelText)}>
-        {destination.name}
-      </p>
+      <div className="relative">
+        <span className="text-4xl sm:text-5xl" aria-hidden="true">
+          {theme.flag}
+        </span>
+        <p
+          className={cn(
+            "mt-4 text-[0.65rem] font-semibold tracking-[0.16em] uppercase sm:text-xs",
+            theme.panelText,
+            "opacity-90",
+          )}
+        >
+          {destination.region}
+        </p>
+        <p className={cn("mt-1 text-lg font-semibold sm:text-xl", theme.panelText)}>
+          {destination.name}
+        </p>
+      </div>
     </div>
   );
 }
@@ -65,7 +69,10 @@ export function StudyDestinationCard({
         className,
       )}
     >
-      <StudyDestinationPanel destination={destination} />
+      <StudyDestinationPanel
+        destination={destination}
+        className="min-h-[11.5rem] sm:min-h-[13rem]"
+      />
       <div className="flex flex-1 flex-col p-5 sm:p-6">
         <p className="flex-1 text-sm leading-relaxed text-muted">{destination.summary}</p>
         {showSupport ? (
