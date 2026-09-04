@@ -15,11 +15,11 @@ export default function PrivacyPage() {
       slug="privacy"
       fallbackTitle="Privacy Policy"
       fallbackDescription="This page is the public privacy notice. It is not legal advice."
-      fallbackBody={`${siteConfig.name} collects personal information only as needed to operate this platform: contact enquiries, applications, and the documents required for a selected opportunity.
+      fallbackBody={`${siteConfig.name} collects personal information only as needed to operate this platform: contact enquiries, applications and the documents required for a selected opportunity.
 
 # What we collect
 
-Depending on the opportunity: identity details, contact information, education and employment history, travel history where relevant, emergency contacts, and supporting documents such as passport copies and CVs.
+Depending on the opportunity: identity details, contact information, education and employment history, travel history where relevant, emergency contacts and supporting documents such as passport copies and CVs.
 
 We do not require religion or religious sect unless there is a stated operational or legal reason for a specific opportunity.
 

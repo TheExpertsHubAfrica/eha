@@ -206,7 +206,7 @@ export function AdminJobForm({ job }: { job: AdminJobFormValues }) {
       {job.documentRequirements.length > 0 ? (
         <fieldset className="rounded-lg border border-border p-4">
           <legend className="px-1 text-sm font-medium text-navy">Document requirements</legend>
-          <p className="mt-1 text-sm text-muted">New jobs start with passport bio, passport-size photo (white background), and CV. Toggle required on existing files.</p>
+          <p className="mt-1 text-sm text-muted">New jobs start with passport bio, passport-size photo (white background) and CV. Toggle required on existing files.</p>
           <div className="mt-3 space-y-2">
             {job.documentRequirements.map((doc) => (
               <CheckboxField
@@ -221,7 +221,7 @@ export function AdminJobForm({ job }: { job: AdminJobFormValues }) {
         </fieldset>
       ) : (
         <p className="text-sm text-muted">
-          Saving a new job creates passport bio, passport-size photo, and CV requirements. You can mark them optional after the first save.
+          Saving a new job creates passport bio, passport-size photo and CV requirements. You can mark them optional after the first save.
         </p>
       )}
       {error ? <p className="text-sm text-danger">{error}</p> : null}

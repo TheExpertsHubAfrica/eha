@@ -19,7 +19,7 @@ export default async function AdminAuditPage() {
   return (
     <div>
       <h1 className="text-2xl font-semibold text-navy">Audit log</h1>
-      <p className="mt-1 text-sm text-muted">Staff actions such as views, status changes, downloads, and publishes.</p>
+      <p className="mt-1 text-sm text-muted">Staff actions such as views, status changes, downloads and publishes.</p>
       {rows.length === 0 ? (
         <p className="mt-8 text-sm text-muted">No audit events recorded yet.</p>
       ) : (

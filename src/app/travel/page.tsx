@@ -21,8 +21,7 @@ export default async function TravelPage() {
     <SiteShell>
       <PageHero
         eyebrow="Travel"
-        title="Packages organised by destination."
-        description="Open a destination for inclusions, exclusions, and duration. Prices appear only when an administrator publishes them."
+        title="Browse our available tour packages below"
         image={siteImages.travel.hero}
         imageAlt="International travel packages and curated holiday destinations"
       />

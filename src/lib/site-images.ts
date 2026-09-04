@@ -1,14 +1,14 @@
 export const siteImages = {
   home: {
     hero: "/images/home/hero.png",
-    pathwayWork: "/images/home/pathway-work.jpg",
+    pathwayWork: "/images/work/cover-07.jpeg",
     pathwayStudy: "/images/home/pathway-study.jpg",
     pathwayTravel: "/images/home/pathway-travel.jpg",
     trustTexture: "/images/home/trust-texture.jpg",
     finalCta: "/images/home/final-cta.jpg",
   },
   work: {
-    hero: "/images/work/hero.jpg",
+    hero: "/images/home/hero.png",
     empty: "/images/work/empty.jpg",
     covers: [
       "/images/work/cover-01.jpg",
@@ -17,6 +17,7 @@ export const siteImages = {
       "/images/work/cover-04.jpg",
       "/images/work/cover-05.jpg",
       "/images/work/cover-06.jpg",
+      "/images/work/cover-07.jpeg",
     ] as const,
   },
   travel: {

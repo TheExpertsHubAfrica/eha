@@ -21,8 +21,8 @@ export default async function StudyAbroadPage() {
     <SiteShell>
       <PageHero
         eyebrow="Study abroad"
-        title="Destination guidance first. Programme catalogues can grow later."
-        description="We currently publish destination-level support: admission assistance, application guidance, visa orientation, and document checklists. Individual universities and intakes will be added through the admin CMS."
+        title="We guide you every step of the way."
+        description="This direction is focused on those who want to study, gain qualifications and build long-term opportunities in Europe, Canada & USA. Our goal is to provide clear guidance on available programs, admission requirements and preparation steps. This service is available as part of our full support system."
         image={siteImages.study.hero}
         imageAlt="Study abroad programs and international education pathways"
       />

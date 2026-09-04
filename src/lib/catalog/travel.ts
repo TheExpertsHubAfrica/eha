@@ -9,7 +9,7 @@ export const travelPackages: TravelPackage[] = [
     name: "Holiday Package",
     duration: "5 days / 4 nights",
     summary:
-      "A guided city stay covering Dubai’s skyline, desert edge, and landmark districts — paced for first-time visitors.",
+      "A guided city stay covering Dubai’s skyline, desert edge and landmark districts — paced for first-time visitors.",
     featured: true,
     published: true,
     includes: ["Airport transfers", "Hotel stay", "Selected sightseeing"],
@@ -24,7 +24,7 @@ export const travelPackages: TravelPackage[] = [
     name: "Romantic Getaway",
     duration: "5 days / 4 nights",
     summary:
-      "A walkable Paris itinerary with time for riverfront neighbourhoods, galleries, and unhurried evenings.",
+      "A walkable Paris itinerary with time for riverfront neighbourhoods, galleries and unhurried evenings.",
     featured: true,
     published: true,
     includes: ["Airport transfers", "Hotel stay", "Selected sightseeing"],
@@ -39,7 +39,7 @@ export const travelPackages: TravelPackage[] = [
     name: "Adventure Package",
     duration: "6 days / 5 nights",
     summary:
-      "Mountain, harbour, and peninsula days with room for both landmark visits and quieter coastline time.",
+      "Mountain, harbour and peninsula days with room for both landmark visits and quieter coastline time.",
     featured: true,
     published: true,
     includes: ["Airport transfers", "Hotel stay", "Selected activities"],

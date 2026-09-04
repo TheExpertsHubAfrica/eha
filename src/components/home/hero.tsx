@@ -57,8 +57,8 @@ export function HomeHero() {
             </h1>
 
             <p className="mt-5 max-w-lg text-base leading-relaxed text-fg-soft sm:text-lg">
-              Discover overseas work, travel, and study pathways — then complete a
-              guided application with clear steps, document checks, and support from
+              Discover overseas work, travel and study pathways — then complete a
+              guided application with clear steps, document checks and support from
               our team.
             </p>
 
@@ -127,7 +127,7 @@ export function HomeHero() {
                       Your journey starts here
                     </p>
                     <p className="mt-1 text-sm leading-snug text-white/90">
-                      Work placements, study pathways, and curated travel — one
+                      Work placements, study pathways and curated travel — one
                       guided platform.
                     </p>
                   </div>

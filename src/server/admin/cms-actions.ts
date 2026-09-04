@@ -110,7 +110,7 @@ export async function saveBlogAction(id: string | null, formData: FormData) {
   const body = String(formData.get("body") ?? "").trim();
   const status = String(formData.get("status") ?? "draft") as "draft" | "published" | "archived";
   if (!title || !excerpt || !body) {
-    return { ok: false as const, error: "Title, excerpt, and body are required." };
+    return { ok: false as const, error: "Title, excerpt and body are required." };
   }
   const slug = slugify(String(formData.get("slug") ?? title));
   if (!slug) return { ok: false as const, error: "Slug must contain letters or numbers." };

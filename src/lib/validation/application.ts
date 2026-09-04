@@ -202,7 +202,7 @@ export function supportingSchemaForJob(requirements: SupportingJobRequirements) 
         ctx.addIssue({
           code: "custom",
           path: ["emergencyName"],
-          message: "Enter an emergency contact (name, relationship, phone, country, and city).",
+          message: "Enter an emergency contact (name, relationship, phone, country and city).",
         });
       }
     }

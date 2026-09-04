@@ -34,7 +34,7 @@ export const siteConfig: PublicSite = {
   brandTagline,
   tagline:
     "Work, travel and study opportunities abroad — guided from start to finish.",
-  description: `${name} helps applicants discover overseas work, travel packages, and study pathways, then complete a structured application with document guidance.`,
+  description: `${name} helps applicants discover overseas work, travel packages and study pathways, then complete a structured application with document guidance.`,
   url: env("NEXT_PUBLIC_SITE_URL") || "http://localhost:3000",
   locale: "en_GH",
   phone: env("NEXT_PUBLIC_SITE_PHONE"),
@@ -79,7 +79,7 @@ export function whatsappHref(prefill?: string, site: PublicSite = siteConfig) {
 }
 
 export const defaultDisclaimer =
-  "Job placement and visa support are offered subject to eligibility, documentation, and applicable immigration requirements. Outcomes are not guaranteed.";
+  "Job placement and visa support are offered subject to eligibility, documentation and applicable immigration requirements. Outcomes are not guaranteed.";
 
 export const SETTING_KEYS = [
   "tagline",

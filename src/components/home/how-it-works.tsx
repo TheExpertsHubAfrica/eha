@@ -2,7 +2,7 @@ const steps = [
   {
     n: "01",
     title: "Profile submission",
-    text: "CV, passport bio page, academic credentials, and passport photo on a white background.",
+    text: "CV, passport bio page, academic credentials and passport photo on a white background.",
   },
   {
     n: "02",
@@ -22,7 +22,7 @@ const steps = [
   {
     n: "05",
     title: "Remaining documents",
-    text: "Police clearance, medical exam, and yellow card.",
+    text: "Police clearance, medical exam and yellow card.",
   },
   {
     n: "06",

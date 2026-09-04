@@ -11,11 +11,11 @@ const reasons = [
   },
   {
     title: "Transparent information",
-    text: "Salary, benefits, and requirements are listed on each opportunity — not hidden in a homepage form.",
+    text: "Salary, benefits and requirements are listed on each opportunity — not hidden in a homepage form.",
   },
   {
     title: "International opportunities",
-    text: "Work, travel, and study pathways are organised in one professional platform.",
+    text: "Work, travel and study pathways are organised in one professional platform.",
   },
   {
     title: "Dedicated applicant support",
@@ -23,7 +23,7 @@ const reasons = [
   },
   {
     title: "Secure document handling",
-    text: "Identity documents are requested only after you start an application, and stored privately.",
+    text: "Identity documents are requested only after you start an application and stored privately.",
   },
 ];
 
@@ -41,7 +41,7 @@ export function TrustSection() {
         </p>
         <div className="mt-3 h-0.5 w-10 bg-gold" aria-hidden="true" />
         <h2 className="mt-5 max-w-xl text-2xl font-bold text-white sm:text-3xl">
-          Organised, careful, and built around a complete application — not a
+          Organised, careful and built around a complete application — not a
           crowded homepage.
         </h2>
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

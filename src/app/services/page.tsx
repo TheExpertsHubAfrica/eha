@@ -9,14 +9,14 @@ import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Services",
-  description: `Job placement support, study-abroad assistance, travel packages, and visa guidance from ${siteConfig.name}.`,
+  description: `Job placement support, study-abroad assistance, travel packages and visa guidance from ${siteConfig.name}.`,
 };
 
 const services = [
   {
     id: "work",
     title: "Job opportunities",
-    text: "Published overseas roles with location, salary, benefits, and requirements. Applications are multi-step and opportunity-specific.",
+    text: "Published overseas roles with location, salary, benefits and requirements. Applications are multi-step and opportunity-specific.",
     href: "/work-abroad",
     cta: "Explore jobs",
     image: siteImages.services.work,
@@ -25,7 +25,7 @@ const services = [
   {
     id: "study",
     title: "Study abroad assistance",
-    text: "Help with destination choice, admission paperwork, and visa-oriented document guidance for selected study pathways.",
+    text: "Help with destination choice, admission paperwork and visa-oriented document guidance for selected study pathways.",
     href: "/study-abroad",
     cta: "Explore study destinations",
     image: siteImages.services.study,
@@ -34,7 +34,7 @@ const services = [
   {
     id: "travel",
     title: "Travel services",
-    text: "Holiday and city packages with duration, inclusions, and destination pages. Enquiries go through contact or WhatsApp when configured.",
+    text: "Holiday and city packages with duration, inclusions and destination pages. Enquiries go through contact or WhatsApp when configured.",
     href: "/travel",
     cta: "Explore packages",
     image: siteImages.services.travel,

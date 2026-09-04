@@ -4,6 +4,7 @@ export const mainNav = [
   { href: "/travel", label: "Travel Packages" },
   { href: "/study-abroad", label: "Study Abroad" },
   { href: "/about", label: "About Us" },
+  { href: "/team", label: "The Team" },
   { href: "/services", label: "Services" },
   { href: "/blog", label: "Blog" },
   { href: "/contact", label: "Contact" },
@@ -12,6 +13,7 @@ export const mainNav = [
 export const footerNav = {
   company: [
     { href: "/about", label: "About Us" },
+    { href: "/team", label: "The Team" },
     { href: "/contact", label: "Contact Us" },
     { href: "/blog", label: "Blog" },
   ],

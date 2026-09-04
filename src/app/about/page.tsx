@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { TeamSection } from "@/components/about/team-section";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Button } from "@/components/ui/button";
 import { ContentImage } from "@/components/ui/content-image";
@@ -10,7 +9,7 @@ import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "About Us",
-  description: `Learn how ${siteConfig.name} supports applicants exploring work, travel, and study opportunities abroad.`,
+  description: `Learn how ${siteConfig.name} supports applicants exploring work, travel and study opportunities abroad.`,
 };
 
 export default function AboutPage() {
@@ -19,16 +18,16 @@ export default function AboutPage() {
       <PageHero
         eyebrow="About"
         title="A professional platform for pursuing opportunities abroad."
-        description={`${siteConfig.name} helps applicants discover overseas work, travel packages, and study pathways — then complete a structured application with guidance from our team.`}
+        description={`${siteConfig.name} helps applicants discover overseas work, travel packages and study pathways — then complete a structured application with guidance from our team.`}
         image={siteImages.about.team}
         imageAlt="The Experts Hub Africa team providing work, travel and study abroad support"
       />
       <section className="container-page prose-eha py-12 sm:py-16">
         <h2 className="text-2xl">What we do</h2>
         <p className="mt-4 text-muted">
-          Applicants should not have to send passports, photos, and CVs through a
+          Applicants should not have to send passports, photos and CVs through a
           crowded homepage form. This platform separates discovery from
-          application: you browse published opportunities, read the terms, and
+          application: you browse published opportunities, read the terms and
           only then start a profile and document upload for a specific offer.
         </p>
         <div className="mt-10 grid gap-8 lg:grid-cols-2">
@@ -47,15 +46,15 @@ export default function AboutPage() {
           {[
             {
               title: "Work",
-              text: "International job listings with salary, benefits, and application requirements stated on the opportunity page.",
+              text: "International job listings with salary, benefits and application requirements stated on the opportunity page.",
             },
             {
               title: "Travel",
-              text: "Curated packages with duration, inclusions, and destination context — not a dump of every itinerary on one screen.",
+              text: "Curated packages with duration, inclusions and destination context — not a dump of every itinerary on one screen.",
             },
             {
               title: "Study",
-              text: "Study-abroad destinations with admission, visa, and document guidance. Programme catalogues can grow over time.",
+              text: "Study-abroad destinations with admission, visa and document guidance. Programme catalogues can grow over time.",
             },
           ].map((item) => (
             <article
@@ -68,7 +67,6 @@ export default function AboutPage() {
             </article>
           ))}
         </div>
-        <TeamSection />
         <h2 className="mt-14 text-2xl">How we talk about visas and jobs</h2>
         <p className="mt-4 text-muted">
           Support with placement and visa processing is part of many offers. We

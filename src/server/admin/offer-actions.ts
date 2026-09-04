@@ -34,7 +34,7 @@ export async function saveJobAction(jobId: string | null, formData: FormData) {
   const countryCode = String(formData.get("countryCode") ?? "").trim().toUpperCase();
   const category = String(formData.get("category") ?? "").trim();
   if (!title || !city || !country || countryCode.length !== 2 || !category) {
-    return { ok: false as const, error: "Title, city, country, country code, and category are required." };
+    return { ok: false as const, error: "Title, city, country, country code and category are required." };
   }
 
   const slug = slugify(String(formData.get("slug") ?? title));
@@ -167,7 +167,7 @@ export async function saveTravelAction(id: string | null, formData: FormData) {
   const destination = String(formData.get("destination") ?? "").trim();
   const country = String(formData.get("country") ?? "").trim();
   if (!name || !destination || !country) {
-    return { ok: false as const, error: "Name, destination, and country are required." };
+    return { ok: false as const, error: "Name, destination and country are required." };
   }
   const payload = {
     name,

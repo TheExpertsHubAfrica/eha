@@ -47,26 +47,26 @@ export const jobs: SeedJob[] = [
     published: true,
     availability: "open",
     overview:
-      "A structured manufacturing placement in Dubai for applicants ready to work in a production environment with on-the-ground support for travel, housing, and documentation.",
+      "A structured manufacturing placement in Dubai for applicants ready to work in a production environment with on-the-ground support for travel, housing and documentation.",
     description:
-      "Factory placements involve shift-based production work. Exact site, shift pattern, and task mix are confirmed during processing. This listing describes the opportunity as currently offered through The Experts Hub Africa — it is not an employment contract.",
+      "Factory placements involve shift-based production work. Exact site, shift pattern and task mix are confirmed during processing. This listing describes the opportunity as currently offered through The Experts Hub Africa — it is not an employment contract.",
     responsibilities: [
       "Carry out assigned production or packing tasks to the employer’s safety and quality standards.",
-      "Follow workplace instructions, attendance rules, and protective equipment requirements.",
+      "Follow workplace instructions, attendance rules and protective equipment requirements.",
       "Keep work areas orderly and report hazards or equipment issues promptly.",
       "Work collaboratively with supervisors and teammates on shift.",
     ],
     requirements: [
       "Valid passport with sufficient remaining validity for processing.",
       "Fitness for physical, shift-based factory work.",
-      "Willingness to complete medical, visa, and onboarding checks as required.",
+      "Willingness to complete medical, visa and onboarding checks as required.",
       "Clear, complete application documents submitted through this platform.",
     ],
     accommodation: "Shared staff accommodation is included, as arranged for this placement.",
     flight: "A placement-related flight is included, subject to processing timelines and ticket rules.",
     visa: defaultDisclaimer,
     workingConditions:
-      "Expect structured shifts in an industrial setting. Specific hours, overtime policy, and site rules are confirmed before travel.",
+      "Expect structured shifts in an industrial setting. Specific hours, overtime policy and site rules are confirmed before travel.",
     applicationRequirements: [
       "Complete the work profile steps when the application portal opens for this offer.",
       "Upload the documents listed for this opportunity.",
@@ -85,7 +85,7 @@ export const jobs: SeedJob[] = [
       {
         question: "What documents do I need?",
         answer:
-          "For this offer: passport bio page, passport-size photograph on a white background, and a PDF CV. Additional documents may be requested after review.",
+          "For this offer: passport bio page, passport-size photograph on a white background and a PDF CV. Additional documents may be requested after review.",
       },
       {
         question: "When should I upload documents?",
@@ -119,12 +119,12 @@ export const jobs: SeedJob[] = [
     published: true,
     availability: "open",
     overview:
-      "A customer-facing retail placement in Dubai for applicants who communicate clearly, present well, and can support day-to-day store operations.",
+      "A customer-facing retail placement in Dubai for applicants who communicate clearly, present well and can support day-to-day store operations.",
     description:
-      "Sales assistant roles typically involve helping customers, keeping displays in order, and supporting checkout or floor operations. The employer and exact location are confirmed during processing.",
+      "Sales assistant roles typically involve helping customers, keeping displays in order and supporting checkout or floor operations. The employer and exact location are confirmed during processing.",
     responsibilities: [
       "Greet customers and help them find products.",
-      "Support stock, merchandising, and store presentation standards.",
+      "Support stock, merchandising and store presentation standards.",
       "Follow cash-handling and inventory procedures where assigned.",
       "Uphold the employer’s service and attendance expectations.",
     ],
@@ -183,26 +183,26 @@ export const jobs: SeedJob[] = [
     published: true,
     availability: "open",
     overview:
-      "A security placement in Dubai for disciplined applicants able to keep watch, follow post orders, and represent a professional standard on site.",
+      "A security placement in Dubai for disciplined applicants able to keep watch, follow post orders and represent a professional standard on site.",
     description:
-      "Security roles are typically rostered posts with clear procedures. Licensing, medical, and background checks may apply. We will only ask for additional history or documents when this offer requires them.",
+      "Security roles are typically rostered posts with clear procedures. Licensing, medical and background checks may apply. We will only ask for additional history or documents when this offer requires them.",
     responsibilities: [
       "Maintain a visible, professional presence at the assigned post.",
-      "Follow access-control, patrol, and incident-reporting procedures.",
+      "Follow access-control, patrol and incident-reporting procedures.",
       "Escalate concerns according to site instructions.",
       "Protect people and property without exceeding assigned authority.",
     ],
     requirements: [
       "Valid passport with sufficient remaining validity for processing.",
       "Fitness for standing or walking posts and shift work.",
-      "Willingness to complete background, medical, and licensing steps if required.",
+      "Willingness to complete background, medical and licensing steps if required.",
       "A clear work profile and the documents listed for this opportunity.",
     ],
     accommodation: "Shared staff accommodation is included, as arranged for this placement.",
     flight: "A placement-related flight is included, subject to processing timelines and ticket rules.",
     visa: defaultDisclaimer,
     workingConditions:
-      "Shifts may include nights, weekends, and public holidays. Post orders and uniform standards are set by the employer.",
+      "Shifts may include nights, weekends and public holidays. Post orders and uniform standards are set by the employer.",
     applicationRequirements: [
       "Complete the work profile, including relevant experience.",
       "Upload required identity and CV documents.",

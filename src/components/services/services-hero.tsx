@@ -56,12 +56,22 @@ export function ServicesPageHero() {
         <p className="eyebrow">Services</p>
         <div className="gold-rule mt-4" aria-hidden="true" />
         <h1 className="mt-5 max-w-3xl text-3xl font-bold text-black sm:text-4xl">
-          Support across work, study, travel, and visas.
+          We focus on three key areas.
         </h1>
-        <p className="mt-4 max-w-2xl text-lg text-muted">
-          Each service has its own pages and a staged application or enquiry — not a single
-          form trying to do everything.
-        </p>
+        <ul className="mt-5 max-w-2xl space-y-2 text-lg text-muted">
+          <li className="flex items-start gap-3">
+            <span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-gold" aria-hidden="true" />
+            Connecting Africans to International Jobs
+          </li>
+          <li className="flex items-start gap-3">
+            <span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-gold" aria-hidden="true" />
+            Helping with Study Abroad Application
+          </li>
+          <li className="flex items-start gap-3">
+            <span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-gold" aria-hidden="true" />
+            Assistance with Visa Application
+          </li>
+        </ul>
       </div>
     </section>
   );

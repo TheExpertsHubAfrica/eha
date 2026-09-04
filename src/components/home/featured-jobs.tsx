@@ -79,7 +79,7 @@ export function FeaturedJobs({ jobs }: { jobs: JobOffer[] }) {
         <SectionHeading
           eyebrow="Work abroad"
           title="Featured opportunities"
-          description="Currently published roles. Details, documents, and requirements live on each opportunity page — not on this homepage."
+          description="Currently published roles. Details, documents and requirements live on each opportunity page — not on this homepage."
           action={
             <Button asChild variant="ghost">
               <Link href="/work-abroad">View all jobs</Link>

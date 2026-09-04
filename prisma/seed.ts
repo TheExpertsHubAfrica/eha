@@ -206,7 +206,7 @@ async function main() {
         {
           question: "Are jobs and visas guaranteed?",
           answer:
-            "We provide placement and visa support subject to eligibility, documentation, and applicable requirements. We do not treat absolute guarantees as legal facts unless a reviewed statement is published for that offer.",
+            "We provide placement and visa support subject to eligibility, documentation and applicable requirements. We do not treat absolute guarantees as legal facts unless a reviewed statement is published for that offer.",
           sortOrder: 1,
           published: true,
         },
@@ -220,7 +220,7 @@ async function main() {
         {
           question: "How do I get a copy of my work profile?",
           answer:
-            "After a successful submission you receive a reference number, a confirmation page, and a printable/PDF work profile. Email delivery is sent when outbound mail is configured.",
+            "After a successful submission you receive a reference number, a confirmation page and a printable/PDF work profile. Email delivery is sent when outbound mail is configured.",
           sortOrder: 3,
           published: true,
         },
@@ -233,17 +233,17 @@ async function main() {
     {
       slug: "privacy",
       title: "Privacy Policy",
-      body: "The Experts Hub Africa collects personal information only as needed to operate this platform: contact enquiries, applications, and the documents required for a selected opportunity.\n\n# What we collect\n\nDepending on the opportunity: identity details, contact information, education and employment history, travel history where relevant, emergency contacts, and supporting documents such as passport copies and CVs.\n\nWe do not require religion or religious sect unless there is a stated operational or legal reason for a specific opportunity.\n\n# Documents\n\nIdentity files are collected inside the application — never on the landing page. They are stored privately and accessed by authorised staff only.\n\n# Contact\n\nQuestions about this notice can be sent through the contact page.",
+      body: "The Experts Hub Africa collects personal information only as needed to operate this platform: contact enquiries, applications and the documents required for a selected opportunity.\n\n# What we collect\n\nDepending on the opportunity: identity details, contact information, education and employment history, travel history where relevant, emergency contacts and supporting documents such as passport copies and CVs.\n\nWe do not require religion or religious sect unless there is a stated operational or legal reason for a specific opportunity.\n\n# Documents\n\nIdentity files are collected inside the application — never on the landing page. They are stored privately and accessed by authorised staff only.\n\n# Contact\n\nQuestions about this notice can be sent through the contact page.",
     },
     {
       slug: "terms",
       title: "Terms & Conditions",
-      body: "Listings describe opportunities as currently offered. They are not employment contracts, visa grants, or university offers.\n\nPlacement and visa support, where stated, is subject to eligibility, documentation, employer or institution decisions, and applicable law.\n\nYou are responsible for the accuracy of information you submit. False documents or identity details may result in an application being declined.",
+      body: "Listings describe opportunities as currently offered. They are not employment contracts, visa grants, or university offers.\n\nPlacement and visa support, where stated, is subject to eligibility, documentation, employer or institution decisions and applicable law.\n\nYou are responsible for the accuracy of information you submit. False documents or identity details may result in an application being declined.",
     },
     {
       slug: "cookies",
       title: "Cookie Policy",
-      body: "Essential cookies or local storage may be used to keep an application draft, protect forms against abuse, and maintain an admin session. We do not currently place advertising cookies.\n\nPage-view counts used in the admin console are stored without names, emails, or document contents.",
+      body: "Essential cookies or local storage may be used to keep an application draft, protect forms against abuse and maintain an admin session. We do not currently place advertising cookies.\n\nPage-view counts used in the admin console are stored without names, emails, or document contents.",
     },
   ];
   for (const page of legalDefaults) {

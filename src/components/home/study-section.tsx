@@ -20,7 +20,7 @@ export function StudySection({ destinations }: { destinations: StudyDestination[
         <SectionHeading
           eyebrow="Study abroad"
           title="Education pathways with guided applications"
-          description="We help you understand destination options, required documents, and the visa process — without rushing you into a form on the homepage."
+          description="We help you understand destination options, required documents and the visa process — without rushing you into a form on the homepage."
         />
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div className="space-y-8">

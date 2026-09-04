@@ -9,6 +9,7 @@ export function PageHero({
   children,
   image,
   imageAlt,
+  imageClassName,
   priorityImage = false,
 }: {
   eyebrow?: string;
@@ -17,6 +18,7 @@ export function PageHero({
   children?: ReactNode;
   image?: string;
   imageAlt?: string;
+  imageClassName?: string;
   priorityImage?: boolean;
 }) {
   return (
@@ -28,6 +30,7 @@ export function PageHero({
           aspect="wide"
           priority={priorityImage}
           className="max-h-72 sm:max-h-80"
+          imageClassName={imageClassName}
         />
       ) : null}
       <div className="container-page py-12 sm:py-16">

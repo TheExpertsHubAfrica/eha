@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ContactForm } from "@/components/contact/contact-form";
+import { ContactMap } from "@/components/contact/contact-map";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ContentImage } from "@/components/ui/content-image";
@@ -22,8 +23,8 @@ export default async function ContactPage() {
     <SiteShell>
       <PageHero
         eyebrow="Contact"
-        title="Talk to the team."
-        description="Use the form for a written enquiry, or the published phone, email, and WhatsApp channels when they are configured."
+        title="Talk to us."
+        description="Feel free to reach out if you have any enquiry. Our team is ready to assist you."
         image={siteImages.contact.hero}
         imageAlt="TEHA advisor helping an applicant — friendly support for your enquiry"
       />
@@ -80,9 +81,7 @@ export default async function ContactPage() {
                   <dd className="mt-1">{site.hours}</dd>
                 </div>
               ) : null}
-              {!site.phone &&
-              !site.email &&
-              !site.address ? (
+              {!site.phone && !site.email && !site.address ? (
                 <p className="text-muted">
                   Contact channels will appear here once they are configured in
                   site settings.
@@ -102,6 +101,7 @@ export default async function ContactPage() {
           </div>
         </aside>
       </section>
+      <ContactMap address={site.address} />
     </SiteShell>
   );
 }

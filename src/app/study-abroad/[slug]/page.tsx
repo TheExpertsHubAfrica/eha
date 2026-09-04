@@ -54,7 +54,7 @@ export default async function StudyDetailPage({
           ))}
         </ul>
         <p className="mt-8 max-w-2xl text-sm text-muted">
-          University lists, tuition figures, and intake calendars are not
+          University lists, tuition figures and intake calendars are not
           invented here. Administrators can add them as verified programme
           records in a later phase.
         </p>
