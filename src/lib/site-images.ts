@@ -42,6 +42,12 @@ export const siteImages = {
     gyanBimpong: "/images/about/Stephen-Gyan.jpg",
     jenniferDorh: "/images/about/Jennifer-Dorh.jpg",
   },
+  brand: {
+    logoWhite: "/brand/logo-white.png",
+    logoBlack: "/brand/logo-black.png",
+    markWhite: "/brand/mark-white.png",
+    og: "/brand/og-logo.png",
+  },
   services: {
     hero: "/images/services/hero.jpg",
     work: "/images/services/work.jpg",

@@ -45,17 +45,31 @@ function buildWhere(filters: JobListQuery = {}): Prisma.JobWhereInput {
 }
 
 function sortOrder(sort?: JobListQuery["sort"]): Prisma.JobOrderByWithRelationInput[] {
-  if (sort === "salary-desc") return [{ salaryAmount: "desc" }, { title: "asc" }];
-  if (sort === "salary-asc") return [{ salaryAmount: "asc" }, { title: "asc" }];
-  return [{ publishedAt: "desc" }, { createdAt: "desc" }];
+  // Enum declaration order: open → limited → closed, so ascending keeps closed last.
+  const availabilityFirst = { availability: "asc" as const };
+  if (sort === "salary-desc") {
+    return [availabilityFirst, { salaryAmount: "desc" }, { title: "asc" }];
+  }
+  if (sort === "salary-asc") {
+    return [availabilityFirst, { salaryAmount: "asc" }, { title: "asc" }];
+  }
+  return [availabilityFirst, { publishedAt: "desc" }, { createdAt: "desc" }];
 }
+
+const defaultListingOrder: Prisma.JobOrderByWithRelationInput[] = [
+  { availability: "asc" },
+  { publishedAt: "desc" },
+  { title: "asc" },
+];
 
 /** Default listing order: factory worker first when using the default sort. */
 const PINNED_LISTING_JOB_ID = "job_factory_worker_dubai";
 
 function pinDefaultListing(jobs: JobOffer[], sort?: JobListQuery["sort"]) {
   if (sort && sort !== "newest") return jobs;
-  const index = jobs.findIndex((job) => job.id === PINNED_LISTING_JOB_ID);
+  const index = jobs.findIndex(
+    (job) => job.id === PINNED_LISTING_JOB_ID && job.availability !== "closed",
+  );
   if (index <= 0) return jobs;
   const pinned = jobs[index];
   return [pinned, ...jobs.slice(0, index), ...jobs.slice(index + 1)];
@@ -68,7 +82,7 @@ export async function getFeaturedJobs(): Promise<JobOffer[]> {
       const rows = await prisma.job.findMany({
         where: { ...published, featured: true },
         include: jobInclude,
-        orderBy: [{ publishedAt: "desc" }, { title: "asc" }],
+        orderBy: defaultListingOrder,
       });
       return rows.map(toJobOffer);
     },
@@ -80,7 +94,7 @@ export async function getPublishedJobs(): Promise<JobOffer[]> {
   const rows = await prisma.job.findMany({
     where: published,
     include: jobInclude,
-    orderBy: [{ publishedAt: "desc" }, { title: "asc" }],
+    orderBy: defaultListingOrder,
   });
   return rows.map(toJobOffer);
 }
@@ -113,7 +127,7 @@ export async function getRelatedJobs(job: JobOffer, limit = 3): Promise<JobOffer
     },
     include: jobInclude,
     take: limit,
-    orderBy: { publishedAt: "desc" },
+    orderBy: [{ availability: "asc" }, { publishedAt: "desc" }],
   });
   return rows.map(toJobOffer);
 }
