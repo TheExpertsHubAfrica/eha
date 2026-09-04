@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
+import { Plane } from "lucide-react";
+import { AdminCatalogBrowser } from "@/components/admin/catalog-browser";
+import { AdminPageHeader } from "@/components/admin/page-header";
 import { Button } from "@/components/ui/button";
+import { offerCoverUrl } from "@/lib/covers";
 import { prisma } from "@/server/db";
 import { requireAdmin } from "@/server/admin/auth";
 
@@ -18,48 +21,38 @@ export default async function AdminTravelPage() {
     orderBy: [{ featured: "desc" }, { updatedAt: "desc" }],
   });
 
+  const items = rows.map((row) => ({
+    id: row.id,
+    href: `/admin/travel/${row.id}`,
+    title: row.name,
+    subtitle: `${row.destination}, ${row.country}`,
+    status: row.status,
+    featured: row.featured,
+    coverUrl: row.coverImageKey ? offerCoverUrl("travel", row.id) : null,
+    meta: row.duration,
+  }));
+
   return (
     <div>
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold text-navy">Travel</h1>
-          <p className="mt-1 text-sm text-muted">Publish and feature destination packages.</p>
-        </div>
-        <Button asChild size="sm">
-          <Link href="/admin/travel/new">New package</Link>
-        </Button>
-      </div>
-      <div className="mt-6 overflow-x-auto rounded-lg border border-border bg-white">
-        <table className="w-full text-left text-sm">
-          <thead className="border-b border-border bg-surface text-muted">
-            <tr>
-              <th className="px-4 py-3 font-medium">Name</th>
-              <th className="px-4 py-3 font-medium">Destination</th>
-              <th className="px-4 py-3 font-medium">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.id} className="border-b border-border last:border-0">
-                <td className="px-4 py-3">
-                  <Link href={`/admin/travel/${row.id}`} className="font-medium text-blue hover:underline">
-                    {row.name}
-                  </Link>
-                  {row.featured ? (
-                    <Badge tone="gold" className="ml-2">
-                      Featured
-                    </Badge>
-                  ) : null}
-                </td>
-                <td className="px-4 py-3">
-                  {row.destination}, {row.country}
-                </td>
-                <td className="px-4 py-3 capitalize">{row.status}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <AdminPageHeader
+        eyebrow="Catalogue"
+        title="Travel"
+        description="Publish and feature destination packages. Upload a listing photo to replace the accent panel on public cards."
+        actions={
+          <Button asChild size="sm">
+            <Link href="/admin/travel/new">New package</Link>
+          </Button>
+        }
+      />
+      <AdminCatalogBrowser
+        items={items}
+        emptyTitle="No travel packages yet"
+        emptyDescription="Create a package with destination details and an optional cover photo."
+        emptyActionHref="/admin/travel/new"
+        emptyActionLabel="Create package"
+        emptyIcon={<Plane className="size-5" />}
+        searchPlaceholder="Search packages by name or destination…"
+      />
     </div>
   );
 }

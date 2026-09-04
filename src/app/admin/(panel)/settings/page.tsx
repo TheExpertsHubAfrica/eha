@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Card, CardBody } from "@/components/ui/card";
 import { EmailTemplateForm, LegalPageForm, SiteSettingsForm } from "@/components/admin/cms-forms";
+import { AdminPageHeader } from "@/components/admin/page-header";
 import { prisma } from "@/server/db";
 import { requireAdmin } from "@/server/admin/auth";
 import { DEFAULT_EMAIL_TEMPLATES } from "@/server/email/custom";
@@ -45,12 +46,11 @@ export default async function AdminSettingsPage() {
 
   return (
     <div className="space-y-10">
-      <div>
-        <h1 className="text-2xl font-semibold text-navy">Settings</h1>
-        <p className="mt-1 text-sm text-muted">
-          Public contact channels overlay environment values after you save. Secrets stay in .env.local.
-        </p>
-      </div>
+      <AdminPageHeader
+        eyebrow="Site"
+        title="Settings"
+        description="Public contact channels overlay environment values after you save. Secrets stay in .env.local."
+      />
       <Card>
         <CardBody>
           <h2 className="mb-4 text-lg font-semibold text-navy">Contact and social</h2>

@@ -7,6 +7,7 @@ import type {
   TravelPackage as DbTravelPackage,
 } from "@prisma/client";
 import type { JobOffer, StudyDestination, TravelPackage } from "@/lib/catalog/types";
+import { offerCoverUrl } from "@/lib/covers";
 
 function money(amount: unknown, currency: string) {
   return { amount: Number(amount), currency };
@@ -79,6 +80,7 @@ export function toJobOffer(job: JobRecord): JobOffer {
     includesAccommodation: job.includesAccommodation,
     includesFlight: job.includesFlight,
     includesVisaSupport: job.includesVisaSupport,
+    coverImageUrl: job.coverImageKey ? offerCoverUrl("job", job.id) : null,
   };
 }
 
@@ -96,6 +98,7 @@ export function toTravelPackage(item: DbTravelPackage): TravelPackage {
     includes: item.includes,
     excludes: item.excludes,
     accent: item.accent,
+    coverImageUrl: item.coverImageKey ? offerCoverUrl("travel", item.id) : null,
   };
 }
 

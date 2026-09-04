@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { TravelPackage } from "@/lib/catalog/types";
 
@@ -12,10 +13,30 @@ const accents: Record<TravelPackage["accent"], string> = {
 export function DestinationPanel({
   accent,
   label,
+  coverImageUrl,
 }: {
   accent: TravelPackage["accent"];
   label: string;
+  coverImageUrl?: string | null;
 }) {
+  if (coverImageUrl) {
+    return (
+      <div className="relative aspect-video w-full overflow-hidden bg-ash-100 sm:aspect-auto sm:h-44">
+        <Image
+          src={coverImageUrl}
+          alt={label}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, 400px"
+          unoptimized={coverImageUrl.startsWith("/api/")}
+        />
+        <span className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/55 to-transparent px-4 pt-8 pb-3 text-sm font-medium tracking-wide text-white">
+          {label}
+        </span>
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(

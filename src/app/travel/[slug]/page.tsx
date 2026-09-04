@@ -46,7 +46,11 @@ export default async function TravelDetailPage({
           {item.destination}
         </p>
         <div className="mt-6 overflow-hidden rounded-lg border border-border">
-          <DestinationPanel accent={item.accent} label={item.country} />
+          <DestinationPanel
+            accent={item.accent}
+            label={item.country}
+            coverImageUrl={item.coverImageUrl}
+          />
         </div>
         <h1 className="mt-8 text-3xl font-semibold text-navy">
           {item.destination}

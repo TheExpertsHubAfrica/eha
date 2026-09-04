@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminJobForm } from "@/components/admin/job-form";
+import { offerCoverUrl } from "@/lib/covers";
 import { prisma } from "@/server/db";
 import { requireAdmin } from "@/server/admin/auth";
 
@@ -77,6 +78,7 @@ export default async function AdminEditJobPage({
             name: item.name,
             required: item.required,
           })),
+          coverImageUrl: job.coverImageKey ? offerCoverUrl("job", job.id) : null,
         }}
       />
     </div>

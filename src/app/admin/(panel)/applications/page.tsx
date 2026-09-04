@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import type { ApplicationStatus, Prisma } from "@prisma/client";
+import { ClipboardList } from "lucide-react";
 import { AdminApplicationRow } from "@/components/admin/application-table-row";
+import { AdminEmptyState } from "@/components/admin/empty-state";
+import { AdminPageHeader } from "@/components/admin/page-header";
+import { ApplicationStatusBadge } from "@/components/admin/status-badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/select";
@@ -77,52 +81,82 @@ export default async function AdminApplicationsPage({
     }),
   ]);
 
+  const hasFilters = Boolean(q || status || jobId || country || from || to);
+
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-navy">Applications</h1>
-      <p className="mt-1 text-sm text-muted">
-        Search by reference, name, email, or phone. Drafts are hidden unless you choose All.
-      </p>
-      <form className="mt-6 grid gap-3 rounded-lg border border-border bg-white p-4 md:grid-cols-6">
-        <Input name="q" placeholder="Search" defaultValue={q} className="md:col-span-2" />
-        <NativeSelect name="status" defaultValue={status || "active"}>
-          <option value="active">Submitted and later</option>
-          <option value="all">All including drafts</option>
-          {adminStatuses.map((item) => (
-            <option key={item} value={item}>
-              {statusLabel(item)}
-            </option>
-          ))}
-          <option value="draft">draft</option>
-        </NativeSelect>
-        <NativeSelect name="jobId" defaultValue={jobId}>
-          <option value="">All jobs</option>
-          {jobs.map((job) => (
-            <option key={job.id} value={job.id}>
-              {job.title} · {job.city}
-            </option>
-          ))}
-        </NativeSelect>
-        <NativeSelect name="country" defaultValue={country}>
-          <option value="">All countries</option>
-          {countries.map((item) => (
-            <option key={item.country} value={item.country}>
-              {item.country}
-            </option>
-          ))}
-        </NativeSelect>
-        <div className="flex gap-2 md:col-span-6">
-          <Input type="date" name="from" defaultValue={from} aria-label="From date" />
-          <Input type="date" name="to" defaultValue={to} aria-label="To date" />
-          <Button type="submit" size="sm">
-            Filter
-          </Button>
+      <AdminPageHeader
+        eyebrow="Workspace"
+        title="Applications"
+        description="Search by reference, name, email, or phone. Drafts are hidden unless you choose All."
+      />
+
+      <form className="mt-6 space-y-3 rounded-lg border border-border bg-white p-4 shadow-[0_1px_0_rgba(26,24,20,0.04)]">
+        <div className="grid gap-3 md:grid-cols-6">
+          <Input name="q" placeholder="Search reference, name, email…" defaultValue={q} className="md:col-span-2" />
+          <NativeSelect name="status" defaultValue={status || "active"}>
+            <option value="active">Submitted and later</option>
+            <option value="all">All including drafts</option>
+            {adminStatuses.map((item) => (
+              <option key={item} value={item}>
+                {statusLabel(item)}
+              </option>
+            ))}
+            <option value="draft">draft</option>
+          </NativeSelect>
+          <NativeSelect name="jobId" defaultValue={jobId}>
+            <option value="">All jobs</option>
+            {jobs.map((job) => (
+              <option key={job.id} value={job.id}>
+                {job.title} · {job.city}
+              </option>
+            ))}
+          </NativeSelect>
+          <NativeSelect name="country" defaultValue={country}>
+            <option value="">All countries</option>
+            {countries.map((item) => (
+              <option key={item.country} value={item.country}>
+                {item.country}
+              </option>
+            ))}
+          </NativeSelect>
+          <div className="flex flex-wrap gap-2 md:col-span-6">
+            <Input type="date" name="from" defaultValue={from} aria-label="From date" className="w-auto" />
+            <Input type="date" name="to" defaultValue={to} aria-label="To date" className="w-auto" />
+            <Button type="submit" size="sm">
+              Apply filters
+            </Button>
+            {hasFilters ? (
+              <Button asChild type="button" size="sm" variant="ghost">
+                <a href="/admin/applications">Clear</a>
+              </Button>
+            ) : null}
+          </div>
         </div>
       </form>
+
+      <div className="mt-4 flex items-center justify-between gap-3">
+        <p className="text-sm text-muted">
+          Showing <span className="font-semibold tabular-nums text-navy">{rows.length}</span>
+          {rows.length >= 75 ? " (capped at 75)" : ""} result{rows.length === 1 ? "" : "s"}
+        </p>
+      </div>
+
       {rows.length === 0 ? (
-        <p className="mt-8 text-sm text-muted">No applications match these filters.</p>
+        <AdminEmptyState
+          title="No applications match"
+          description={
+            hasFilters
+              ? "Try clearing filters or broadening the date range."
+              : "Submitted applications will appear here for review."
+          }
+          actionHref={hasFilters ? "/admin/applications" : undefined}
+          actionLabel={hasFilters ? "Clear filters" : undefined}
+          icon={<ClipboardList className="size-5" />}
+          className="mt-4"
+        />
       ) : (
-        <div className="mt-6 overflow-x-auto rounded-lg border border-border bg-white">
+        <div className="mt-4 overflow-x-auto rounded-lg border border-border bg-white">
           <table className="w-full text-left text-sm">
             <thead className="border-b border-border bg-surface text-muted">
               <tr>
@@ -141,7 +175,7 @@ export default async function AdminApplicationsPage({
                   href={`/admin/applications/${row.id}`}
                   label={row.referenceNumber ?? "Draft"}
                 >
-                  <td className="px-4 py-3 font-medium text-navy group-hover:text-blue">
+                  <td className="px-4 py-3 font-medium text-navy group-hover:text-gold-deep">
                     {row.referenceNumber ?? "Draft"}
                   </td>
                   <td className="px-4 py-3">{row.profile?.fullName ?? "—"}</td>
@@ -155,7 +189,9 @@ export default async function AdminApplicationsPage({
                       {row.job.city}, {row.job.country}
                     </span>
                   </td>
-                  <td className="px-4 py-3 capitalize">{statusLabel(row.status)}</td>
+                  <td className="px-4 py-3">
+                    <ApplicationStatusBadge status={row.status} />
+                  </td>
                   <td className="px-4 py-3">{formatDisplayDate(row.submittedAt) || "—"}</td>
                 </AdminApplicationRow>
               ))}

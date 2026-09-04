@@ -7,6 +7,7 @@ import { Input, Textarea } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CheckboxField, NativeSelect } from "@/components/ui/select";
 import { saveJobAction } from "@/server/admin/offer-actions";
+import { AdminCoverImageField } from "@/components/admin/cover-image-field";
 
 const PROFILE_SECTIONS = [
   { key: "education", label: "Education" },
@@ -46,6 +47,7 @@ export type AdminJobFormValues = {
   includesVisaSupport: boolean;
   profileSections: string[];
   documentRequirements: { key: string; name: string; required: boolean }[];
+  coverImageUrl?: string | null;
 };
 
 function Field({
@@ -154,6 +156,7 @@ export function AdminJobForm({ job }: { job: AdminJobFormValues }) {
           defaultChecked={job.includesVisaSupport}
         />
       </div>
+      <AdminCoverImageField currentUrl={job.coverImageUrl} label="Listing photo" />
       <Field id="overview" label="Overview">
         <Textarea id="overview" name="overview" defaultValue={job.overview} />
       </Field>

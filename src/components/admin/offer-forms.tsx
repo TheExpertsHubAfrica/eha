@@ -7,6 +7,7 @@ import { Input, Textarea } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CheckboxField, NativeSelect } from "@/components/ui/select";
 import { saveStudyAction, saveTravelAction } from "@/server/admin/offer-actions";
+import { AdminCoverImageField } from "@/components/admin/cover-image-field";
 
 export type AdminTravelFormValues = {
   id?: string;
@@ -21,6 +22,7 @@ export type AdminTravelFormValues = {
   featured: boolean;
   status: string;
   accent: string;
+  coverImageUrl?: string | null;
 };
 
 export type AdminStudyFormValues = {
@@ -92,6 +94,7 @@ export function AdminTravelForm({ pack }: { pack: AdminTravelFormValues }) {
         </NativeSelect>
       </div>
       <CheckboxField id="featured" name="featured" label="Featured" defaultChecked={pack.featured} />
+      <AdminCoverImageField currentUrl={pack.coverImageUrl} label="Listing photo" />
       <div>
         <Label htmlFor="summary">Summary</Label>
         <Textarea id="summary" name="summary" defaultValue={pack.summary} />

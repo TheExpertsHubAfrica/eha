@@ -18,7 +18,7 @@ export default async function AdminNewJobPage() {
         Back to jobs
       </Link>
       <h1 className="mt-2 text-2xl font-semibold text-navy">New job</h1>
-      <p className="mt-1 mb-6 text-sm text-muted">Fields match the live job record. There is no image gallery in this phase.</p>
+      <p className="mt-1 mb-6 text-sm text-muted">Fields match the live job record. Add a listing photo to show on Work Abroad cards.</p>
       <AdminJobForm
         job={{
           title: "",

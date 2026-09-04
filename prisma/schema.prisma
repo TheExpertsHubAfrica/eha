@@ -60,6 +60,8 @@ model Job {
   workingConditions         String           @map("working_conditions")
   applicationRequirements   String[]         @map("application_requirements")
   importantInformation      String[]         @map("important_information")
+  coverImageKey             String?          @map("cover_image_key")
+  coverImageMime            String?          @map("cover_image_mime")
   publishedAt               DateTime?        @map("published_at")
   createdAt                 DateTime         @default(now()) @map("created_at")
   updatedAt                 DateTime         @updatedAt @map("updated_at")
@@ -121,20 +123,22 @@ model JobProfileSectionRequirement {
 }
 
 model TravelPackage {
-  id          String         @id @default(cuid())
-  slug        String         @unique
-  destination String
-  country     String
-  name        String
-  duration    String
-  summary     String
-  featured    Boolean        @default(false)
-  status      PublishStatus  @default(draft)
-  includes    String[]
-  excludes    String[]
-  accent      TravelAccent
-  createdAt   DateTime       @default(now()) @map("created_at")
-  updatedAt   DateTime       @updatedAt @map("updated_at")
+  id             String         @id @default(cuid())
+  slug           String         @unique
+  destination    String
+  country        String
+  name           String
+  duration       String
+  summary        String
+  featured       Boolean        @default(false)
+  status         PublishStatus  @default(draft)
+  includes       String[]
+  excludes       String[]
+  accent         TravelAccent
+  coverImageKey  String?        @map("cover_image_key")
+  coverImageMime String?        @map("cover_image_mime")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
 
   @@index([status, featured])
   @@map("travel_packages")

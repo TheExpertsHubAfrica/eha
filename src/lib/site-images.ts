@@ -96,7 +96,14 @@ function hashJobId(jobId: string) {
   return hash;
 }
 
-export function workCoverForJob(job: { id: string; category: string; slug?: string }) {
+export function workCoverForJob(job: {
+  id: string;
+  category: string;
+  slug?: string;
+  coverImageUrl?: string | null;
+}) {
+  if (job.coverImageUrl) return job.coverImageUrl;
+
   const byJob = jobCoverOverrides[job.id] ?? (job.slug ? jobCoverOverrides[job.slug] : undefined);
   if (byJob) return byJob;
 

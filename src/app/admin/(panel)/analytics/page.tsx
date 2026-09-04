@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Card, CardBody } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { BarList, Sparkline, percent } from "@/components/admin/charts";
+import { AdminPageHeader } from "@/components/admin/page-header";
+import { AdminStatCard } from "@/components/admin/stat-card";
 import { loadAnalytics } from "@/server/analytics/queries";
 import { requireAdmin } from "@/server/admin/auth";
 
@@ -17,46 +20,40 @@ export default async function AdminAnalyticsPage() {
 
   return (
     <div>
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold text-navy">Analytics</h1>
-          <p className="mt-1 text-sm text-muted">
-            Page views are counted when a public detail page loads. Conversion is submitted applications divided by job views. These are not unique visitors.
-          </p>
-        </div>
-        <div className="flex gap-3 text-sm">
-          <a className="text-blue hover:underline" href="/admin/analytics/export?type=applications">
-            Applications CSV
-          </a>
-          <a className="text-blue hover:underline" href="/admin/analytics/export?type=jobs">
-            Job report CSV
-          </a>
-        </div>
+      <AdminPageHeader
+        eyebrow="Workspace"
+        title="Analytics"
+        description="Page views are counted when a public detail page loads. Conversion is submitted applications divided by job views. These are not unique visitors."
+        actions={
+          <>
+            <Button asChild size="sm" variant="outline">
+              <a href="/admin/analytics/export?type=applications">Applications CSV</a>
+            </Button>
+            <Button asChild size="sm" variant="outline">
+              <a href="/admin/analytics/export?type=jobs">Job report CSV</a>
+            </Button>
+          </>
+        }
+      />
+      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+        <AdminStatCard
+          label="Completion rate"
+          value={percent(stats.completionRate)}
+          hint="Submitted / applications started"
+        />
+        <AdminStatCard
+          label="Document completeness"
+          value={percent(stats.documentRate)}
+          hint="Submitted files with at least one upload"
+        />
+        <AdminStatCard
+          label="Abandoned drafts"
+          value={stats.abandoned}
+          hint="Expired, or untouched for 7 days"
+          accent
+        />
       </div>
-      <div className="mt-6 grid gap-4 sm:grid-cols-3">
-        <Card>
-          <CardBody>
-            <p className="text-sm text-muted">Completion rate</p>
-            <p className="mt-2 text-2xl font-semibold text-navy">{percent(stats.completionRate)}</p>
-            <p className="mt-1 text-xs text-muted">Submitted / applications started</p>
-          </CardBody>
-        </Card>
-        <Card>
-          <CardBody>
-            <p className="text-sm text-muted">Document completeness</p>
-            <p className="mt-2 text-2xl font-semibold text-navy">{percent(stats.documentRate)}</p>
-            <p className="mt-1 text-xs text-muted">Submitted files that include at least one upload</p>
-          </CardBody>
-        </Card>
-        <Card>
-          <CardBody>
-            <p className="text-sm text-muted">Abandoned drafts</p>
-            <p className="mt-2 text-2xl font-semibold text-navy">{stats.abandoned}</p>
-            <p className="mt-1 text-xs text-muted">Expired, or untouched for 7 days</p>
-          </CardBody>
-        </Card>
-      </div>
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+      <div className="mt-6 grid gap-4 lg:grid-cols-2">
         <Card>
           <CardBody>
             <h2 className="text-sm font-semibold text-navy">Funnel</h2>
@@ -108,15 +105,18 @@ export default async function AdminAnalyticsPage() {
               </thead>
               <tbody>
                 {stats.jobPerformance.map((row) => (
-                  <tr key={row.id} className="border-b border-border last:border-0">
+                  <tr
+                    key={row.id}
+                    className="border-b border-border transition-colors last:border-0 hover:bg-gold-soft/20"
+                  >
                     <td className="px-4 py-3">
                       {row.title}
                       <span className="block text-muted">{row.city}</span>
                     </td>
-                    <td className="px-4 py-3">{row.views}</td>
-                    <td className="px-4 py-3">{row.started}</td>
-                    <td className="px-4 py-3">{row.applied}</td>
-                    <td className="px-4 py-3">{percent(row.conversion)}</td>
+                    <td className="px-4 py-3 tabular-nums">{row.views}</td>
+                    <td className="px-4 py-3 tabular-nums">{row.started}</td>
+                    <td className="px-4 py-3 tabular-nums">{row.applied}</td>
+                    <td className="px-4 py-3 tabular-nums">{percent(row.conversion)}</td>
                   </tr>
                 ))}
               </tbody>

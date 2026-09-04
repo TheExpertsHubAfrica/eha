@@ -4,6 +4,12 @@ import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin, writeAdminAudit } from "@/server/admin/auth";
+import {
+  coverFileFromForm,
+  deleteOfferCover,
+  shouldRemoveCover,
+  uploadOfferCover,
+} from "@/server/admin/cover-images";
 import { passportPhotoDocumentMeta } from "@/lib/apply/document-requirements";
 import { prisma } from "@/server/db";
 
@@ -24,6 +30,48 @@ function slugify(value: string) {
 
 function isUniqueConflict(error: unknown) {
   return error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002";
+}
+
+async function applyCoverUpdate(
+  kind: "job" | "travel",
+  id: string,
+  formData: FormData,
+  previousKey: string | null | undefined,
+) {
+  const file = coverFileFromForm(formData);
+  if (file) {
+    const uploaded = await uploadOfferCover(kind, id, file, previousKey);
+    if (!uploaded.ok) return uploaded;
+    if (kind === "job") {
+      await prisma.job.update({
+        where: { id },
+        data: { coverImageKey: uploaded.storageKey, coverImageMime: uploaded.mimeType },
+      });
+    } else {
+      await prisma.travelPackage.update({
+        where: { id },
+        data: { coverImageKey: uploaded.storageKey, coverImageMime: uploaded.mimeType },
+      });
+    }
+    return { ok: true as const };
+  }
+
+  if (shouldRemoveCover(formData) && previousKey) {
+    if (kind === "job") {
+      await prisma.job.update({
+        where: { id },
+        data: { coverImageKey: null, coverImageMime: null },
+      });
+    } else {
+      await prisma.travelPackage.update({
+        where: { id },
+        data: { coverImageKey: null, coverImageMime: null },
+      });
+    }
+    await deleteOfferCover(previousKey);
+  }
+
+  return { ok: true as const };
 }
 
 export async function saveJobAction(jobId: string | null, formData: FormData) {
@@ -148,6 +196,11 @@ export async function saveJobAction(jobId: string | null, formData: FormData) {
     throw error;
   }
 
+  const coverResult = await applyCoverUpdate("job", savedId!, formData, existing?.coverImageKey);
+  if (!coverResult.ok) {
+    return { ok: false as const, error: coverResult.error };
+  }
+
   await writeAdminAudit({
     actorId: admin.id,
     action: jobId ? "job.update" : "job.create",
@@ -186,9 +239,25 @@ export async function saveTravelAction(id: string | null, formData: FormData) {
     return { ok: false as const, error: "Slug must contain letters or numbers." };
   }
   try {
+    const existing = id
+      ? await prisma.travelPackage.findUnique({
+          where: { id },
+          select: { coverImageKey: true },
+        })
+      : null;
+    if (id && !existing) {
+      return { ok: false as const, error: "Travel package not found." };
+    }
+
     const saved = id
       ? await prisma.travelPackage.update({ where: { id }, data: payload })
       : await prisma.travelPackage.create({ data: payload });
+
+    const coverResult = await applyCoverUpdate("travel", saved.id, formData, existing?.coverImageKey);
+    if (!coverResult.ok) {
+      return { ok: false as const, error: coverResult.error };
+    }
+
     await writeAdminAudit({
       actorId: admin.id,
       action: id ? "travel.update" : "travel.create",
@@ -197,6 +266,7 @@ export async function saveTravelAction(id: string | null, formData: FormData) {
     });
     revalidatePath("/admin/travel");
     revalidatePath("/travel");
+    revalidatePath(`/travel/${saved.slug}`);
     revalidatePath("/");
     redirect(`/admin/travel/${saved.id}`);
   } catch (error) {

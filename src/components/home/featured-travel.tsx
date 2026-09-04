@@ -10,7 +10,7 @@ import type { TravelPackage } from "@/lib/catalog/types";
 export function TravelCard({ item }: { item: TravelPackage }) {
   return (
     <article className="flex h-full flex-col overflow-hidden border border-border bg-white transition-colors hover:border-gold/40">
-      <DestinationPanel accent={item.accent} label={item.country} />
+      <DestinationPanel accent={item.accent} label={item.country} coverImageUrl={item.coverImageUrl} />
       <div className="flex flex-1 flex-col p-5">
         <p className="text-xs font-medium tracking-wide text-gold-deep uppercase">
           {item.duration}

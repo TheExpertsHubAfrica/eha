@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { ScrollText } from "lucide-react";
+import { AdminEmptyState } from "@/components/admin/empty-state";
+import { AdminPageHeader } from "@/components/admin/page-header";
 import { formatDisplayDate } from "@/lib/utils";
 import { prisma } from "@/server/db";
 import { requireAdmin } from "@/server/admin/auth";
@@ -18,10 +21,18 @@ export default async function AdminAuditPage() {
   });
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-navy">Audit log</h1>
-      <p className="mt-1 text-sm text-muted">Staff actions such as views, status changes, downloads and publishes.</p>
+      <AdminPageHeader
+        eyebrow="Site"
+        title="Audit log"
+        description="Staff actions such as views, status changes, downloads and publishes. Showing the latest 120 events."
+      />
       {rows.length === 0 ? (
-        <p className="mt-8 text-sm text-muted">No audit events recorded yet.</p>
+        <AdminEmptyState
+          title="No audit events yet"
+          description="Actions taken in the admin console will appear here."
+          icon={<ScrollText className="size-5" />}
+          className="mt-6"
+        />
       ) : (
         <div className="mt-6 overflow-x-auto rounded-lg border border-border bg-white">
           <table className="w-full text-left text-sm">
@@ -35,13 +46,16 @@ export default async function AdminAuditPage() {
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={row.id} className="border-b border-border last:border-0">
-                  <td className="px-4 py-3">{formatDisplayDate(row.createdAt)}</td>
+                <tr
+                  key={row.id}
+                  className="border-b border-border transition-colors last:border-0 hover:bg-gold-soft/20"
+                >
+                  <td className="px-4 py-3 whitespace-nowrap">{formatDisplayDate(row.createdAt)}</td>
                   <td className="px-4 py-3">
                     {row.actorType}
                     {row.actorId ? ` · ${row.actorId.slice(0, 8)}` : ""}
                   </td>
-                  <td className="px-4 py-3">{row.action}</td>
+                  <td className="px-4 py-3 font-medium text-navy">{row.action}</td>
                   <td className="px-4 py-3">
                     {row.targetType}
                     {row.targetId ? ` · ${row.targetId.slice(0, 10)}` : ""}

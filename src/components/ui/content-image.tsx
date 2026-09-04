@@ -41,6 +41,7 @@ export function ContentImage({
         className={cn("object-cover", imageClassName)}
         sizes={sizes}
         priority={priority}
+        unoptimized={src.startsWith("/api/")}
       />
     </div>
   );

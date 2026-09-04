@@ -51,6 +51,7 @@ export type JobOffer = {
   includesAccommodation: boolean;
   includesFlight: boolean;
   includesVisaSupport: boolean;
+  coverImageUrl?: string | null;
 };
 
 export type TravelPackage = {
@@ -66,6 +67,7 @@ export type TravelPackage = {
   includes: string[];
   excludes: string[];
   accent: "navy" | "blue" | "teal" | "sand" | "rose";
+  coverImageUrl?: string | null;
 };
 
 export type StudyDestination = {

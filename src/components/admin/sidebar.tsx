@@ -2,8 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import {
+  BarChart3,
+  Briefcase,
+  ClipboardList,
+  FileText,
+  GraduationCap,
+  LayoutDashboard,
+  Menu,
+  Newspaper,
+  Plane,
+  ScrollText,
+  Settings,
+  X,
+} from "lucide-react";
+import { useEffect, useState, type ComponentType } from "react";
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -11,17 +24,39 @@ import { logoutAdminAction } from "@/server/admin/actions";
 import { can, roleLabel, type AdminPermission, type AdminRole } from "@/lib/admin/permissions";
 import { cn } from "@/lib/utils";
 
-const links: { href: string; label: string; permission?: AdminPermission }[] = [
-  { href: "/admin", label: "Overview" },
-  { href: "/admin/applications", label: "Applications", permission: "applications.read" },
-  { href: "/admin/analytics", label: "Analytics", permission: "analytics.read" },
-  { href: "/admin/jobs", label: "Jobs", permission: "jobs.write" },
-  { href: "/admin/travel", label: "Travel", permission: "travel.write" },
-  { href: "/admin/study", label: "Study", permission: "study.write" },
-  { href: "/admin/blog", label: "Blog", permission: "content.write" },
-  { href: "/admin/content", label: "Content", permission: "content.write" },
-  { href: "/admin/settings", label: "Settings", permission: "settings.write" },
-  { href: "/admin/audit-logs", label: "Audit log", permission: "audit.read" },
+type NavItem = {
+  href: string;
+  label: string;
+  permission?: AdminPermission;
+  icon: ComponentType<{ className?: string }>;
+};
+
+const groups: { label: string; items: NavItem[] }[] = [
+  {
+    label: "Workspace",
+    items: [
+      { href: "/admin", label: "Overview", icon: LayoutDashboard },
+      { href: "/admin/applications", label: "Applications", permission: "applications.read", icon: ClipboardList },
+      { href: "/admin/analytics", label: "Analytics", permission: "analytics.read", icon: BarChart3 },
+    ],
+  },
+  {
+    label: "Catalogue",
+    items: [
+      { href: "/admin/jobs", label: "Jobs", permission: "jobs.write", icon: Briefcase },
+      { href: "/admin/travel", label: "Travel", permission: "travel.write", icon: Plane },
+      { href: "/admin/study", label: "Study", permission: "study.write", icon: GraduationCap },
+    ],
+  },
+  {
+    label: "Site",
+    items: [
+      { href: "/admin/blog", label: "Blog", permission: "content.write", icon: Newspaper },
+      { href: "/admin/content", label: "Content", permission: "content.write", icon: FileText },
+      { href: "/admin/settings", label: "Settings", permission: "settings.write", icon: Settings },
+      { href: "/admin/audit-logs", label: "Audit log", permission: "audit.read", icon: ScrollText },
+    ],
+  },
 ];
 
 function AdminNavLinks({
@@ -34,30 +69,45 @@ function AdminNavLinks({
   const pathname = usePathname() || "/admin";
 
   return (
-    <nav className="space-y-0.5 p-3" aria-label="Admin">
-      {links
-        .filter((item) => !item.permission || can(role, item.permission))
-        .map((item) => {
-          const active =
-            item.href === "/admin"
-              ? pathname === "/admin"
-              : pathname === item.href || pathname.startsWith(`${item.href}/`);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={onNavigate}
-              className={cn(
-                "block rounded-sm px-3 py-2.5 text-sm",
-                active
-                  ? "bg-white text-black"
-                  : "text-white/75 hover:bg-white/10 hover:text-white",
-              )}
-            >
-              {item.label}
-            </Link>
-          );
-        })}
+    <nav className="space-y-5 p-3" aria-label="Admin">
+      {groups.map((group) => {
+        const visible = group.items.filter(
+          (item) => !item.permission || can(role, item.permission),
+        );
+        if (visible.length === 0) return null;
+        return (
+          <div key={group.label}>
+            <p className="px-3 pb-1.5 text-[10px] font-semibold tracking-[0.16em] text-white/40 uppercase">
+              {group.label}
+            </p>
+            <div className="space-y-0.5">
+              {visible.map((item) => {
+                const active =
+                  item.href === "/admin"
+                    ? pathname === "/admin"
+                    : pathname === item.href || pathname.startsWith(`${item.href}/`);
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={onNavigate}
+                    className={cn(
+                      "flex items-center gap-2.5 rounded-sm px-3 py-2.5 text-sm transition-colors",
+                      active
+                        ? "bg-white text-black shadow-[inset_3px_0_0_0_#b8953a]"
+                        : "text-white/75 hover:bg-white/10 hover:text-white",
+                    )}
+                  >
+                    <Icon className={cn("size-4 shrink-0", active ? "text-gold-deep" : "opacity-80")} />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
     </nav>
   );
 }
@@ -69,8 +119,20 @@ function AdminNavFooter({
 }) {
   return (
     <div className="shrink-0 border-t border-white/10 px-5 py-4">
-      <p className="truncate text-sm font-medium text-white">{user.name}</p>
-      <p className="truncate text-xs text-white/55">{roleLabel(user.role)}</p>
+      <div className="flex items-center gap-3">
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gold text-sm font-semibold text-black">
+          {user.name
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((part) => part[0]?.toUpperCase() ?? "")
+            .join("") || "A"}
+        </div>
+        <div className="min-w-0">
+          <p className="truncate text-sm font-medium text-white">{user.name}</p>
+          <p className="truncate text-xs text-white/55">{roleLabel(user.role)}</p>
+        </div>
+      </div>
       <form action={logoutAdminAction} className="mt-3">
         <button
           type="submit"
@@ -99,11 +161,7 @@ function AdminNavPanel({
       <div className="flex shrink-0 items-start justify-between gap-3 border-b border-white/10 px-5 py-5">
         <div className="min-w-0">
           <div className="inline-flex bg-white px-3 py-2">
-            <Logo
-              background="light"
-              href="/admin"
-              imageClassName="h-8 w-auto"
-            />
+            <Logo background="light" href="/admin" imageClassName="h-8 w-auto" />
           </div>
           <p className="mt-3 text-[11px] font-semibold tracking-[0.18em] uppercase text-white/55">
             Admin console
@@ -138,31 +196,27 @@ export function AdminSidebar({
     setOpen(false);
   }, [pathname]);
 
+  const currentLabel =
+    groups.flatMap((group) => group.items).find((item) =>
+      item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href),
+    )?.label ?? "Admin";
+
   return (
     <>
-      <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-3 border-b border-border bg-white px-4 md:hidden">
+      <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-3 border-b border-border bg-white/95 px-4 backdrop-blur md:hidden">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              aria-label="Open admin menu"
-            >
+            <Button type="button" variant="outline" size="icon" aria-label="Open admin menu">
               <Menu />
             </Button>
           </SheetTrigger>
           <SheetContent title="Admin menu" side="left" bare className="w-[min(100%,288px)]">
-            <AdminNavPanel
-              user={user}
-              showClose
-              onNavigate={() => setOpen(false)}
-            />
+            <AdminNavPanel user={user} showClose onNavigate={() => setOpen(false)} />
           </SheetContent>
         </Sheet>
         <Logo background="light" href="/admin" imageClassName="h-7 w-auto" />
         <p className="ml-auto truncate text-xs font-semibold tracking-[0.12em] text-muted uppercase">
-          Admin
+          {currentLabel}
         </p>
       </header>
 
