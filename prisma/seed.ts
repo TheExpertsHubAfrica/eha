@@ -133,7 +133,18 @@ async function main() {
       instructions: PASSPORT_SIZE_PHOTO.instructions,
       acceptedTypes: [...PASSPORT_SIZE_PHOTO.acceptedTypes],
       maxSizeMb: PASSPORT_SIZE_PHOTO.maxSizeMb,
+      sortOrder: 0,
     },
+  });
+
+  await prisma.jobDocumentRequirement.updateMany({
+    where: { key: "passport_bio" },
+    data: { sortOrder: 1 },
+  });
+
+  await prisma.jobDocumentRequirement.updateMany({
+    where: { key: "cv" },
+    data: { sortOrder: 2 },
   });
 
   await prisma.travelPackage.deleteMany({

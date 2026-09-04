@@ -100,6 +100,7 @@ export async function saveJobAction(jobId: string | null, formData: FormData) {
           },
           documentRequirements: {
             create: [
+              passportPhotoDocumentMeta(0),
               {
                 key: "passport_bio",
                 name: "Passport bio page",
@@ -108,9 +109,8 @@ export async function saveJobAction(jobId: string | null, formData: FormData) {
                 acceptedTypes: ["application/pdf", "image/jpeg", "image/png"],
                 maxSizeMb: 5,
                 instructions: "PDF, JPG, or PNG, maximum 5 MB.",
-                sortOrder: 0,
+                sortOrder: 1,
               },
-              passportPhotoDocumentMeta(1),
               {
                 key: "cv",
                 name: "Curriculum vitae (PDF)",

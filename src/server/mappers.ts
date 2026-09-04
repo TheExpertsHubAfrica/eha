@@ -18,6 +18,15 @@ type JobRecord = Job & {
   profileSectionRequirements: JobProfileSectionRequirement[];
 };
 
+function compareDocumentRequirements(
+  a: Pick<JobDocumentRequirement, "key" | "sortOrder">,
+  b: Pick<JobDocumentRequirement, "key" | "sortOrder">,
+) {
+  if (a.key === "passport_photo" && b.key !== "passport_photo") return -1;
+  if (b.key === "passport_photo" && a.key !== "passport_photo") return 1;
+  return a.sortOrder - b.sortOrder;
+}
+
 export function toJobOffer(job: JobRecord): JobOffer {
   return {
     id: job.id,
@@ -53,10 +62,10 @@ export function toJobOffer(job: JobRecord): JobOffer {
       .sort((a, b) => a.sortOrder - b.sortOrder)
       .map((faq) => ({ question: faq.question, answer: faq.answer })),
     requiredDocuments: [...job.documentRequirements]
-      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .sort((a, b) => compareDocumentRequirements(a, b))
       .map((doc) => doc.name),
     documentRequirements: [...job.documentRequirements]
-      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .sort((a, b) => compareDocumentRequirements(a, b))
       .map((doc) => ({
         key: doc.key,
         name: doc.name,

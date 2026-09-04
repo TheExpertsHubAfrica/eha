@@ -10,7 +10,7 @@ export const PASSPORT_SIZE_PHOTO = {
   required: true,
 } as const;
 
-export function passportPhotoDocumentMeta(sortOrder = 1) {
+export function passportPhotoDocumentMeta(sortOrder = 0) {
   return {
     ...PASSPORT_SIZE_PHOTO,
     acceptedTypes: [...PASSPORT_SIZE_PHOTO.acceptedTypes],

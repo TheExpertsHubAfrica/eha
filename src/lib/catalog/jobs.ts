@@ -11,8 +11,8 @@ type SeedJob = Omit<
 >;
 
 const dubaiDocs = [
-  "Passport bio page",
   "Passport-size photograph",
+  "Passport bio page",
   "Curriculum vitae (PDF)",
 ];
 
