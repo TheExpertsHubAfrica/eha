@@ -33,7 +33,7 @@ export default async function WorkAbroadPage({
         title="Roles with salary, benefits and requirements in one place."
         image={siteImages.work.hero}
         imageAlt="Browse overseas jobs and work abroad opportunities with TEHA"
-        imageClassName="object-top"
+        imageClassName="object-cover object-top max-sm:origin-top-left max-sm:scale-[1.75] sm:scale-100"
         priorityImage
       />
       <section className="container-wide grid gap-6 py-10 sm:py-12 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-8 lg:py-16">

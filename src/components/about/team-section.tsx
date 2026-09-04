@@ -5,7 +5,7 @@ import { teamMembers } from "@/lib/team";
 export function TeamSection() {
   return (
     <div id="team" className="scroll-mt-28">
-      <p className="eyebrow">Our team</p>
+      <p className="eyebrow">Meet</p>
       <div className="gold-rule mt-3" aria-hidden="true" />
       <h2 className="mt-4 text-2xl font-bold text-black">The people behind TEHA.</h2>
       <ul className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">

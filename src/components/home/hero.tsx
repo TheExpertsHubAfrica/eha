@@ -108,7 +108,7 @@ export function HomeHero() {
                   src={siteImages.home.hero}
                   alt="International work, travel and study opportunities abroad with The Experts Hub Africa"
                   fill
-                  className="object-cover"
+                  className="object-cover object-top max-sm:origin-top-left max-sm:scale-[1.75] sm:object-cover sm:scale-100"
                   priority
                   sizes="(max-width: 1024px) 100vw, 58vw"
                 />
