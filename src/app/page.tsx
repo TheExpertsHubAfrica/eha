@@ -2,7 +2,6 @@ import { FeaturedJobs } from "@/components/home/featured-jobs";
 import { FeaturedTravel } from "@/components/home/featured-travel";
 import { FinalCta } from "@/components/home/final-cta";
 import { HomeHero } from "@/components/home/hero";
-import { HowItWorks } from "@/components/home/how-it-works";
 import { JourneySelector } from "@/components/home/journey-selector";
 import { StudySection } from "@/components/home/study-section";
 import { TrustSection } from "@/components/home/trust-section";
@@ -45,7 +44,6 @@ export default async function HomePage() {
           </div>
         </section>
       ) : null}
-      <HowItWorks />
       <FinalCta />
     </SiteShell>
   );

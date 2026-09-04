@@ -1,29 +1,45 @@
 import { siteImages } from "@/lib/site-images";
 
-const reasons = [
+const steps = [
   {
-    title: "Guided application process",
-    text: "Applications move in clear steps: profile, documents, review, then submit.",
+    n: "01",
+    title: "Profile submission",
+    text: "CV, passport bio page, academic credentials and passport photo on a white background.",
   },
   {
-    title: "Experienced support",
-    text: "Our team helps you prepare a complete file and understand what happens next.",
+    n: "02",
+    title: "Training",
+    text: "Prepare for the role and process with guided training from our team.",
   },
   {
-    title: "Transparent information",
-    text: "Salary, benefits and requirements are listed on each opportunity — not hidden in a homepage form.",
+    n: "03",
+    title: "Interview",
+    text: "Meet with employers or partners as part of the selection pathway.",
   },
   {
-    title: "International opportunities",
-    text: "Work, travel and study pathways are organised in one professional platform.",
+    n: "04",
+    title: "Selection",
+    text: "Successful candidates are confirmed for the next stage.",
   },
   {
-    title: "Dedicated applicant support",
-    text: "Questions go to the published contact channels — phone, email, or WhatsApp when enabled.",
+    n: "05",
+    title: "Remaining documents",
+    text: "Police clearance, medical exam and yellow card.",
   },
   {
-    title: "Secure document handling",
-    text: "Identity documents are requested only after you start an application and stored privately.",
+    n: "06",
+    title: "Offer signing",
+    text: "Review and sign your offer before visa processing begins.",
+  },
+  {
+    n: "07",
+    title: "Visa processing",
+    text: "We guide you through visa submission and follow-up.",
+  },
+  {
+    n: "08",
+    title: "Orientation & departure",
+    text: "Final briefing and support before you travel.",
   },
 ];
 
@@ -37,28 +53,26 @@ export function TrustSection() {
       />
       <div className="relative container-wide py-14 sm:py-16">
         <p className="text-xs font-semibold tracking-[0.16em] text-gold-bright uppercase">
-          Why applicants choose us
+          How it works
         </p>
         <div className="mt-3 h-0.5 w-10 bg-gold" aria-hidden="true" />
         <h2 className="mt-5 max-w-xl text-2xl font-bold text-white sm:text-3xl">
-          Organised, careful and built around a complete application — not a
-          crowded homepage.
+          Our application process is simple.
         </h2>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {reasons.map((item, index) => (
-            <article key={item.title} className="border-t border-white/10 pt-5">
+        <ol className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {steps.map((step) => (
+            <li key={step.n} className="border-t border-white/10 pt-5">
               <p className="text-xs font-semibold tracking-wide text-gold-bright">
-                {String(index + 1).padStart(2, "0")}
+                {step.n}
               </p>
-              <h3 className="mt-2 text-lg font-semibold text-white">
-                {item.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-white/65">
-                {item.text}
-              </p>
-            </article>
+              <h3 className="mt-2 text-lg font-semibold text-white">{step.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-white/65">{step.text}</p>
+            </li>
           ))}
-        </div>
+        </ol>
+        <p className="mt-10 border-t border-white/10 pt-6 text-sm font-medium text-white/75">
+          Entire process takes 15–30 days.
+        </p>
       </div>
     </section>
   );
