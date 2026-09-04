@@ -35,12 +35,7 @@ export default function AboutPage() {
           work or preparing for study programmes. Our goal is to simplify the
           process and make these opportunities more accessible.
         </p>
-        <div className="mt-10 grid gap-8 lg:grid-cols-2">
-          <ContentImage
-            src={siteImages.about.team}
-            alt="The Experts Hub Africa team providing work, travel and study abroad support"
-            aspect="video"
-          />
+        <div className="mt-10">
           <ContentImage
             src={siteImages.about.process}
             alt="Guided job and study abroad application process with document support"
