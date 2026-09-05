@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Download } from "lucide-react";
 import { ApplicationWorkflowForms } from "@/components/admin/application-workflow";
 import { WorkProfileRecord } from "@/components/apply/work-profile-record";
 import { DocumentFileActions } from "@/components/documents/document-preview";
+import { Button } from "@/components/ui/button";
 import { can } from "@/lib/admin/permissions";
 import { statusLabel } from "@/lib/admin/status";
 import { formatFileSize } from "@/lib/uploads/validate";
@@ -84,17 +86,27 @@ export default async function AdminApplicationDetailPage({
 
   return (
     <div className="space-y-8">
-      <div>
-        <Link href="/admin/applications" className="text-sm text-blue hover:underline">
-          Back to applications
-        </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-navy">
-          {application.referenceNumber ?? "Draft application"}
-        </h1>
-        <p className="mt-1 text-sm text-muted">
-          {application.job.title} · {application.job.city} · {statusLabel(application.status)}
-          {application.submittedAt ? ` · submitted ${formatDisplayDate(application.submittedAt)}` : ""}
-        </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <Link href="/admin/applications" className="text-sm text-blue hover:underline">
+            Back to applications
+          </Link>
+          <h1 className="mt-2 text-2xl font-semibold text-navy">
+            {application.referenceNumber ?? "Draft application"}
+          </h1>
+          <p className="mt-1 text-sm text-muted">
+            {application.job.title} · {application.job.city} · {statusLabel(application.status)}
+            {application.submittedAt ? ` · submitted ${formatDisplayDate(application.submittedAt)}` : ""}
+          </p>
+        </div>
+        {canFiles ? (
+          <Button asChild size="sm" variant="outline">
+            <a href={`/admin/applications/${application.id}/work-profile`}>
+              <Download className="size-4" />
+              Download work profile
+            </a>
+          </Button>
+        ) : null}
       </div>
 
       {canWrite && application.status !== "draft" ? (
