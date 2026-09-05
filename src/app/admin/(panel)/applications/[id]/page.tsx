@@ -103,7 +103,7 @@ export default async function AdminApplicationDetailPage({
           <Button asChild size="sm" variant="outline">
             <a href={`/admin/applications/${application.id}/work-profile`}>
               <Download className="size-4" />
-              Download work profile
+              Download Job Profile
             </a>
           </Button>
         ) : null}
