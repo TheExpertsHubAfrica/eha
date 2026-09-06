@@ -8,10 +8,16 @@ import { getJobFacets, searchJobs } from "@/lib/catalog";
 import { hasActiveFilters, parseJobFilters } from "@/lib/jobs/filters";
 import { siteImages } from "@/lib/site-images";
 import { siteConfig } from "@/lib/site-config";
+import {
+  isCampaignTraffic,
+  whatsappPrefillWorkAbroad,
+  workAbroadWhatsAppHref,
+} from "@/lib/whatsapp";
+import { getResolvedSite } from "@/server/settings";
 
 export const metadata: Metadata = {
   title: "Work Abroad",
-  description: `Browse overseas job opportunities with ${siteConfig.name}.`,
+  description: `Browse overseas job opportunities with ${siteConfig.name}. Choose a role and submit your application online.`,
 };
 
 export const dynamic = "force-dynamic";
@@ -23,19 +29,49 @@ export default async function WorkAbroadPage({
 }) {
   const params = await searchParams;
   const filters = parseJobFilters(params);
-  const [jobs, facets] = await Promise.all([searchJobs(filters), getJobFacets()]);
+  const [jobs, facets, site] = await Promise.all([
+    searchJobs(filters),
+    getJobFacets(),
+    getResolvedSite(),
+  ]);
   const filtered = hasActiveFilters(filters);
+  const campaign = isCampaignTraffic(params);
+  const whatsapp = workAbroadWhatsAppHref(site);
 
   return (
-    <SiteShell>
+    <SiteShell
+      whatsapp={{
+        mode: campaign ? "hidden" : "soft",
+        prefill: whatsappPrefillWorkAbroad(site),
+        label: "Need help choosing a role?",
+      }}
+    >
       <PageHero
         eyebrow="Work abroad"
-        title="Roles with salary, benefits and requirements in one place."
+        title="Choose a role and submit your application online."
+        description="Browse open opportunities below. Open a role you want, then tap Apply now to complete your profile and documents. That is how we review candidates."
         image={siteImages.work.hero}
         imageAlt="Browse overseas jobs and work abroad opportunities with TEHA"
         imageClassName="object-cover object-top max-sm:origin-top-left max-sm:scale-[1.75] sm:scale-100"
         priorityImage
-      />
+      >
+        <p className="max-w-2xl text-sm text-muted">
+          Tip: pick the job that matches you, then apply on the site. WhatsApp is for guidance if you are unsure which role fits — applications are processed online.
+          {whatsapp ? (
+            <>
+              {" "}
+              <a
+                href={whatsapp}
+                className="font-medium text-navy underline-offset-4 hover:underline"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Need help choosing a role?
+              </a>
+            </>
+          ) : null}
+        </p>
+      </PageHero>
       <section className="container-wide grid gap-6 py-10 sm:py-12 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-8 lg:py-16">
         <JobFilters filters={filters} facets={facets} resultCount={jobs.length} />
         <div>

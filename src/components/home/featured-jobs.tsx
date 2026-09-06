@@ -63,8 +63,8 @@ export function JobCard({ job }: { job: JobOffer }) {
           ))}
         </ul>
         <div className="mt-auto pt-6">
-          <Button asChild variant="outline" className="w-full">
-            <Link href={jobPath(job)}>View opportunity</Link>
+          <Button asChild variant="primary" className="w-full">
+            <Link href={jobPath(job)}>View & apply</Link>
           </Button>
         </div>
       </div>

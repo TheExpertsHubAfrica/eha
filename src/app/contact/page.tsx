@@ -8,6 +8,7 @@ import { ContentImage } from "@/components/ui/content-image";
 import { PageHero } from "@/components/ui/page-hero";
 import { siteImages } from "@/lib/site-images";
 import { siteConfig, whatsappHref } from "@/lib/site-config";
+import { whatsappPrefillGeneral } from "@/lib/whatsapp";
 import { getResolvedSite } from "@/server/settings";
 
 export const metadata: Metadata = {
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 
 export default async function ContactPage() {
   const site = await getResolvedSite();
-  const whatsapp = whatsappHref(undefined, site);
+  const whatsapp = whatsappHref(whatsappPrefillGeneral(site), site);
 
   return (
     <SiteShell>

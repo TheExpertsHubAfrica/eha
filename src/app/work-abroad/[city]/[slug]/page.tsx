@@ -8,7 +8,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { JobCard } from "@/components/home/featured-jobs";
 import { formatMoney } from "@/lib/utils";
+import { jobWhatsAppHref, whatsappPrefillJob } from "@/lib/whatsapp";
 import { recordEvent } from "@/server/analytics/events";
+import { getResolvedSite } from "@/server/settings";
 
 type Params = { city: string; slug: string };
 
@@ -53,10 +55,19 @@ export default async function JobDetailPage({
   const job = await getJobByPath(city, slug);
   if (!job) notFound();
   await recordEvent({ name: "job_viewed", targetType: "Job", targetId: job.id });
-  const related = await getRelatedJobs(job);
+  const [related, site] = await Promise.all([getRelatedJobs(job), getResolvedSite()]);
+  const whatsapp = jobWhatsAppHref(job, site);
+  const open = job.availability === "open";
 
   return (
-    <SiteShell>
+    <SiteShell
+      whatsapp={{
+        mode: "soft",
+        prefill: whatsappPrefillJob(job, site),
+        raiseForMobileBar: open,
+        label: "Questions before you apply?",
+      }}
+    >
       <article>
         <header className="border-b border-border bg-white">
           <div className="container-page py-10 sm:py-12">
@@ -70,7 +81,7 @@ export default async function JobDetailPage({
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <Badge tone="blue">{job.category}</Badge>
               <Badge tone="success">
-                {job.availability === "open" ? "Open for applications" : job.availability}
+                {open ? "Open for applications" : job.availability}
               </Badge>
             </div>
             <h1 className="mt-4 text-3xl font-semibold text-navy sm:text-4xl">
@@ -92,11 +103,26 @@ export default async function JobDetailPage({
                 (indicative)
               </p>
             ) : null}
-            {job.availability === "open" ? (
-              <div className="mt-6 hidden lg:block">
+            {open ? (
+              <div className="mt-6 hidden space-y-3 lg:block">
                 <Button asChild size="lg">
                   <Link href={applyHref(job)}>Apply now</Link>
                 </Button>
+                <p className="max-w-md text-sm text-muted">
+                  Submit your application online to be reviewed. Documents are uploaded in the guided form — not by chat.
+                </p>
+                {whatsapp ? (
+                  <p className="text-sm">
+                    <a
+                      href={whatsapp}
+                      className="font-medium text-navy underline-offset-4 hover:underline"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      Questions before you apply? Message us on WhatsApp
+                    </a>
+                  </p>
+                ) : null}
               </div>
             ) : (
               <p className="mt-6 text-sm text-muted">This role is not open for new applications.</p>
@@ -195,15 +221,24 @@ export default async function JobDetailPage({
             <div className="sticky top-24 rounded-lg border border-border bg-white p-5">
               <p className="text-sm text-muted">Ready to continue?</p>
               <p className="mt-1 font-semibold text-navy">{job.title}</p>
-              {job.availability === "open" ? (
+              {open ? (
                 <>
                   <Button asChild className="mt-4 w-full">
                     <Link href={applyHref(job)}>Apply now</Link>
                   </Button>
                   <p className="mt-3 text-xs text-muted">
-                    You’ll complete a guided profile. Documents are uploaded later
-                    in the application — never on the homepage.
+                    Complete your guided profile online. Documents are uploaded in the application — not by WhatsApp.
                   </p>
+                  {whatsapp ? (
+                    <a
+                      href={whatsapp}
+                      className="mt-4 inline-block text-xs font-medium text-navy underline-offset-4 hover:underline"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      Questions? WhatsApp us
+                    </a>
+                  ) : null}
                 </>
               ) : (
                 <p className="mt-4 text-sm text-muted">This role is not open for new applications.</p>
@@ -213,11 +248,23 @@ export default async function JobDetailPage({
         </div>
       </article>
 
-      {job.availability === "open" ? (
-        <div className="sticky bottom-0 border-t border-border bg-white p-3 lg:hidden">
+      {open ? (
+        <div className="sticky bottom-0 z-30 border-t border-border bg-white p-3 lg:hidden">
           <Button asChild className="w-full" size="lg">
             <Link href={applyHref(job)}>Apply now</Link>
           </Button>
+          {whatsapp ? (
+            <p className="mt-2 text-center text-xs text-muted">
+              <a
+                href={whatsapp}
+                className="font-medium text-navy underline-offset-4 hover:underline"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Questions before you apply?
+              </a>
+            </p>
+          ) : null}
         </div>
       ) : null}
     </SiteShell>
