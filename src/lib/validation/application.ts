@@ -25,12 +25,17 @@ export const maritalStatusSchema = z.enum([
   "separated",
 ]);
 
+export const applicantGenderSchema = z.enum(["male", "female"], {
+  message: "Select your gender.",
+});
+
 export const personalSchema = z
   .object({
     fullName: z.string().trim().min(2, "Enter your full name.").max(120),
     dateOfBirth: dateOnly.superRefine(adultDate),
     placeOfBirth: z.string().trim().min(2, "Enter your place of birth.").max(120),
     nationality: z.string().trim().min(2, "Enter your nationality.").max(80),
+    gender: applicantGenderSchema,
     passportNumber: z
       .string()
       .trim()

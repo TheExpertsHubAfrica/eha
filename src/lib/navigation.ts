@@ -7,6 +7,7 @@ export const mainNav = [
   { href: "/team", label: "The Team" },
   { href: "/services", label: "Services" },
   { href: "/blog", label: "Blog" },
+  { href: "/payments", label: "Payments" },
   { href: "/contact", label: "Contact" },
 ] as const;
 
@@ -29,6 +30,7 @@ export const footerNav = {
     { href: "/services#travel", label: "Travel Services" },
   ],
   support: [
+    { href: "/payments", label: "Payments" },
     { href: "/contact", label: "Contact" },
     { href: "/faq", label: "FAQs" },
     { href: "/contact?intent=help", label: "Application Help" },

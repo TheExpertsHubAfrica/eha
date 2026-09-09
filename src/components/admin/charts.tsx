@@ -32,9 +32,11 @@ export function BarList({
 export function Sparkline({
   points,
   empty = "No submissions in this period.",
+  peakLabel = "submitted in a day",
 }: {
   points: { label: string; value: number }[];
   empty?: string;
+  peakLabel?: string;
 }) {
   if (points.every((item) => item.value === 0)) {
     return <p className="text-sm text-muted">{empty}</p>;
@@ -52,13 +54,15 @@ export function Sparkline({
     .map((point, index) => `${index === 0 ? "M" : "L"}${point.x},${point.y}`)
     .join(" ");
   const area = `${line} L${width},${height} L0,${height} Z`;
+  const peakDisplay =
+    Number.isInteger(max) || max >= 100 ? String(Math.round(max)) : max.toFixed(2);
   return (
     <div>
       <svg
         viewBox={`0 0 ${width} ${height}`}
         className="h-36 w-full text-gold-deep"
         role="img"
-        aria-label="Submissions over 30 days"
+        aria-label="Trend over 30 days"
       >
         <path d={area} fill="currentColor" opacity="0.12" />
         <path d={line} fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" />
@@ -69,7 +73,9 @@ export function Sparkline({
             <circle key={`${point.x}-${point.y}`} cx={point.x} cy={point.y} r="4" fill="currentColor" />
           ))}
       </svg>
-      <p className="mt-1 text-xs text-muted">Last 30 days · peak {max} submitted in a day</p>
+      <p className="mt-1 text-xs text-muted">
+        Last 30 days · peak {peakDisplay} {peakLabel}
+      </p>
     </div>
   );
 }

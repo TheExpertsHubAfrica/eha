@@ -126,6 +126,10 @@ export async function saveJobAction(jobId: string | null, formData: FormData) {
     featured: formData.get("featured") === "1",
     status,
     availability: (String(formData.get("availability") ?? "open") as "open" | "limited" | "closed"),
+    genderEligibility: (() => {
+      const value = String(formData.get("genderEligibility") ?? "both");
+      return value === "male" || value === "female" || value === "both" ? value : "both";
+    })(),
     includesAccommodation: formData.get("includesAccommodation") === "1",
     includesFlight: formData.get("includesFlight") === "1",
     includesVisaSupport: formData.get("includesVisaSupport") === "1",

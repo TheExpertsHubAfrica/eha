@@ -80,6 +80,7 @@ export function toJobOffer(job: JobRecord): JobOffer {
     includesAccommodation: job.includesAccommodation,
     includesFlight: job.includesFlight,
     includesVisaSupport: job.includesVisaSupport,
+    genderEligibility: job.genderEligibility,
     coverImageUrl: job.coverImageKey ? offerCoverUrl("job", job.id) : null,
   };
 }

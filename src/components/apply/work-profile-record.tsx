@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { genderLabel } from "@/lib/gender";
 import { formatFileSize } from "@/lib/uploads/validate";
 import { dateInputValue, formatDisplayDate, formatMoney } from "@/lib/utils";
 import type { JobOffer } from "@/lib/catalog/types";
@@ -50,6 +51,7 @@ export function WorkProfileRecord({
       {profile ? (
         <Block title="Personal information">
           <Row label="Full name" value={profile.fullName} />
+          <Row label="Gender" value={profile.gender ? genderLabel(profile.gender) : undefined} />
           <Row label="Date of birth" value={dateInputValue(profile.dateOfBirth)} />
           <Row label="Place of birth" value={profile.placeOfBirth} />
           <Row label="Nationality" value={profile.nationality} />

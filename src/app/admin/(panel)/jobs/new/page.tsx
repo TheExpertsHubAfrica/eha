@@ -44,6 +44,7 @@ export default async function AdminNewJobPage() {
           featured: false,
           status: "draft",
           availability: "open",
+          genderEligibility: "both",
           includesAccommodation: false,
           includesFlight: false,
           includesVisaSupport: true,

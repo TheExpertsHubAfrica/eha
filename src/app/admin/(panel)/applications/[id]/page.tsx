@@ -5,9 +5,15 @@ import { Download } from "lucide-react";
 import { ApplicationWorkflowForms } from "@/components/admin/application-workflow";
 import { WorkProfileRecord } from "@/components/apply/work-profile-record";
 import { DocumentFileActions } from "@/components/documents/document-preview";
+import {
+  ApplicationPaymentBadge,
+  summarizeApplicationPayments,
+} from "@/components/admin/status-badge";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { can } from "@/lib/admin/permissions";
 import { statusLabel } from "@/lib/admin/status";
+import { formatGhs, pesewasToGhs } from "@/lib/money";
 import { formatFileSize } from "@/lib/uploads/validate";
 import { formatDisplayDate } from "@/lib/utils";
 import { prisma } from "@/server/db";
@@ -49,6 +55,7 @@ export default async function AdminApplicationDetailPage({
   const { id } = await params;
   const canFiles = can(admin.role, "applications.documents");
   const canWrite = can(admin.role, "applications.write");
+  const canPayments = can(admin.role, "payments.read");
 
   const application = await prisma.application.findUnique({
     where: { id },
@@ -63,6 +70,9 @@ export default async function AdminApplicationDetailPage({
       documents: { orderBy: { createdAt: "asc" } },
       statusHistory: { orderBy: { createdAt: "desc" } },
       adminNotes: { include: { author: true }, orderBy: { createdAt: "desc" } },
+      payments: canPayments
+        ? { orderBy: { createdAt: "desc" }, take: 20 }
+        : false,
       job: {
         include: {
           faqs: { orderBy: { sortOrder: "asc" } },
@@ -83,6 +93,9 @@ export default async function AdminApplicationDetailPage({
 
   const draft = application as DraftApplication;
   const job = draftJob(draft);
+  const paymentSummary = canPayments
+    ? summarizeApplicationPayments(application.payments ?? [])
+    : null;
 
   return (
     <div className="space-y-8">
@@ -91,9 +104,14 @@ export default async function AdminApplicationDetailPage({
           <Link href="/admin/applications" className="text-sm text-blue hover:underline">
             Back to applications
           </Link>
-          <h1 className="mt-2 text-2xl font-semibold text-navy">
-            {application.referenceNumber ?? "Draft application"}
-          </h1>
+          <div className="mt-2 flex flex-wrap items-center gap-3">
+            <h1 className="text-2xl font-semibold text-navy">
+              {application.referenceNumber ?? "Draft application"}
+            </h1>
+            {paymentSummary ? (
+              <ApplicationPaymentBadge summary={paymentSummary} showAmount />
+            ) : null}
+          </div>
           <p className="mt-1 text-sm text-muted">
             {application.job.title} · {application.job.city} · {statusLabel(application.status)}
             {application.submittedAt ? ` · submitted ${formatDisplayDate(application.submittedAt)}` : ""}
@@ -122,6 +140,56 @@ export default async function AdminApplicationDetailPage({
       )}
 
       <WorkProfileRecord job={job} application={draft} hideSensitive={!canFiles} />
+
+      {canPayments ? (
+        <section className="rounded-lg border border-border bg-white p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-navy">Payments</h2>
+            <Button asChild size="sm" variant="outline">
+              <Link
+                href={`/admin/payments?q=${encodeURIComponent(application.referenceNumber ?? "")}`}
+              >
+                View in payments
+              </Link>
+            </Button>
+          </div>
+          {!application.payments || application.payments.length === 0 ? (
+            <p className="mt-3 text-sm text-muted">No payments linked to this application yet.</p>
+          ) : (
+            <ul className="mt-4 divide-y divide-border">
+              {application.payments.map((payment) => (
+                <li
+                  key={payment.id}
+                  className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm"
+                >
+                  <div>
+                    <p className="font-medium text-navy">
+                      {formatGhs(pesewasToGhs(payment.amountPesewas))} · {payment.payerName}
+                    </p>
+                    <p className="text-muted">
+                      {payment.email} · {payment.paystackReference}
+                      {payment.paidAt ? ` · paid ${formatDisplayDate(payment.paidAt)}` : ""}
+                    </p>
+                  </div>
+                  <Badge
+                    tone={
+                      payment.status === "success"
+                        ? "success"
+                        : payment.status === "pending"
+                          ? "gold"
+                          : payment.status === "failed"
+                            ? "danger"
+                            : "muted"
+                    }
+                  >
+                    {payment.status}
+                  </Badge>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ) : null}
 
       <section className="rounded-lg border border-border bg-white p-6">
         <h2 className="text-lg font-semibold text-navy">Documents</h2>

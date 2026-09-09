@@ -4,10 +4,15 @@ import { ClipboardList } from "lucide-react";
 import { AdminApplicationRow } from "@/components/admin/application-table-row";
 import { AdminEmptyState } from "@/components/admin/empty-state";
 import { AdminPageHeader } from "@/components/admin/page-header";
-import { ApplicationStatusBadge } from "@/components/admin/status-badge";
+import {
+  ApplicationPaymentBadge,
+  ApplicationStatusBadge,
+  summarizeApplicationPayments,
+} from "@/components/admin/status-badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/select";
+import { can } from "@/lib/admin/permissions";
 import { adminStatuses, statusLabel } from "@/lib/admin/status";
 import { formatDisplayDate } from "@/lib/utils";
 import { prisma } from "@/server/db";
@@ -29,10 +34,12 @@ export default async function AdminApplicationsPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  await requireAdmin("applications.read");
+  const admin = await requireAdmin("applications.read");
+  const showPaymentStatus = can(admin.role, "payments.read");
   const params = await searchParams;
   const q = one(params.q)?.trim() ?? "";
   const status = one(params.status) ?? "";
+  const payment = one(params.payment) ?? "";
   const jobId = one(params.jobId) ?? "";
   const country = one(params.country) ?? "";
   const from = one(params.from) ?? "";
@@ -62,13 +69,33 @@ export default async function AdminApplicationsPage({
       { profile: { phone: { contains: q, mode: "insensitive" } } },
     ];
   }
+  if (showPaymentStatus && payment === "paid") {
+    where.payments = { some: { status: "success" } };
+  } else if (showPaymentStatus && payment === "unpaid") {
+    where.payments = { none: { status: "success" } };
+  } else if (showPaymentStatus && payment === "pending") {
+    where.AND = [
+      ...(Array.isArray(where.AND) ? where.AND : where.AND ? [where.AND] : []),
+      { payments: { some: { status: "pending" } } },
+      { payments: { none: { status: "success" } } },
+    ];
+  }
 
   const [rows, jobs, countries] = await Promise.all([
     prisma.application.findMany({
       where,
       orderBy: [{ submittedAt: "desc" }, { createdAt: "desc" }],
       take: 75,
-      include: { profile: true, job: true },
+      include: {
+        profile: true,
+        job: true,
+        payments: showPaymentStatus
+          ? {
+              where: { status: { in: ["success", "pending"] } },
+              select: { status: true, amountPesewas: true },
+            }
+          : false,
+      },
     }),
     prisma.job.findMany({
       orderBy: { title: "asc" },
@@ -81,7 +108,7 @@ export default async function AdminApplicationsPage({
     }),
   ]);
 
-  const hasFilters = Boolean(q || status || jobId || country || from || to);
+  const hasFilters = Boolean(q || status || payment || jobId || country || from || to);
 
   return (
     <div>
@@ -104,6 +131,14 @@ export default async function AdminApplicationsPage({
             ))}
             <option value="draft">draft</option>
           </NativeSelect>
+          {showPaymentStatus ? (
+            <NativeSelect name="payment" defaultValue={payment}>
+              <option value="">Any payment</option>
+              <option value="paid">Paid</option>
+              <option value="pending">Payment pending</option>
+              <option value="unpaid">Unpaid</option>
+            </NativeSelect>
+          ) : null}
           <NativeSelect name="jobId" defaultValue={jobId}>
             <option value="">All jobs</option>
             {jobs.map((job) => (
@@ -165,6 +200,7 @@ export default async function AdminApplicationsPage({
                 <th className="px-4 py-3 font-medium">Contact</th>
                 <th className="px-4 py-3 font-medium">Opportunity</th>
                 <th className="px-4 py-3 font-medium">Status</th>
+                {showPaymentStatus ? <th className="px-4 py-3 font-medium">Payment</th> : null}
                 <th className="px-4 py-3 font-medium">Submitted</th>
               </tr>
             </thead>
@@ -192,6 +228,14 @@ export default async function AdminApplicationsPage({
                   <td className="px-4 py-3">
                     <ApplicationStatusBadge status={row.status} />
                   </td>
+                  {showPaymentStatus ? (
+                    <td className="px-4 py-3">
+                      <ApplicationPaymentBadge
+                        summary={summarizeApplicationPayments(row.payments ?? [])}
+                        showAmount
+                      />
+                    </td>
+                  ) : null}
                   <td className="px-4 py-3">{formatDisplayDate(row.submittedAt) || "—"}</td>
                 </AdminApplicationRow>
               ))}

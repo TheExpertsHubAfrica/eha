@@ -25,11 +25,15 @@ export function CheckboxField({
   name,
   label,
   defaultChecked,
+  checked,
+  onCheckedChange,
 }: {
   id: string;
   name: string;
   label: string;
   defaultChecked?: boolean;
+  checked?: boolean;
+  onCheckedChange?: (checked: boolean) => void;
 }) {
   return (
     <label htmlFor={id} className="flex cursor-pointer items-center gap-2.5 text-sm text-navy">
@@ -38,7 +42,13 @@ export function CheckboxField({
         name={name}
         type="checkbox"
         value="1"
-        defaultChecked={defaultChecked}
+        defaultChecked={checked === undefined ? defaultChecked : undefined}
+        checked={checked}
+        onChange={
+          onCheckedChange
+            ? (event) => onCheckedChange(event.target.checked)
+            : undefined
+        }
         className="size-4 rounded border-border text-blue accent-blue"
       />
       {label}

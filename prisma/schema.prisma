@@ -27,6 +27,17 @@ enum TravelAccent {
   rose
 }
 
+enum JobGenderEligibility {
+  male
+  female
+  both
+}
+
+enum ApplicantGender {
+  male
+  female
+}
+
 model Job {
   id                        String           @id @default(cuid())
   slug                      String
@@ -50,6 +61,7 @@ model Job {
   featured                  Boolean          @default(false)
   status                    PublishStatus    @default(draft)
   availability              JobAvailability  @default(open)
+  genderEligibility         JobGenderEligibility @default(both) @map("gender_eligibility")
   overview                  String
   description               String
   responsibilities          String[]
@@ -243,6 +255,7 @@ model Application {
   documents        UploadedDocument[]
   emailLogs        EmailLog[]
   adminNotes       AdminNote[]
+  payments         Payment[]
 
   @@index([jobId, status])
   @@index([expiresAt])
@@ -256,6 +269,7 @@ model ApplicantProfile {
   dateOfBirth         DateTime       @map("date_of_birth") @db.Date
   placeOfBirth        String         @map("place_of_birth")
   nationality         String
+  gender              ApplicantGender?
   passportNumber      String         @map("passport_number")
   previousNationality String?        @map("previous_nationality")
   maritalStatus       MaritalStatus  @map("marital_status")
@@ -517,4 +531,67 @@ model Testimonial {
 
   @@index([published, sortOrder])
   @@map("testimonials")
+}
+
+enum InvoiceStatus {
+  open
+  closed
+  void
+}
+
+enum PaymentKind {
+  application
+  invoice
+}
+
+enum PaymentStatus {
+  pending
+  success
+  failed
+  abandoned
+}
+
+model Invoice {
+  id             String        @id @default(cuid())
+  invoiceNumber  String        @unique @map("invoice_number")
+  title          String
+  description    String?
+  /// When set, payers must pay this exact amount (pesewas). Null = payer chooses amount.
+  amountPesewas  Int?          @map("amount_pesewas")
+  status         InvoiceStatus @default(open)
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+  payments       Payment[]
+
+  @@index([status])
+  @@map("invoices")
+}
+
+model Payment {
+  id                 String        @id @default(cuid())
+  kind               PaymentKind
+  status             PaymentStatus @default(pending)
+  amountPesewas      Int           @map("amount_pesewas")
+  currency           String        @default("GHS")
+  email              String
+  payerName          String        @map("payer_name")
+  applicationId      String?       @map("application_id")
+  applicationRef     String?       @map("application_ref")
+  invoiceId          String?       @map("invoice_id")
+  invoiceNumber      String?       @map("invoice_number")
+  jobTitleSnapshot   String?       @map("job_title_snapshot")
+  paystackReference  String        @unique @map("paystack_reference")
+  paystackAccessCode String?       @map("paystack_access_code")
+  paystackStatus     String?       @map("paystack_status")
+  paidAt             DateTime?     @map("paid_at")
+  createdAt          DateTime      @default(now()) @map("created_at")
+  updatedAt          DateTime      @updatedAt @map("updated_at")
+  application        Application?  @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+  invoice            Invoice?      @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([applicationId])
+  @@index([invoiceId])
+  @@index([email])
+  @@map("payments")
 }

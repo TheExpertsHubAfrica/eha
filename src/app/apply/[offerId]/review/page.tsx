@@ -5,6 +5,7 @@ import { ApplyShell } from "@/components/apply/apply-shell";
 import { SubmitApplicationForm } from "@/components/apply/submit-form";
 import { DocumentFileActions } from "@/components/documents/document-preview";
 import { applyPath } from "@/lib/apply/steps";
+import { genderLabel } from "@/lib/gender";
 import { formatFileSize } from "@/lib/uploads/validate";
 import { dateInputValue } from "@/lib/utils";
 import {
@@ -88,6 +89,7 @@ export default async function ReviewStepPage({
         {profile ? (
           <Section title="Personal information" href={applyPath(job.id, "personal")}>
             <Row label="Full name" value={profile.fullName} />
+            <Row label="Gender" value={profile.gender ? genderLabel(profile.gender) : undefined} />
             <Row label="Date of birth" value={dateInputValue(profile.dateOfBirth)} />
             <Row label="Place of birth" value={profile.placeOfBirth} />
             <Row label="Nationality" value={profile.nationality} />

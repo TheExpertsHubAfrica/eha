@@ -10,6 +10,12 @@ import { Label, FieldError, FieldHint } from "@/components/ui/label";
 import { NativeSelect } from "@/components/ui/select";
 import { FormBanner } from "@/components/apply/form-banner";
 import { useUnsavedChanges } from "@/components/apply/use-unsaved-changes";
+import {
+  allowedGendersForJob,
+  genderEligibilityNotice,
+  genderLabel,
+  type JobGenderEligibility,
+} from "@/lib/gender";
 import { savePersonalAction } from "@/server/application/actions";
 import {
   personalSchema,
@@ -19,9 +25,11 @@ import {
 export function PersonalForm({
   offerId,
   defaults,
+  genderEligibility,
 }: {
   offerId: string;
   defaults: PersonalInput;
+  genderEligibility: JobGenderEligibility;
 }) {
   const [error, setError] = useState<string>();
   const form = useForm<PersonalInput>({
@@ -29,6 +37,8 @@ export function PersonalForm({
     defaultValues: defaults,
   });
   const married = form.watch("maritalStatus") === "married";
+  const genders = allowedGendersForJob(genderEligibility);
+  const restricted = genderEligibility !== "both";
   useUnsavedChanges(form.formState.isDirty);
 
   async function onSubmit(values: PersonalInput) {
@@ -54,6 +64,14 @@ export function PersonalForm({
         </p>
       </div>
       <FormBanner error={error} />
+      {restricted ? (
+        <p
+          className="rounded-md border border-gold/30 bg-gold-soft/40 px-3 py-2 text-sm text-navy"
+          role="status"
+        >
+          {genderEligibilityNotice(genderEligibility)}
+        </p>
+      ) : null}
       <div>
         <Label htmlFor="fullName" required>Full name</Label>
         <Input id="fullName" autoComplete="name" {...form.register("fullName")} />
@@ -78,10 +96,29 @@ export function PersonalForm({
           <FieldError>{form.formState.errors.nationality?.message}</FieldError>
         </div>
         <div>
-          <Label htmlFor="previousNationality">Previous nationality</Label>
-          <Input id="previousNationality" {...form.register("previousNationality")} />
-          <FieldHint>Leave blank if not applicable.</FieldHint>
+          <Label htmlFor="gender" required>Gender</Label>
+          <NativeSelect id="gender" {...form.register("gender")}>
+            {!restricted && !defaults.gender ? (
+              <option value="">Select gender</option>
+            ) : null}
+            {genders.map((value) => (
+              <option key={value} value={value}>
+                {genderLabel(value)}
+              </option>
+            ))}
+          </NativeSelect>
+          <FieldHint>
+            {restricted
+              ? genderEligibilityNotice(genderEligibility)
+              : "Choose Male or Female as shown on your passport."}
+          </FieldHint>
+          <FieldError>{form.formState.errors.gender?.message}</FieldError>
         </div>
+      </div>
+      <div>
+        <Label htmlFor="previousNationality">Previous nationality</Label>
+        <Input id="previousNationality" {...form.register("previousNationality")} />
+        <FieldHint>Leave blank if not applicable.</FieldHint>
       </div>
       <div>
         <Label htmlFor="passportNumber" required>Passport number</Label>

@@ -42,6 +42,7 @@ export type AdminJobFormValues = {
   featured: boolean;
   status: string;
   availability: string;
+  genderEligibility: string;
   includesAccommodation: boolean;
   includesFlight: boolean;
   includesVisaSupport: boolean;
@@ -132,6 +133,13 @@ export function AdminJobForm({ job }: { job: AdminJobFormValues }) {
             <option value="open">open</option>
             <option value="limited">limited</option>
             <option value="closed">closed</option>
+          </NativeSelect>
+        </Field>
+        <Field id="genderEligibility" label="Gender eligibility">
+          <NativeSelect id="genderEligibility" name="genderEligibility" defaultValue={job.genderEligibility}>
+            <option value="both">Male and female</option>
+            <option value="male">Male only</option>
+            <option value="female">Female only</option>
           </NativeSelect>
         </Field>
       </div>

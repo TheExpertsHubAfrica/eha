@@ -13,7 +13,9 @@ export type AdminPermission =
   | "study.write"
   | "content.write"
   | "settings.write"
-  | "audit.read";
+  | "audit.read"
+  | "payments.read"
+  | "payments.write";
 
 const ROLE_PERMISSIONS: Record<AdminRole, AdminPermission[]> = {
   super_admin: [
@@ -28,6 +30,8 @@ const ROLE_PERMISSIONS: Record<AdminRole, AdminPermission[]> = {
     "content.write",
     "settings.write",
     "audit.read",
+    "payments.read",
+    "payments.write",
   ],
   admin: [
     "dashboard.read",
@@ -41,6 +45,8 @@ const ROLE_PERMISSIONS: Record<AdminRole, AdminPermission[]> = {
     "content.write",
     "settings.write",
     "audit.read",
+    "payments.read",
+    "payments.write",
   ],
   officer: [
     "dashboard.read",
@@ -48,9 +54,10 @@ const ROLE_PERMISSIONS: Record<AdminRole, AdminPermission[]> = {
     "applications.read",
     "applications.write",
     "applications.documents",
+    "payments.read",
   ],
   content: ["dashboard.read", "jobs.write", "travel.write", "study.write", "content.write"],
-  analyst: ["dashboard.read", "analytics.read", "applications.read", "audit.read"],
+  analyst: ["dashboard.read", "analytics.read", "applications.read", "audit.read", "payments.read"],
 };
 
 export function rolePermissions(role: AdminRole): AdminPermission[] {

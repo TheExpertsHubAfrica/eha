@@ -16,7 +16,11 @@ export default async function PersonalStepPage({
   if (!result.ok) redirect(result.redirectTo);
   return (
     <ApplyShell job={result.job} step="personal" completed={result.draft.stepsCompleted}>
-      <PersonalForm offerId={offerId} defaults={personalDefaults(result.draft)} />
+      <PersonalForm
+        offerId={offerId}
+        defaults={personalDefaults(result.draft, result.job.genderEligibility)}
+        genderEligibility={result.job.genderEligibility}
+      />
     </ApplyShell>
   );
 }

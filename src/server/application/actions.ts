@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { canAccessStep, jobRequiresEmergency, jobRequiresMilitary, jobRequiresTravel } from "@/lib/apply/steps";
+import { isGenderAllowed } from "@/lib/gender";
 import {
   educationSchema,
   employmentSchema,
@@ -70,6 +71,19 @@ export async function savePersonalAction(
   const parsed = personalSchema.safeParse(payload);
   if (!parsed.success) {
     return { ok: false, fieldErrors: flattenIssues(parsed.error.issues) };
+  }
+  if (!isGenderAllowed(loaded.job.genderEligibility, parsed.data.gender)) {
+    const only =
+      loaded.job.genderEligibility === "male"
+        ? "male applicants"
+        : "female applicants";
+    return {
+      ok: false,
+      fieldErrors: {
+        gender: `This opportunity is open to ${only} only.`,
+      },
+      error: `This opportunity is open to ${only} only.`,
+    };
   }
   const next = await savePersonal(loaded.job, loaded.draft.id, parsed.data);
   redirect(next);

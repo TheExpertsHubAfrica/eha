@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { BarList, Sparkline, percent } from "@/components/admin/charts";
 import { AdminPageHeader } from "@/components/admin/page-header";
 import { AdminStatCard } from "@/components/admin/stat-card";
+import { formatGhs, pesewasToGhs } from "@/lib/money";
 import { loadAnalytics } from "@/server/analytics/queries";
 import { requireAdmin } from "@/server/admin/auth";
 
@@ -53,6 +54,35 @@ export default async function AdminAnalyticsPage() {
           accent
         />
       </div>
+
+      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <AdminStatCard
+          label="Revenue collected"
+          value={formatGhs(pesewasToGhs(stats.cards.paymentsSuccessTotalPesewas))}
+          hint={`${stats.cards.paymentsSuccessCount} successful payment${stats.cards.paymentsSuccessCount === 1 ? "" : "s"}`}
+          href="/admin/payments?status=success"
+        />
+        <AdminStatCard
+          label="Collected this week"
+          value={formatGhs(pesewasToGhs(stats.cards.paymentsSuccessWeekPesewas))}
+          hint={`${stats.cards.paymentsSuccessWeekCount} payment${stats.cards.paymentsSuccessWeekCount === 1 ? "" : "s"}`}
+          href="/admin/payments?status=success"
+          accent
+        />
+        <AdminStatCard
+          label="Applications paid"
+          value={stats.cards.applicationsPaid}
+          hint={`${percent(stats.paidRate)} of submitted`}
+          href="/admin/applications"
+        />
+        <AdminStatCard
+          label="Pending payments"
+          value={stats.cards.paymentsPending}
+          hint="Started on Paystack, not yet confirmed"
+          href="/admin/payments?status=pending"
+        />
+      </div>
+
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
         <Card>
           <CardBody>
@@ -75,6 +105,18 @@ export default async function AdminAnalyticsPage() {
             <h2 className="text-sm font-semibold text-navy">Submitted · 30 days</h2>
             <div className="mt-4">
               <Sparkline points={stats.days} />
+            </div>
+          </CardBody>
+        </Card>
+        <Card>
+          <CardBody>
+            <h2 className="text-sm font-semibold text-navy">Revenue (GHS) · 30 days</h2>
+            <div className="mt-4">
+              <Sparkline
+                points={stats.paymentDays}
+                empty="No successful payments in this period."
+                peakLabel="GHS collected in a day"
+              />
             </div>
           </CardBody>
         </Card>

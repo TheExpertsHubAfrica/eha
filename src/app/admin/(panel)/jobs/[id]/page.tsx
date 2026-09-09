@@ -69,6 +69,7 @@ export default async function AdminEditJobPage({
           featured: job.featured,
           status: job.status,
           availability: job.availability,
+          genderEligibility: job.genderEligibility,
           includesAccommodation: job.includesAccommodation,
           includesFlight: job.includesFlight,
           includesVisaSupport: job.includesVisaSupport,

@@ -22,18 +22,22 @@ export async function SiteShell({
   const site = await getResolvedSite();
   return (
     <div className="flex min-h-full flex-col">
-      <SiteHeader />
+      <div className="print:hidden">
+        <SiteHeader />
+      </div>
       <main id="main-content" className="flex-1">
         {children}
       </main>
-      <SiteFooter site={site} />
-      <WhatsAppCta
-        site={site}
-        mode={whatsapp?.mode ?? "default"}
-        prefill={whatsapp?.prefill}
-        raiseForMobileBar={whatsapp?.raiseForMobileBar}
-        label={whatsapp?.label}
-      />
+      <div className="print:hidden">
+        <SiteFooter site={site} />
+        <WhatsAppCta
+          site={site}
+          mode={whatsapp?.mode ?? "default"}
+          prefill={whatsapp?.prefill}
+          raiseForMobileBar={whatsapp?.raiseForMobileBar}
+          label={whatsapp?.label}
+        />
+      </div>
     </div>
   );
 }

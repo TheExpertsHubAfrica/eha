@@ -46,6 +46,7 @@ export const jobs: SeedJob[] = [
     featured: true,
     published: true,
     availability: "open",
+    genderEligibility: "both",
     overview:
       "A structured manufacturing placement in Dubai for applicants ready to work in a production environment with on-the-ground support for travel, housing and documentation.",
     description:
@@ -118,6 +119,7 @@ export const jobs: SeedJob[] = [
     featured: true,
     published: true,
     availability: "open",
+    genderEligibility: "both",
     overview:
       "A customer-facing retail placement in Dubai for applicants who communicate clearly, present well and can support day-to-day store operations.",
     description:
@@ -182,6 +184,7 @@ export const jobs: SeedJob[] = [
     featured: true,
     published: true,
     availability: "open",
+    genderEligibility: "both",
     overview:
       "A security placement in Dubai for disciplined applicants able to keep watch, follow post orders and represent a professional standard on site.",
     description:

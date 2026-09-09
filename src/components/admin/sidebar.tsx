@@ -14,6 +14,7 @@ import {
   Plane,
   ScrollText,
   Settings,
+  Wallet,
   X,
 } from "lucide-react";
 import { useEffect, useState, type ComponentType } from "react";
@@ -37,6 +38,8 @@ const groups: { label: string; items: NavItem[] }[] = [
     items: [
       { href: "/admin", label: "Overview", icon: LayoutDashboard },
       { href: "/admin/applications", label: "Applications", permission: "applications.read", icon: ClipboardList },
+      { href: "/admin/payments", label: "Payments", permission: "payments.read", icon: Wallet },
+      { href: "/admin/invoices", label: "Invoices", permission: "payments.write", icon: FileText },
       { href: "/admin/analytics", label: "Analytics", permission: "analytics.read", icon: BarChart3 },
     ],
   },

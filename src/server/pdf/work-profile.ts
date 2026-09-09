@@ -345,19 +345,23 @@ export async function buildWorkProfilePdf(application: ProfileDoc, job: JobOffer
   sectionTitle("Personal Information");
   fieldRow([
     { label: "Full Name", value: display(profile?.fullName) },
-    { label: "Passport No.", value: display(profile?.passportNumber) },
+    { label: "Gender", value: profile?.gender ? titleCase(profile.gender) : "N/A" },
   ]);
   fieldRow([
-    { label: "Place of Birth", value: display(profile?.placeOfBirth) },
+    { label: "Passport No.", value: display(profile?.passportNumber) },
     { label: "Date of Birth", value: formatDisplayDate(profile?.dateOfBirth) || "N/A" },
   ]);
   fieldRow([
+    { label: "Place of Birth", value: display(profile?.placeOfBirth) },
     { label: "Nationality", value: display(profile?.nationality) },
-    { label: "Previous Nationality", value: display(profile?.previousNationality) },
   ]);
   fieldRow([
+    { label: "Previous Nationality", value: display(profile?.previousNationality) },
     { label: "Country of Residence", value: display(profile?.countryOfResidence) },
+  ]);
+  fieldRow([
     { label: "Current City", value: display(profile?.currentCity) },
+    { label: "Phone", value: display(profile?.phone) },
   ]);
 
   sectionTitle("Education Qualification");

@@ -12,9 +12,10 @@ import { BarList, Sparkline } from "@/components/admin/charts";
 import { AdminPageHeader } from "@/components/admin/page-header";
 import { AdminEmptyState } from "@/components/admin/empty-state";
 import { AdminPanel, AdminQuickAction, AdminStatCard } from "@/components/admin/stat-card";
-import { ApplicationStatusBadge } from "@/components/admin/status-badge";
+import { ApplicationStatusBadge, ApplicationPaymentBadge, summarizeApplicationPayments } from "@/components/admin/status-badge";
 import { Button } from "@/components/ui/button";
 import { can } from "@/lib/admin/permissions";
+import { formatGhs, pesewasToGhs } from "@/lib/money";
 import { loadAnalytics } from "@/server/analytics/queries";
 import { prisma } from "@/server/db";
 import { requireAdmin } from "@/server/admin/auth";
@@ -45,9 +46,17 @@ export default async function AdminDashboardPage({
         where: { status: { not: "draft" } },
         orderBy: { submittedAt: "desc" },
         take: 8,
-        include: { profile: true, job: true },
+        include: {
+          profile: true,
+          job: true,
+          payments: {
+            where: { status: { in: ["success", "pending"] } },
+            select: { status: true, amountPesewas: true },
+          },
+        },
       })
     : [];
+  const showPaymentStatus = can(admin.role, "payments.read");
 
   const hour = new Date().getHours();
   const firstName = admin.name.split(/\s+/).filter(Boolean)[0] ?? admin.name;
@@ -87,6 +96,35 @@ export default async function AdminDashboardPage({
         { label: "Published jobs", value: stats.cards.publishedJobs, href: "/admin/jobs" },
         { label: "Travel packages", value: stats.cards.publishedTravel, href: "/admin/travel" },
         { label: "Study destinations", value: stats.cards.publishedStudy, href: "/admin/study" },
+      ]
+    : [];
+
+  const paymentCards = stats
+    ? [
+        {
+          label: "Revenue collected",
+          value: formatGhs(pesewasToGhs(stats.cards.paymentsSuccessTotalPesewas)),
+          href: "/admin/payments?status=success",
+          hint: `${stats.cards.paymentsSuccessCount} successful`,
+        },
+        {
+          label: "Collected this week",
+          value: formatGhs(pesewasToGhs(stats.cards.paymentsSuccessWeekPesewas)),
+          href: "/admin/payments?status=success",
+          hint: `${stats.cards.paymentsSuccessWeekCount} payment${stats.cards.paymentsSuccessWeekCount === 1 ? "" : "s"}`,
+          accent: true,
+        },
+        {
+          label: "Applications paid",
+          value: stats.cards.applicationsPaid,
+          href: "/admin/applications",
+          hint: "At least one successful payment",
+        },
+        {
+          label: "Pending payments",
+          value: stats.cards.paymentsPending,
+          href: "/admin/payments?status=pending",
+        },
       ]
     : [];
 
@@ -176,6 +214,18 @@ export default async function AdminDashboardPage({
               />
             ))}
           </div>
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {paymentCards.map((card) => (
+              <AdminStatCard
+                key={card.label}
+                label={card.label}
+                value={card.value}
+                href={card.href}
+                hint={card.hint}
+                accent={card.accent}
+              />
+            ))}
+          </div>
         </>
       ) : (
         <p className="rounded-lg border border-border bg-white px-4 py-6 text-sm text-muted">
@@ -230,6 +280,9 @@ export default async function AdminDashboardPage({
                     <th className="px-5 py-3 font-medium">Applicant</th>
                     <th className="px-5 py-3 font-medium">Opportunity</th>
                     <th className="px-5 py-3 font-medium">Status</th>
+                    {showPaymentStatus ? (
+                      <th className="px-5 py-3 font-medium">Payment</th>
+                    ) : null}
                   </tr>
                 </thead>
                 <tbody>
@@ -249,6 +302,13 @@ export default async function AdminDashboardPage({
                       <td className="px-5 py-3">
                         <ApplicationStatusBadge status={item.status} />
                       </td>
+                      {showPaymentStatus ? (
+                        <td className="px-5 py-3">
+                          <ApplicationPaymentBadge
+                            summary={summarizeApplicationPayments(item.payments)}
+                          />
+                        </td>
+                      ) : null}
                     </AdminApplicationRow>
                   ))}
                 </tbody>

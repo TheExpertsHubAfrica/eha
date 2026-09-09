@@ -7,13 +7,32 @@ import type {
   SupportingInput,
 } from "@/lib/validation/application";
 
-export function personalDefaults(draft: DraftApplication): PersonalInput {
+export function personalDefaults(
+  draft: DraftApplication,
+  genderEligibility: "male" | "female" | "both" = "both",
+): PersonalInput {
   const profile = draft.profile;
+  const savedGender = profile?.gender;
+  const allowed =
+    genderEligibility === "male"
+      ? (["male"] as const)
+      : genderEligibility === "female"
+        ? (["female"] as const)
+        : (["male", "female"] as const);
+
+  let gender: PersonalInput["gender"] = "" as PersonalInput["gender"];
+  if (savedGender && (allowed as readonly string[]).includes(savedGender)) {
+    gender = savedGender;
+  } else if (genderEligibility === "male" || genderEligibility === "female") {
+    gender = genderEligibility;
+  }
+
   return {
     fullName: profile?.fullName ?? "",
     dateOfBirth: dateInputValue(profile?.dateOfBirth),
     placeOfBirth: profile?.placeOfBirth ?? "",
     nationality: profile?.nationality ?? "",
+    gender,
     passportNumber: profile?.passportNumber ?? "",
     previousNationality: profile?.previousNationality ?? "",
     maritalStatus: profile?.maritalStatus ?? "single",

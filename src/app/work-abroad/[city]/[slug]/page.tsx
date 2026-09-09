@@ -83,6 +83,11 @@ export default async function JobDetailPage({
               <Badge tone="success">
                 {open ? "Open for applications" : job.availability}
               </Badge>
+              {job.genderEligibility !== "both" ? (
+                <Badge tone="gold">
+                  {job.genderEligibility === "male" ? "Male applicants only" : "Female applicants only"}
+                </Badge>
+              ) : null}
             </div>
             <h1 className="mt-4 text-3xl font-semibold text-navy sm:text-4xl">
               {job.title}

@@ -7,6 +7,8 @@ export type Money = {
 
 export type JobAvailability = "open" | "limited" | "closed";
 
+export type JobGenderEligibility = "male" | "female" | "both";
+
 export type DocumentRequirement = {
   key: string;
   name: string;
@@ -51,6 +53,7 @@ export type JobOffer = {
   includesAccommodation: boolean;
   includesFlight: boolean;
   includesVisaSupport: boolean;
+  genderEligibility: JobGenderEligibility;
   coverImageUrl?: string | null;
 };
 
