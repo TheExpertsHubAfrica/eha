@@ -1,6 +1,6 @@
 "use server";
 
-import { Prisma } from "@prisma/client";
+import { Prisma, type JobGenderEligibility } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin, writeAdminAudit } from "@/server/admin/auth";
@@ -126,7 +126,7 @@ export async function saveJobAction(jobId: string | null, formData: FormData) {
     featured: formData.get("featured") === "1",
     status,
     availability: (String(formData.get("availability") ?? "open") as "open" | "limited" | "closed"),
-    genderEligibility: (() => {
+    genderEligibility: ((): JobGenderEligibility => {
       const value = String(formData.get("genderEligibility") ?? "both");
       return value === "male" || value === "female" || value === "both" ? value : "both";
     })(),
