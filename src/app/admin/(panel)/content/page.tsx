@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ConfirmSubmitButton } from "@/components/admin/confirm-submit";
+import { ConfirmDeleteButton } from "@/components/admin/confirm-submit";
 import { FaqForm, TestimonialForm } from "@/components/admin/cms-forms";
 import { AdminPageHeader } from "@/components/admin/page-header";
 import { deleteFaqAction, deleteTestimonialAction } from "@/server/admin/cms-actions";
@@ -35,15 +35,15 @@ export default async function AdminContentPage() {
           {faqs.map((item) => (
             <li key={item.id} className="rounded-lg border border-border bg-white p-5 transition-colors hover:border-gold/30">
               <FaqForm item={item} />
-              <form action={deleteFaqAction.bind(null, item.id)} className="mt-3">
-                <ConfirmSubmitButton
-                  size="sm"
-                  variant="ghost"
+              <div className="mt-3">
+                <ConfirmDeleteButton
                   confirmMessage="Delete this FAQ permanently?"
                   idleLabel="Delete"
                   confirmLabel="Confirm delete"
+                  successMessage="FAQ deleted."
+                  onConfirm={() => deleteFaqAction(item.id)}
                 />
-              </form>
+              </div>
             </li>
           ))}
         </ul>
@@ -64,15 +64,15 @@ export default async function AdminContentPage() {
                 {item.attribution}
                 {item.published ? " · published" : " · draft"}
               </p>
-              <form action={deleteTestimonialAction.bind(null, item.id)} className="mt-3">
-                <ConfirmSubmitButton
-                  size="sm"
-                  variant="ghost"
+              <div className="mt-3">
+                <ConfirmDeleteButton
                   confirmMessage="Delete this testimonial permanently?"
                   idleLabel="Delete"
                   confirmLabel="Confirm delete"
+                  successMessage="Testimonial deleted."
+                  onConfirm={() => deleteTestimonialAction(item.id)}
                 />
-              </form>
+              </div>
             </li>
           ))}
         </ul>

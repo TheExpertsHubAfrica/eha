@@ -215,7 +215,7 @@ export async function saveJobAction(jobId: string | null, formData: FormData) {
   revalidatePath("/admin/jobs");
   revalidatePath("/work-abroad");
   revalidatePath("/");
-  redirect(`/admin/jobs/${savedId}`);
+  redirect(`/admin/jobs/${savedId}?notice=${jobId ? "saved" : "created"}`);
 }
 
 export async function saveTravelAction(id: string | null, formData: FormData) {
@@ -272,7 +272,7 @@ export async function saveTravelAction(id: string | null, formData: FormData) {
     revalidatePath("/travel");
     revalidatePath(`/travel/${saved.slug}`);
     revalidatePath("/");
-    redirect(`/admin/travel/${saved.id}`);
+    redirect(`/admin/travel/${saved.id}?notice=${id ? "saved" : "created"}`);
   } catch (error) {
     if (isUniqueConflict(error)) {
       return { ok: false as const, error: "A travel package with this slug already exists." };
@@ -311,7 +311,7 @@ export async function saveStudyAction(id: string | null, formData: FormData) {
     revalidatePath("/admin/study");
     revalidatePath("/study-abroad");
     revalidatePath("/");
-    redirect(`/admin/study/${saved.id}`);
+    redirect(`/admin/study/${saved.id}?notice=${id ? "saved" : "created"}`);
   } catch (error) {
     if (isUniqueConflict(error)) {
       return { ok: false as const, error: "A study destination with this slug already exists." };

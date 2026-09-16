@@ -18,6 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useState, type ComponentType } from "react";
+import { toast } from "sonner";
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -120,6 +121,8 @@ function AdminNavFooter({
 }: {
   user: { name: string; role: AdminRole };
 }) {
+  const [signingOut, setSigningOut] = useState(false);
+
   return (
     <div className="shrink-0 border-t border-white/10 px-5 py-4">
       <div className="flex items-center gap-3">
@@ -136,12 +139,20 @@ function AdminNavFooter({
           <p className="truncate text-xs text-white/55">{roleLabel(user.role)}</p>
         </div>
       </div>
-      <form action={logoutAdminAction} className="mt-3">
+      <form
+        action={async () => {
+          setSigningOut(true);
+          toast.message("Signing out…");
+          await logoutAdminAction();
+        }}
+        className="mt-3"
+      >
         <button
           type="submit"
-          className="text-sm text-white/75 underline-offset-4 hover:text-white hover:underline"
+          disabled={signingOut}
+          className="text-sm text-white/75 underline-offset-4 hover:text-white hover:underline disabled:opacity-60"
         >
-          Sign out
+          {signingOut ? "Signing out…" : "Sign out"}
         </button>
       </form>
     </div>

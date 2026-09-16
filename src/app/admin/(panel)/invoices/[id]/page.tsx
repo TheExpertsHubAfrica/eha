@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { CopyPaymentLink } from "@/components/admin/copy-payment-link";
 import { AdminInvoiceForm } from "@/components/admin/invoice-form";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { formatGhs, pesewasToGhs } from "@/lib/money";
 import { siteConfig } from "@/lib/site-config";
 import { formatDisplayDate } from "@/lib/utils";
@@ -11,6 +12,13 @@ import { requireAdmin } from "@/server/admin/auth";
 import { prisma } from "@/server/db";
 
 export const dynamic = "force-dynamic";
+
+const paymentTone: Record<string, "success" | "gold" | "danger" | "muted"> = {
+  success: "success",
+  pending: "gold",
+  failed: "danger",
+  abandoned: "muted",
+};
 
 export async function generateMetadata({
   params,
@@ -88,12 +96,22 @@ export default async function AdminEditInvoicePage({
         ) : (
           <ul className="mt-3 divide-y divide-border text-sm">
             {invoice.payments.map((payment) => (
-              <li key={payment.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
-                <div>
+              <li key={payment.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
+                <div className="min-w-0">
                   <p className="font-medium text-navy">{payment.payerName}</p>
                   <p className="text-muted">
-                    {payment.email} · {formatDisplayDate(payment.createdAt)} · {payment.status}
+                    {payment.email} · {formatDisplayDate(payment.paidAt ?? payment.createdAt)}
                   </p>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <Badge tone={paymentTone[payment.status] ?? "muted"} className="capitalize">
+                      {payment.status}
+                    </Badge>
+                    {payment.status === "success" ? (
+                      <Button asChild size="sm" variant="outline">
+                        <Link href={`/admin/payments/${payment.id}/receipt`}>Download receipt</Link>
+                      </Button>
+                    ) : null}
+                  </div>
                 </div>
                 <p className="tabular-nums font-semibold text-navy">
                   {formatGhs(pesewasToGhs(payment.amountPesewas))}

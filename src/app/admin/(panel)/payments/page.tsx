@@ -116,6 +116,7 @@ export default async function AdminPaymentsPage({
                 <th className="px-4 py-3 font-medium">Linked to</th>
                 <th className="px-4 py-3 font-medium">Amount</th>
                 <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium">Receipt</th>
               </tr>
             </thead>
             <tbody>
@@ -165,6 +166,18 @@ export default async function AdminPaymentsPage({
                     <Badge tone={paymentTone[row.status] ?? "muted"} className="capitalize">
                       {row.status}
                     </Badge>
+                  </td>
+                  <td className="px-4 py-3">
+                    {row.status === "success" ? (
+                      <Link
+                        href={`/admin/payments/${row.id}/receipt`}
+                        className="text-sm font-medium text-gold-deep hover:underline"
+                      >
+                        Download
+                      </Link>
+                    ) : (
+                      <span className="text-muted">—</span>
+                    )}
                   </td>
                 </tr>
               ))}

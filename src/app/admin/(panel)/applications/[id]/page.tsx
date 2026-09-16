@@ -170,6 +170,14 @@ export default async function AdminApplicationDetailPage({
                       {payment.email} · {payment.paystackReference}
                       {payment.paidAt ? ` · paid ${formatDisplayDate(payment.paidAt)}` : ""}
                     </p>
+                    {payment.status === "success" ? (
+                      <Link
+                        href={`/admin/payments/${payment.id}/receipt`}
+                        className="mt-1 inline-block text-xs font-medium text-gold-deep hover:underline"
+                      >
+                        Download receipt
+                      </Link>
+                    ) : null}
                   </div>
                   <Badge
                     tone={

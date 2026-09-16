@@ -43,6 +43,7 @@ export function AdminTravelForm({ pack }: { pack: AdminTravelFormValues }) {
   async function onSubmit(formData: FormData) {
     setPending(true);
     setError(undefined);
+    toast.message(pack.id ? "Saving package…" : "Creating package…");
     const result = await saveTravelAction(pack.id ?? null, formData);
     if (result && !result.ok) {
       setError(result.error);
@@ -122,6 +123,7 @@ export function AdminStudyForm({ item }: { item: AdminStudyFormValues }) {
   async function onSubmit(formData: FormData) {
     setPending(true);
     setError(undefined);
+    toast.message(item.id ? "Saving destination…" : "Creating destination…");
     const result = await saveStudyAction(item.id ?? null, formData);
     if (result && !result.ok) {
       setError(result.error);

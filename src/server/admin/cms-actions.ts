@@ -144,7 +144,7 @@ export async function saveBlogAction(id: string | null, formData: FormData) {
     });
     revalidatePath("/blog");
     revalidatePath("/admin/blog");
-    redirect(`/admin/blog/${saved.id}`);
+    redirect(`/admin/blog/${saved.id}?notice=${id ? "saved" : "created"}`);
   } catch (error) {
     if (isUniqueConflict(error)) {
       return { ok: false as const, error: "A post with this slug already exists." };
@@ -181,7 +181,11 @@ export async function saveFaqAction(id: string | null, formData: FormData) {
 
 export async function deleteFaqAction(id: string) {
   const admin = await requireAdmin("content.write");
-  await prisma.faqItem.delete({ where: { id } });
+  try {
+    await prisma.faqItem.delete({ where: { id } });
+  } catch {
+    return { ok: false as const, error: "Could not delete this FAQ." };
+  }
   await writeAdminAudit({
     actorId: admin.id,
     action: "faq.delete",
@@ -190,6 +194,7 @@ export async function deleteFaqAction(id: string) {
   });
   revalidatePath("/faq");
   revalidatePath("/admin/content");
+  return { ok: true as const };
 }
 
 export async function saveTestimonialAction(id: string | null, formData: FormData) {
@@ -222,7 +227,11 @@ export async function saveTestimonialAction(id: string | null, formData: FormDat
 
 export async function deleteTestimonialAction(id: string) {
   const admin = await requireAdmin("content.write");
-  await prisma.testimonial.delete({ where: { id } });
+  try {
+    await prisma.testimonial.delete({ where: { id } });
+  } catch {
+    return { ok: false as const, error: "Could not delete this testimonial." };
+  }
   await writeAdminAudit({
     actorId: admin.id,
     action: "testimonial.delete",
@@ -231,4 +240,5 @@ export async function deleteTestimonialAction(id: string) {
   });
   revalidatePath("/");
   revalidatePath("/admin/content");
+  return { ok: true as const };
 }

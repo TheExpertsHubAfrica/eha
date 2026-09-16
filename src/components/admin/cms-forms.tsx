@@ -208,6 +208,7 @@ export function BlogForm({
   const [pending, setPending] = useState(false);
   async function onSubmit(formData: FormData) {
     setPending(true);
+    toast.message(post ? "Saving post…" : "Creating post…");
     const result = await saveBlogAction(post?.id ?? null, formData);
     if (result && !result.ok) {
       setError(result.error);

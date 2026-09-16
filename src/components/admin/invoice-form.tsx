@@ -29,6 +29,7 @@ export function AdminInvoiceForm({
   async function onSubmit(formData: FormData) {
     setPending(true);
     setError(undefined);
+    toast.message("Saving invoice…");
     const result = await saveInvoiceAction(invoice?.id ?? null, formData);
     if (result && !result.ok) {
       setError(result.error);

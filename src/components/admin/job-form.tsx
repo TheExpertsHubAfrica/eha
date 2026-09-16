@@ -79,6 +79,7 @@ export function AdminJobForm({ job }: { job: AdminJobFormValues }) {
   async function onSubmit(formData: FormData) {
     setPending(true);
     setError(undefined);
+    toast.message(job.id ? "Saving job…" : "Creating job…");
     const result = await saveJobAction(job.id ?? null, formData);
     if (result && !result.ok) {
       setError(result.error);

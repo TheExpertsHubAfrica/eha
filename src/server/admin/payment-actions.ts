@@ -78,7 +78,7 @@ export async function saveInvoiceAction(id: string | null, formData: FormData) {
     });
     revalidatePath("/admin/invoices");
     revalidatePath("/admin/payments");
-    redirect(`/admin/invoices/${saved.id}`);
+    redirect(`/admin/invoices/${saved.id}?notice=${id ? "saved" : "created"}`);
   } catch (error) {
     if (error && typeof error === "object" && "code" in error && error.code === "P2002") {
       return { ok: false as const, error: "Could not save invoice. The number may already be in use." };
