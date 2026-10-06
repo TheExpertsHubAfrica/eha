@@ -16,8 +16,11 @@ export async function loadAnalytics() {
     statusGroups,
     submittedSince,
     newDrafts,
-    started,
+    applicationRows,
+    applyClicks,
+    legacyEmptyDrafts,
     withPersonal,
+    withProfile,
     withDocuments,
     submitted,
     expiredDrafts,
@@ -44,7 +47,13 @@ export async function loadAnalytics() {
       where: { createdAt: { gte: weekStart } },
     }),
     prisma.application.count(),
+    prisma.analyticsEvent.count({ where: { name: "apply_clicked" } }),
+    // Legacy drafts created on Start before deferred create shipped (never saved personal).
+    prisma.application.count({
+      where: { status: "draft", stepsCompleted: { equals: [] } },
+    }),
     prisma.application.count({ where: { stepsCompleted: { has: "personal" } } }),
+    prisma.application.count({ where: { profileCompletedAt: { not: null } } }),
     prisma.application.count({ where: { stepsCompleted: { has: "documents" } } }),
     prisma.application.count({ where: { status: { not: "draft" } } }),
     prisma.application.count({
@@ -189,14 +198,15 @@ export async function loadAnalytics() {
     .sort((a, b) => b.applied - a.applied || b.views - a.views)
     .slice(0, 10);
 
-  const completionRate = started > 0 ? submitted / started : 0;
+  const completionRate = applicationRows > 0 ? submitted / applicationRows : 0;
   const documentRate = submitted > 0 ? (submitted - missingDocsSubmitted) / submitted : 0;
   const paidRate = submitted > 0 ? applicationsPaid / submitted : 0;
+  const funnelStarted = applyClicks + legacyEmptyDrafts;
 
   return {
     countByStatus,
     cards: {
-      total: started,
+      total: applicationRows,
       newThisWeek: submittedSince,
       underReview: countByStatus.under_review ?? 0,
       shortlisted: countByStatus.shortlisted ?? 0,
@@ -214,8 +224,9 @@ export async function loadAnalytics() {
       applicationsPaid,
     },
     funnel: [
-      { label: "Started", value: started },
+      { label: "Started", value: funnelStarted },
       { label: "Personal complete", value: withPersonal },
+      { label: "Profile complete", value: withProfile },
       { label: "Documents complete", value: withDocuments },
       { label: "Submitted", value: submitted },
     ],

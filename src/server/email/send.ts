@@ -13,16 +13,17 @@ export type OutboundEmail = {
   attachments?: { filename: string; content: Buffer }[];
 };
 
-export async function deliverEmail(message: OutboundEmail) {
-  const existing = message.applicationId
-    ? await prisma.emailLog.findFirst({
-        where: {
-          applicationId: message.applicationId,
-          template: message.template,
-          status: "sent",
-        },
-      })
-    : null;
+export async function deliverEmail(message: OutboundEmail & { allowResend?: boolean }) {
+  const existing =
+    message.applicationId && !message.allowResend
+      ? await prisma.emailLog.findFirst({
+          where: {
+            applicationId: message.applicationId,
+            template: message.template,
+            status: "sent",
+          },
+        })
+      : null;
   if (existing) {
     return { status: "sent" as const, skippedDuplicate: true };
   }

@@ -83,4 +83,11 @@ export const DEFAULT_EMAIL_TEMPLATES = [
     bodyText:
       "Hello {{applicantName}},\n\nYour application {{reference}} for {{jobTitle}} is now marked as {{statusLabel}}.\n\n{{confirmationUrl}}\n\nThis is a status update from our team, not a visa or placement decision.",
   },
+  {
+    key: "draft_resume",
+    name: "Applicant — resume draft",
+    subject: "Continue your TEHA application — {{jobTitle}}",
+    bodyText:
+      "Hello {{applicantName}},\n\nContinue your draft application for {{jobTitle}} ({{location}}):\n\n{{resumeUrl}}\n\nIf you did not start this application, you can ignore this email.",
+  },
 ] as const;

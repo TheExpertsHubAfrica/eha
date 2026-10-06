@@ -7,12 +7,10 @@ import type {
   SupportingInput,
 } from "@/lib/validation/application";
 
-export function personalDefaults(
-  draft: DraftApplication,
-  genderEligibility: "male" | "female" | "both" = "both",
-): PersonalInput {
-  const profile = draft.profile;
-  const savedGender = profile?.gender;
+function genderDefault(
+  genderEligibility: "male" | "female" | "both",
+  savedGender?: string | null,
+): PersonalInput["gender"] {
   const allowed =
     genderEligibility === "male"
       ? (["male"] as const)
@@ -20,19 +18,50 @@ export function personalDefaults(
         ? (["female"] as const)
         : (["male", "female"] as const);
 
-  let gender: PersonalInput["gender"] = "" as PersonalInput["gender"];
   if (savedGender && (allowed as readonly string[]).includes(savedGender)) {
-    gender = savedGender;
-  } else if (genderEligibility === "male" || genderEligibility === "female") {
-    gender = genderEligibility;
+    return savedGender as PersonalInput["gender"];
   }
+  if (genderEligibility === "male" || genderEligibility === "female") {
+    return genderEligibility;
+  }
+  return "" as PersonalInput["gender"];
+}
 
+/** Empty personal form before a draft exists (deferred create). */
+export function emptyPersonalDefaults(
+  genderEligibility: "male" | "female" | "both" = "both",
+): PersonalInput {
+  return {
+    fullName: "",
+    dateOfBirth: "",
+    placeOfBirth: "",
+    nationality: "",
+    gender: genderDefault(genderEligibility),
+    passportNumber: "",
+    previousNationality: "",
+    maritalStatus: "single",
+    phone: "",
+    email: "",
+    countryOfResidence: "",
+    currentCity: "",
+    spouseName: "",
+    spouseNationality: "",
+    spousePlaceOfBirth: "",
+    spouseDateOfBirth: "",
+  };
+}
+
+export function personalDefaults(
+  draft: DraftApplication,
+  genderEligibility: "male" | "female" | "both" = "both",
+): PersonalInput {
+  const profile = draft.profile;
   return {
     fullName: profile?.fullName ?? "",
     dateOfBirth: dateInputValue(profile?.dateOfBirth),
     placeOfBirth: profile?.placeOfBirth ?? "",
     nationality: profile?.nationality ?? "",
-    gender,
+    gender: genderDefault(genderEligibility, profile?.gender),
     passportNumber: profile?.passportNumber ?? "",
     previousNationality: profile?.previousNationality ?? "",
     maritalStatus: profile?.maritalStatus ?? "single",

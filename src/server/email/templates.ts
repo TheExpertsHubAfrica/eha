@@ -146,6 +146,42 @@ export function applicationStatusChangedEmail(vars: {
   };
 }
 
+export function draftResumeEmail(vars: {
+  applicantName: string;
+  jobTitle: string;
+  location: string;
+  resumeUrl: string;
+}) {
+  const html = layout(
+    "Continue your application",
+    `
+      <p style="margin:0 0 12px;line-height:1.6;">Hello ${escapeHtml(vars.applicantName)},</p>
+      <p style="margin:0 0 12px;line-height:1.6;">
+        You can continue your draft application for <strong>${escapeHtml(vars.jobTitle)}</strong>
+        (${escapeHtml(vars.location)}) using the secure link below. It works even if you change device or clear cookies.
+      </p>
+      <p style="margin:0 0 16px;"><a href="${escapeHtml(vars.resumeUrl)}" style="color:#1d4ed8;">Continue application</a></p>
+      <p style="margin:0;line-height:1.6;color:#5b6573;">
+        If you did not start this application, you can ignore this email. The link expires with your draft (about 30 days).
+      </p>
+    `,
+  );
+  const text = [
+    `Hello ${vars.applicantName},`,
+    "",
+    `Continue your draft application for ${vars.jobTitle} (${vars.location}):`,
+    vars.resumeUrl,
+    "",
+    "If you did not start this application, you can ignore this email.",
+  ].join("\n");
+  return {
+    template: "draft_resume" as const,
+    subject: `Continue your ${siteConfig.shortName} application — ${vars.jobTitle}`,
+    html,
+    text,
+  };
+}
+
 export function contactEnquiryEmail(vars: {
   name: string;
   email: string;

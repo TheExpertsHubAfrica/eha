@@ -61,6 +61,7 @@ export function draftJob(draft: DraftApplication): JobOffer {
   return toJobOffer(draft.job);
 }
 
+/** Resume from cookie, or send the applicant to personal details without creating a draft yet. */
 export async function startOrResumeApplication(job: JobOffer) {
   const existingToken = await readDraftToken(job.id);
   if (existingToken) {
@@ -74,6 +75,12 @@ export async function startOrResumeApplication(job: JobOffer) {
     }
   }
 
+  await recordEvent({ name: "apply_clicked", targetType: "Job", targetId: job.id });
+  return { draft: null, redirectTo: applyPath(job.id, "personal") };
+}
+
+/** Create the draft on first personal save (not on Start). Returns the plain token for email resume. */
+export async function createDraftForJob(job: JobOffer) {
   const token = createDraftToken();
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
   const draft = await prisma.application.create({
@@ -89,7 +96,46 @@ export async function startOrResumeApplication(job: JobOffer) {
   });
   await recordEvent({ name: "application_started", targetType: "Job", targetId: job.id });
   await writeDraftToken(job.id, token);
-  return { draft, redirectTo: applyPath(job.id, "personal") };
+  return { draft, token };
+}
+
+export async function findDraftByEmail(jobId: string, email: string) {
+  return prisma.application.findFirst({
+    where: {
+      jobId,
+      status: "draft",
+      expiresAt: { gt: new Date() },
+      profile: { email: email.trim().toLowerCase() },
+    },
+    include: draftInclude,
+    orderBy: { updatedAt: "desc" },
+  });
+}
+
+/** Issue a fresh resume token (invalidates previous cookie/token) and return the plain value. */
+export async function rotateDraftResumeToken(applicationId: string) {
+  const token = createDraftToken();
+  await prisma.application.update({
+    where: { id: applicationId },
+    data: { tokenHash: hashDraftToken(token) },
+  });
+  return token;
+}
+
+export async function resumeDraftWithToken(jobId: string, token: string) {
+  const session = await findApplicationByToken(jobId, token);
+  if (!session) return { ok: false as const };
+  if (session.status !== "draft" && session.referenceNumber) {
+    await writeDraftToken(jobId, token);
+    return { ok: true as const, redirectTo: confirmationPath(session.referenceNumber) };
+  }
+  if (session.status !== "draft" || session.expiresAt < new Date()) {
+    return { ok: false as const };
+  }
+  await writeDraftToken(jobId, token);
+  const job = draftJob(session);
+  const next = getFirstIncompleteStep(job, session.stepsCompleted);
+  return { ok: true as const, redirectTo: applyPath(jobId, next.id) };
 }
 
 export async function loadApplicationSession(jobId: string) {
@@ -153,11 +199,24 @@ async function markStep(applicationId: string, step: ApplyStepId, completed: str
   return steps;
 }
 
-export async function savePersonal(job: JobOffer, draftId: string, input: PersonalInput) {
+export async function savePersonal(
+  job: JobOffer,
+  draftId: string | null,
+  input: PersonalInput,
+) {
+  let applicationId = draftId;
+  let resumeToken: string | null = null;
+
+  if (!applicationId) {
+    const created = await createDraftForJob(job);
+    applicationId = created.draft.id;
+    resumeToken = created.token;
+  }
+
   await prisma.applicantProfile.upsert({
-    where: { applicationId: draftId },
+    where: { applicationId },
     create: {
-      applicationId: draftId,
+      applicationId,
       fullName: input.fullName,
       dateOfBirth: parseDateOnly(input.dateOfBirth),
       placeOfBirth: input.placeOfBirth,
@@ -204,9 +263,15 @@ export async function savePersonal(job: JobOffer, draftId: string, input: Person
           : null,
     },
   });
-  const draft = await prisma.application.findUniqueOrThrow({ where: { id: draftId } });
-  const steps = await markStep(draftId, "personal", draft.stepsCompleted);
-  return applyPath(job.id, getFirstIncompleteStep(job, steps).id);
+  const draft = await prisma.application.findUniqueOrThrow({ where: { id: applicationId } });
+  const steps = await markStep(applicationId, "personal", draft.stepsCompleted);
+  return {
+    nextPath: applyPath(job.id, getFirstIncompleteStep(job, steps).id),
+    applicationId,
+    resumeToken,
+    email: input.email.toLowerCase(),
+    fullName: input.fullName,
+  };
 }
 
 export async function saveEducation(job: JobOffer, draftId: string, input: EducationInput) {

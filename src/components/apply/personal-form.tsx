@@ -135,6 +135,7 @@ export function PersonalForm({
         <div>
           <Label htmlFor="email" required>Email</Label>
           <Input id="email" type="email" autoComplete="email" {...form.register("email")} />
+          <FieldHint>We will email a resume link so you can continue on another device.</FieldHint>
           <FieldError>{form.formState.errors.email?.message}</FieldError>
         </div>
       </div>
