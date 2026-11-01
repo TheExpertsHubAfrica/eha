@@ -1,19 +1,14 @@
 import { NextResponse } from "next/server";
-import { requireAdmin } from "@/server/admin/auth";
+import { csvCell } from "@/lib/csv";
+import { requireAdmin, writeAdminAudit } from "@/server/admin/auth";
 import { loadAnalytics } from "@/server/analytics/queries";
 import { prisma } from "@/server/db";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function csvCell(value: string | number | null | undefined) {
-  const text = value == null ? "" : String(value);
-  if (/[",\n]/.test(text)) return `"${text.replaceAll('"', '""')}"`;
-  return text;
-}
-
 export async function GET(request: Request) {
-  await requireAdmin("analytics.read");
+  const admin = await requireAdmin("analytics.read");
   const type = new URL(request.url).searchParams.get("type") ?? "applications";
 
   if (type === "jobs") {
@@ -22,6 +17,12 @@ export async function GET(request: Request) {
     const rows = stats.jobPerformance.map((row) =>
       [row.title, row.city, row.views, row.started, row.applied, row.conversion.toFixed(3)].map(csvCell).join(","),
     );
+    await writeAdminAudit({
+      actorId: admin.id,
+      action: "analytics.export",
+      targetType: "Job",
+      metadata: { type: "jobs", rowCount: rows.length },
+    });
     return new NextResponse([header.join(","), ...rows].join("\n"), {
       headers: {
         "Content-Type": "text/csv; charset=utf-8",
@@ -53,6 +54,12 @@ export async function GET(request: Request) {
       .map(csvCell)
       .join(","),
   );
+  await writeAdminAudit({
+    actorId: admin.id,
+    action: "analytics.export",
+    targetType: "Application",
+    metadata: { type: "applications", rowCount: body.length },
+  });
   return new NextResponse([header.join(","), ...body].join("\n"), {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",

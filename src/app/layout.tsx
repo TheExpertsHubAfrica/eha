@@ -51,7 +51,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${outfit.variable} h-full`}>
       <body className="min-h-full font-sans antialiased">
-        <Script src="https://mcp.figma.com/mcp/html-to-design/capture.js" strategy="afterInteractive" />
+        {/* Design capture for scripts/figma-capture.mjs. Third-party code must never run in production. */}
+        {process.env.NODE_ENV === "development" ? (
+          <Script src="https://mcp.figma.com/mcp/html-to-design/capture.js" strategy="afterInteractive" />
+        ) : null}
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-white focus:px-3 focus:py-2"
