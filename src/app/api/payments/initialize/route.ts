@@ -4,6 +4,7 @@ import { parseApplicationReference } from "@/lib/apply/reference";
 import { formatGhs, pesewasToGhs } from "@/lib/money";
 import { siteConfig } from "@/lib/site-config";
 import { prisma } from "@/server/db";
+import { clientIp, consumeRateLimit, RATE_LIMITS } from "@/server/rate-limit";
 import {
   buildPaystackReference,
   ghsToPesewas,
@@ -36,6 +37,14 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { ok: false, error: "Online payments are not configured yet. Please try again later." },
       { status: 503 },
+    );
+  }
+
+  const limited = await consumeRateLimit(RATE_LIMITS.paymentInitializeIp, clientIp(request.headers));
+  if (!limited.ok) {
+    return NextResponse.json(
+      { ok: false, error: "Too many payment attempts. Please wait a few minutes and try again." },
+      { status: 429, headers: { "Retry-After": String(limited.retryAfterSeconds) } },
     );
   }
 
@@ -189,7 +198,10 @@ export async function POST(request: Request) {
       reference: init.reference,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Could not start payment.";
-    return NextResponse.json({ ok: false, error: message }, { status: 502 });
+    console.error("payment initialize failed", error);
+    return NextResponse.json(
+      { ok: false, error: "Could not start payment. Please try again." },
+      { status: 502 },
+    );
   }
 }

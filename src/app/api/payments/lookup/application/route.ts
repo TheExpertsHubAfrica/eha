@@ -2,21 +2,13 @@ import { NextResponse } from "next/server";
 import { maskPersonName } from "@/lib/apply/mask-name";
 import { parseApplicationReference } from "@/lib/apply/reference";
 import { prisma } from "@/server/db";
-import { consumeLookupSlot } from "@/server/payments/rate-limit";
+import { clientIp, consumeRateLimit, RATE_LIMITS } from "@/server/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function clientIp(request: Request) {
-  return (
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    request.headers.get("x-real-ip") ||
-    "unknown"
-  );
-}
-
 export async function GET(request: Request) {
-  const limited = consumeLookupSlot(`payment-lookup:${clientIp(request)}`);
+  const limited = await consumeRateLimit(RATE_LIMITS.paymentLookupIp, clientIp(request.headers));
   if (!limited.ok) {
     return NextResponse.json(
       { ok: false, error: "Too many lookups. Please wait a few minutes and try again." },

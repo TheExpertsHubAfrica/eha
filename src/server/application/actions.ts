@@ -15,7 +15,7 @@ import {
   type SupportingInput,
 } from "@/lib/validation/application";
 import { getJobById } from "@/server/jobs";
-import { consumeResumeLinkSlot, RESUME_LINK_LIMITS } from "@/server/application/rate-limit";
+import { clientIp, consumeRateLimit, RATE_LIMITS } from "@/server/rate-limit";
 import { completeDocuments } from "@/server/application/documents";
 import { submitApplication } from "@/server/application/submit";
 import {
@@ -61,6 +61,16 @@ async function context(offerId: string) {
     } as const;
   }
   return { job, draft };
+}
+
+/** Shared by first-save and on-request emails, so both count towards the same per-recipient cap. */
+async function consumeDraftEmailSlot(email: string) {
+  const ip = clientIp(await headers());
+  const [byIp, byRecipient] = await Promise.all([
+    consumeRateLimit(RATE_LIMITS.draftEmailIp, ip),
+    consumeRateLimit(RATE_LIMITS.draftEmailRecipient, email.toLowerCase()),
+  ]);
+  return byIp.ok && byRecipient.ok;
 }
 
 async function sendDraftResume(input: {
@@ -138,10 +148,18 @@ export async function savePersonalAction(
     };
   }
 
+  if (!draft) {
+    const limited = await consumeRateLimit(RATE_LIMITS.draftCreateIp, clientIp(await headers()));
+    if (!limited.ok) {
+      return { ok: false, error: "Too many new applications from this network. Please try again later." };
+    }
+  }
+
   const saved = await savePersonal(job, draft?.id ?? null, parsed.data);
 
   // Email a resume link on first save (new draft) so the applicant can return without the cookie.
-  if (saved.resumeToken) {
+  // Over the limit the draft still saves, because the applicant's work matters more than the email.
+  if (saved.resumeToken && (await consumeDraftEmailSlot(saved.email))) {
     await sendDraftResume({
       applicationId: saved.applicationId,
       offerId: job.id,
@@ -171,11 +189,7 @@ export async function requestResumeLinkAction(
   }
 
   // Counted whether or not a draft exists, so hitting the limit reveals nothing about the email.
-  const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-  const allowed =
-    consumeResumeLinkSlot(`ip:${ip}`, RESUME_LINK_LIMITS.perIp).ok &&
-    consumeResumeLinkSlot(`email:${parsed.data}`, RESUME_LINK_LIMITS.perEmail).ok;
-  if (!allowed) {
+  if (!(await consumeDraftEmailSlot(parsed.data))) {
     return { ok: false, error: "Too many resume link requests. Please try again later." };
   }
 

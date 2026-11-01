@@ -1,22 +1,14 @@
 import { NextResponse } from "next/server";
 import { contactSchema } from "@/lib/validation/contact";
-import { consumeContactSlot } from "@/server/contact/rate-limit";
 import { submitContactEnquiry } from "@/server/contact/submit";
+import { clientIp, consumeRateLimit, RATE_LIMITS } from "@/server/rate-limit";
 import { getResolvedSite } from "@/server/settings";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function clientIp(request: Request) {
-  return (
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    request.headers.get("x-real-ip") ||
-    "unknown"
-  );
-}
-
 export async function POST(request: Request) {
-  const limited = consumeContactSlot(`contact:${clientIp(request)}`);
+  const limited = await consumeRateLimit(RATE_LIMITS.contactIp, clientIp(request.headers));
   if (!limited.ok) {
     return NextResponse.json(
       { ok: false, error: "Too many messages. Please wait a few minutes and try again." },

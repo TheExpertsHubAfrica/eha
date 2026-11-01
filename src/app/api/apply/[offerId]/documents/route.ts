@@ -5,7 +5,7 @@ import { saveUploadedDocument } from "@/server/application/documents";
 import { loadDraftForJob } from "@/server/application/service";
 import { getJobById } from "@/server/jobs";
 import { ObjectStorageNotConfiguredError } from "@/server/storage";
-import { consumeUploadSlot } from "@/server/uploads/rate-limit";
+import { consumeRateLimit, RATE_LIMITS } from "@/server/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,7 +33,7 @@ export async function POST(
     );
   }
 
-  const limited = consumeUploadSlot(draft.id);
+  const limited = await consumeRateLimit(RATE_LIMITS.uploadDraft, draft.id);
   if (!limited.ok) {
     return NextResponse.json(
       { ok: false, error: "Too many uploads. Wait a little and try again." },

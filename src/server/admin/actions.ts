@@ -10,7 +10,7 @@ import {
   writeAdminAudit,
 } from "@/server/admin/auth";
 import { prisma } from "@/server/db";
-import { consumeLoginSlot } from "@/server/admin/rate-limit";
+import { clientIp, consumeRateLimit, RATE_LIMITS } from "@/server/rate-limit";
 import { headers } from "next/headers";
 
 const loginSchema = z.object({
@@ -44,9 +44,16 @@ export async function loginAdminAction(
   if (!parsed.success) {
     return { ok: false, error: "Enter a valid email and password." };
   }
-  const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
-  const limited = consumeLoginSlot(`admin-login:${ip}:${parsed.data.email.toLowerCase()}`);
-  if (!limited.ok) {
+  const ip = clientIp(await headers());
+  const email = parsed.data.email.toLowerCase();
+  // The per-email limit slows distributed guessing, at the cost that an attacker can briefly block
+  // sign-in for an address they know.
+  const limits = await Promise.all([
+    consumeRateLimit(RATE_LIMITS.adminLoginIpEmail, `${ip}:${email}`),
+    consumeRateLimit(RATE_LIMITS.adminLoginIp, ip),
+    consumeRateLimit(RATE_LIMITS.adminLoginEmail, email),
+  ]);
+  if (limits.some((limit) => !limit.ok)) {
     return { ok: false, error: "Too many sign-in attempts. Try again shortly." };
   }
   const secret = process.env.AUTH_SECRET?.trim();

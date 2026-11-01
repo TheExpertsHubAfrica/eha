@@ -29,9 +29,20 @@ export const applicantGenderSchema = z.enum(["male", "female"], {
   message: "Select your gender.",
 });
 
+// Names appear in emails we send to the address on the form, so links must not fit in this field.
+const PERSON_NAME = /^[\p{L}\p{M}][\p{L}\p{M}'’. -]*$/u;
+const DOMAIN_LIKE = /\.\p{L}{2,}/u;
+
 export const personalSchema = z
   .object({
-    fullName: z.string().trim().min(2, "Enter your full name.").max(120),
+    fullName: z
+      .string()
+      .trim()
+      .min(2, "Enter your full name.")
+      .max(120)
+      .refine((value) => PERSON_NAME.test(value) && !DOMAIN_LIKE.test(value), {
+        message: "Use letters, spaces, hyphens and apostrophes only.",
+      }),
     dateOfBirth: dateOnly.superRefine(adultDate),
     placeOfBirth: z.string().trim().min(2, "Enter your place of birth.").max(120),
     nationality: z.string().trim().min(2, "Enter your nationality.").max(80),
