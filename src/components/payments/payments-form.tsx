@@ -9,10 +9,8 @@ import { CheckboxField } from "@/components/ui/select";
 import { formatGhs } from "@/lib/money";
 
 type ApplicationLookup = {
-  id: string;
   referenceNumber: string;
-  applicantName: string;
-  suggestedEmail: string;
+  maskedApplicantName: string;
   jobTitle: string;
   jobLocation: string;
 };
@@ -191,20 +189,13 @@ export function PaymentsForm({
         toast.error(payload.error || "Application not found.");
         return;
       }
-      const receiptEmail = email.trim() || payload.application.suggestedEmail;
-      if (!receiptEmail) {
-        setError("Enter the email for your payment receipt.");
-        return;
-      }
-      if (!email.trim() && payload.application.suggestedEmail) {
-        setEmail(payload.application.suggestedEmail);
-      }
       setConfirm({
         kind: "application",
         application: payload.application,
         amountGhs,
-        email: receiptEmail,
-        payerName: payerName.trim() || payload.application.applicantName,
+        email: email.trim(),
+        // Left empty so the server falls back to the full name; the lookup only returns a masked one.
+        payerName: payerName.trim(),
       });
       return;
     } catch {
@@ -227,7 +218,7 @@ export function PaymentsForm({
               applicationRef: confirm.application.referenceNumber,
               amountGhs: confirm.amountGhs,
               email: confirm.email,
-              payerName: confirm.payerName,
+              payerName: confirm.payerName || undefined,
             }
           : {
               kind: "invoice" as const,
@@ -338,10 +329,10 @@ export function PaymentsForm({
               id="applicationRef"
               value={applicationRef}
               onChange={(event) => setApplicationRef(event.target.value.toUpperCase())}
-              placeholder="TEHA-2026-000005"
+              placeholder="TEHA-2026-000005-K7M2QX"
               autoComplete="off"
             />
-            <FieldHint>Example: TEHA-2026-000005 from your confirmation email or success page.</FieldHint>
+            <FieldHint>Example: TEHA-2026-000005-K7M2QX from your confirmation email or success page.</FieldHint>
           </div>
         )}
 
@@ -419,7 +410,7 @@ export function PaymentsForm({
                 <>
                   <div>
                     <dt className="text-muted">Applicant</dt>
-                    <dd className="font-medium text-navy">{confirm.application.applicantName}</dd>
+                    <dd className="font-medium text-navy">{confirm.application.maskedApplicantName}</dd>
                   </div>
                   <div>
                     <dt className="text-muted">Submission number</dt>

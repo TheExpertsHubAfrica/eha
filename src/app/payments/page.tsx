@@ -25,7 +25,7 @@ export default async function PaymentsPage({
       <PageHero
         eyebrow="Payments"
         title="Pay securely online."
-        description="Use your application submission number (for example TEHA-2026-000005) or an open invoice number from our team. You will confirm the details before Paystack opens."
+        description="Use your application submission number (for example TEHA-2026-000005-K7M2QX) or an open invoice number from our team. You will confirm the details before Paystack opens."
       />
       <section className="container-page py-10 sm:py-14">
         <div className="mx-auto max-w-xl">

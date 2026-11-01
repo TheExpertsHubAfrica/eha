@@ -2,6 +2,7 @@ import { formatDisplayDate } from "@/lib/utils";
 import { siteConfig } from "@/lib/site-config";
 import { confirmationPath, formatApplicationReference } from "@/lib/apply/reference";
 import { canAccessStep } from "@/lib/apply/steps";
+import { createReferenceSuffix } from "@/lib/apply/token";
 import { missingRequiredDocuments } from "@/lib/apply/documents";
 import { prisma } from "@/server/db";
 import { getEmailConfig } from "@/server/email/config";
@@ -168,7 +169,7 @@ export async function submitApplication(
         create: { year, last: 1 },
         update: { last: { increment: 1 } },
       });
-      const referenceNumber = formatApplicationReference(year, sequence.last);
+      const referenceNumber = formatApplicationReference(year, sequence.last, createReferenceSuffix());
 
       const updated = await tx.application.updateMany({
         where: { id: session.id, status: "draft" },

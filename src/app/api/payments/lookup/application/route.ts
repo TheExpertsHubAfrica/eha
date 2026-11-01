@@ -1,15 +1,33 @@
 import { NextResponse } from "next/server";
+import { maskPersonName } from "@/lib/apply/mask-name";
 import { parseApplicationReference } from "@/lib/apply/reference";
 import { prisma } from "@/server/db";
+import { consumeLookupSlot } from "@/server/payments/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+function clientIp(request: Request) {
+  return (
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    request.headers.get("x-real-ip") ||
+    "unknown"
+  );
+}
+
 export async function GET(request: Request) {
+  const limited = consumeLookupSlot(`payment-lookup:${clientIp(request)}`);
+  if (!limited.ok) {
+    return NextResponse.json(
+      { ok: false, error: "Too many lookups. Please wait a few minutes and try again." },
+      { status: 429, headers: { "Retry-After": String(limited.retryAfterSeconds) } },
+    );
+  }
+
   const ref = new URL(request.url).searchParams.get("ref")?.trim().toUpperCase() ?? "";
   if (!parseApplicationReference(ref)) {
     return NextResponse.json(
-      { ok: false, error: "Enter a valid submission number (for example TEHA-2026-000005)." },
+      { ok: false, error: "Enter a valid submission number (for example TEHA-2026-000005-K7M2QX)." },
       { status: 400 },
     );
   }
@@ -17,7 +35,7 @@ export async function GET(request: Request) {
   const application = await prisma.application.findUnique({
     where: { referenceNumber: ref },
     include: {
-      profile: { select: { fullName: true, email: true } },
+      profile: { select: { fullName: true } },
       job: { select: { title: true, city: true, country: true } },
     },
   });
@@ -32,10 +50,8 @@ export async function GET(request: Request) {
   return NextResponse.json({
     ok: true,
     application: {
-      id: application.id,
       referenceNumber: application.referenceNumber,
-      applicantName: application.profile?.fullName ?? "Applicant",
-      suggestedEmail: application.profile?.email ?? "",
+      maskedApplicantName: maskPersonName(application.profile?.fullName ?? "Applicant"),
       jobTitle: application.job.title,
       jobLocation: `${application.job.city}, ${application.job.country}`,
     },
