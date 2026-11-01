@@ -13,12 +13,24 @@ export const RATE_LIMITS = {
   draftCreateIp: { scope: "draft-create-ip", max: 30, windowSeconds: HOUR },
   draftEmailIp: { scope: "draft-email-ip", max: 20, windowSeconds: HOUR },
   draftEmailRecipient: { scope: "draft-email-recipient", max: 5, windowSeconds: HOUR },
+  // Site-wide, in separate groups so a flood of one kind cannot silence the others.
+  siteLinkEmails: { scope: "site-link-emails", max: 200, windowSeconds: HOUR },
+  siteConfirmationEmails: { scope: "site-confirmation-emails", max: 200, windowSeconds: HOUR },
+  siteAdminEmails: { scope: "site-admin-emails", max: 100, windowSeconds: HOUR },
   paymentInitializeIp: { scope: "payment-initialize-ip", max: 20, windowSeconds: 15 * MINUTE },
   paymentLookupIp: { scope: "payment-lookup-ip", max: 20, windowSeconds: 15 * MINUTE },
   uploadDraft: { scope: "upload-draft", max: 30, windowSeconds: HOUR },
 } as const;
 
 export type RateLimit = (typeof RATE_LIMITS)[keyof typeof RATE_LIMITS];
+
+/** Checks the IP first, so requests from a blocked IP cannot use up a recipient's allowance. */
+export async function consumeApplicantEmailSlot(ip: string, email: string) {
+  const byIp = await consumeRateLimit(RATE_LIMITS.draftEmailIp, ip);
+  if (!byIp.ok) return false;
+  const byRecipient = await consumeRateLimit(RATE_LIMITS.draftEmailRecipient, email.toLowerCase());
+  return byRecipient.ok;
+}
 
 const PRUNE_CHANCE = 0.01;
 

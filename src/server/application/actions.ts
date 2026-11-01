@@ -16,7 +16,7 @@ import {
 } from "@/lib/validation/application";
 import { applicationAccessPath, confirmationPath, parseApplicationReference } from "@/lib/apply/reference";
 import { getJobById } from "@/server/jobs";
-import { clientIp, consumeRateLimit, RATE_LIMITS } from "@/server/rate-limit";
+import { clientIp, consumeApplicantEmailSlot, consumeRateLimit, RATE_LIMITS } from "@/server/rate-limit";
 import {
   consumeAccessLink,
   findSubmittedByReferenceAndEmail,
@@ -36,7 +36,7 @@ import {
   startOrResumeApplication,
 } from "@/server/application/service";
 import { overlayEmailTemplate } from "@/server/email/custom";
-import { deliverEmail } from "@/server/email/send";
+import { deliverEmail, reserveSiteEmailSlot } from "@/server/email/send";
 import { applicationAccessEmail, draftResumeEmail } from "@/server/email/templates";
 
 function flattenIssues(issues: { path: (string | number | symbol)[]; message: string }[]) {
@@ -69,14 +69,19 @@ async function context(offerId: string) {
   return { job, draft };
 }
 
-/** Shared by first-save and on-request emails, so both count towards the same per-recipient cap. */
+/** Shared by every applicant email, so all of them count towards the same per-recipient cap. */
 async function consumeDraftEmailSlot(email: string) {
-  const ip = clientIp(await headers());
-  const [byIp, byRecipient] = await Promise.all([
-    consumeRateLimit(RATE_LIMITS.draftEmailIp, ip),
-    consumeRateLimit(RATE_LIMITS.draftEmailRecipient, email.toLowerCase()),
-  ]);
-  return byIp.ok && byRecipient.ok;
+  return consumeApplicantEmailSlot(clientIp(await headers()), email);
+}
+
+/** Checked before a new link is issued, so a refused email cannot cancel a link that still works. */
+function reserveLinkEmail(applicationId: string, template: string, to: string, reference: string) {
+  return reserveSiteEmailSlot(RATE_LIMITS.siteLinkEmails, {
+    applicationId,
+    template,
+    to,
+    subject: `Link email — ${reference}`,
+  });
 }
 
 async function sendDraftResume(input: {
@@ -165,7 +170,11 @@ export async function savePersonalAction(
 
   // Email a resume link on first save (new draft) so the applicant can return without the cookie.
   // Over the limit the draft still saves, because the applicant's work matters more than the email.
-  if (saved.resumeToken && (await consumeDraftEmailSlot(saved.email))) {
+  if (
+    saved.resumeToken &&
+    (await consumeDraftEmailSlot(saved.email)) &&
+    (await reserveLinkEmail(saved.applicationId, "draft_resume", saved.email, job.title))
+  ) {
     await sendDraftResume({
       applicationId: saved.applicationId,
       offerId: job.id,
@@ -201,7 +210,7 @@ export async function requestResumeLinkAction(
 
   const draft = await findDraftByEmail(job.id, parsed.data);
   // Always return success wording so we do not reveal whether an email has a draft.
-  if (draft?.profile) {
+  if (draft?.profile && (await reserveLinkEmail(draft.id, "draft_resume", parsed.data, job.title))) {
     const token = await issueResumeToken(draft.id);
     await sendDraftResume({
       applicationId: draft.id,
@@ -246,7 +255,10 @@ export async function requestApplicationLinkAction(formData: FormData): Promise<
   }
 
   const application = await findSubmittedByReferenceAndEmail(reference, email);
-  if (application?.profile) {
+  if (
+    application?.profile &&
+    (await reserveLinkEmail(application.id, "application_access", email, reference))
+  ) {
     const vars = {
       applicantName: application.profile.fullName,
       reference,

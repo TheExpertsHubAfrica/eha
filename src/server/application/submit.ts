@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { formatDisplayDate } from "@/lib/utils";
 import { siteConfig } from "@/lib/site-config";
 import { confirmationPath, formatApplicationReference } from "@/lib/apply/reference";
@@ -6,7 +7,7 @@ import { createReferenceSuffix, SUBMITTED_ACCESS_SECONDS } from "@/lib/apply/tok
 import { missingRequiredDocuments } from "@/lib/apply/documents";
 import { prisma } from "@/server/db";
 import { getEmailConfig } from "@/server/email/config";
-import { deliverEmail } from "@/server/email/send";
+import { deliverEmail, reserveSiteEmailSlot } from "@/server/email/send";
 import { overlayEmailTemplate } from "@/server/email/custom";
 import { adminNewApplicationEmail, applicationReceivedEmail } from "@/server/email/templates";
 import { issueAccessLink } from "@/server/application/access";
@@ -17,6 +18,7 @@ import {
 } from "@/server/application/service";
 import { readDraftToken } from "@/server/application/cookies";
 import { recordEvent } from "@/server/analytics/events";
+import { clientIp, consumeApplicantEmailSlot, RATE_LIMITS } from "@/server/rate-limit";
 
 async function notifySubmission(
   application: DraftApplication & { referenceNumber: string; submittedAt: Date },
@@ -32,31 +34,59 @@ async function notifySubmission(
     jobTitle: job.title,
     location: `${job.city}, ${job.country}`,
     submittedAt: application.submittedAt,
-    confirmationUrl: await issueAccessLink(application.id, application.referenceNumber),
   };
 
-  const applicant = applicationReceivedEmail(vars);
-  await deliverEmail({
+  // The address on the form is unverified, so this counts like any other email a stranger can
+  // trigger. Over a limit the application still stands; only the email is skipped.
+  const receipt = {
     applicationId: application.id,
+    template: "application_received",
     to: profile.email,
-    ...(await overlayEmailTemplate(
-      "application_received",
-      {
-        applicantName: vars.applicantName,
-        applicantEmail: vars.applicantEmail,
-        reference: vars.reference,
-        jobTitle: vars.jobTitle,
-        location: vars.location,
-        submittedAt: formatDisplayDate(vars.submittedAt),
-        confirmationUrl: vars.confirmationUrl,
+    subject: `Application Received — ${application.referenceNumber}`,
+  };
+  const withinLimits = await consumeApplicantEmailSlot(clientIp(await headers()), profile.email);
+  if (!withinLimits) {
+    await prisma.emailLog.create({
+      data: {
+        applicationId: receipt.applicationId,
+        template: receipt.template,
+        toAddress: receipt.to,
+        subject: receipt.subject,
+        status: "skipped",
+        error: "Email limit reached for this address or network.",
       },
-      applicant,
-      siteConfig.name,
-    )),
-  });
+    });
+  } else if (await reserveSiteEmailSlot(RATE_LIMITS.siteConfirmationEmails, receipt)) {
+    const confirmationUrl = await issueAccessLink(application.id, application.referenceNumber);
+    await deliverEmail({
+      applicationId: application.id,
+      to: profile.email,
+      ...(await overlayEmailTemplate(
+        "application_received",
+        {
+          applicantName: vars.applicantName,
+          applicantEmail: vars.applicantEmail,
+          reference: vars.reference,
+          jobTitle: vars.jobTitle,
+          location: vars.location,
+          submittedAt: formatDisplayDate(vars.submittedAt),
+          confirmationUrl,
+        },
+        applicationReceivedEmail({ ...vars, confirmationUrl }),
+        siteConfig.name,
+      )),
+    });
+  }
 
   const adminTo = getEmailConfig().adminTo;
   if (adminTo) {
+    const reserved = await reserveSiteEmailSlot(RATE_LIMITS.siteAdminEmails, {
+      applicationId: application.id,
+      template: "admin_new_application",
+      to: adminTo,
+      subject: `New Work Application Received — ${application.referenceNumber}`,
+    });
+    if (!reserved) return;
     const adminMessage = adminNewApplicationEmail({
       ...vars,
       phone: profile.phone,

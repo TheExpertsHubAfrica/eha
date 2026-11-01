@@ -82,7 +82,7 @@ export function applicationReceivedEmail(vars: ApplicationReceivedVars) {
 }
 
 export function adminNewApplicationEmail(
-  vars: ApplicationReceivedVars & { phone: string; applicationId: string },
+  vars: Omit<ApplicationReceivedVars, "confirmationUrl"> & { phone: string; applicationId: string },
 ) {
   const submitted = formatDisplayDate(vars.submittedAt);
   const adminUrl = `${siteConfig.url}/admin/applications/${vars.applicationId}`;

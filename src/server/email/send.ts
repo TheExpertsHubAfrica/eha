@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { prisma } from "@/server/db";
 import { getEmailConfig } from "@/server/email/config";
+import { consumeRateLimit, type RateLimit } from "@/server/rate-limit";
 
 export type OutboundEmail = {
   applicationId?: string;
@@ -12,6 +13,30 @@ export type OutboundEmail = {
   replyTo?: string;
   attachments?: { filename: string; content: Buffer }[];
 };
+
+/**
+ * Call only when an email is really about to be sent, so refused requests cannot use up the
+ * site-wide allowance. A refused email is logged and not retried later, because there is no queue.
+ */
+export async function reserveSiteEmailSlot(
+  limit: RateLimit,
+  log: { applicationId?: string; template: string; to: string; subject: string },
+) {
+  const { ok } = await consumeRateLimit(limit, "all");
+  if (ok) return true;
+  console.warn(`site-wide email limit reached: ${limit.scope}`);
+  await prisma.emailLog.create({
+    data: {
+      applicationId: log.applicationId,
+      template: log.template,
+      toAddress: log.to,
+      subject: log.subject,
+      status: "skipped",
+      error: `Site-wide email limit reached (${limit.scope}).`,
+    },
+  });
+  return false;
+}
 
 export async function deliverEmail(message: OutboundEmail & { allowResend?: boolean }) {
   const existing =
