@@ -232,6 +232,7 @@ enum MaritalStatus {
 model Application {
   id               String            @id @default(cuid())
   tokenHash        String            @unique @map("token_hash")
+  resumeTokenHash  String?           @unique @map("resume_token_hash")
   jobId            String            @map("job_id")
   status           ApplicationStatus @default(draft)
   currentStep      String            @default("personal") @map("current_step")

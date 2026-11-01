@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { canAccessStep, jobRequiresEmergency, jobRequiresMilitary, jobRequiresTravel } from "@/lib/apply/steps";
@@ -14,13 +15,14 @@ import {
   type SupportingInput,
 } from "@/lib/validation/application";
 import { getJobById } from "@/server/jobs";
+import { consumeResumeLinkSlot, RESUME_LINK_LIMITS } from "@/server/application/rate-limit";
 import { completeDocuments } from "@/server/application/documents";
 import { submitApplication } from "@/server/application/submit";
 import {
+  consumeResumeToken,
   findDraftByEmail,
+  issueResumeToken,
   loadDraftForJob,
-  resumeDraftWithToken,
-  rotateDraftResumeToken,
   saveEducation,
   saveEmployment,
   savePersonal,
@@ -168,10 +170,19 @@ export async function requestResumeLinkAction(
     return { ok: false, fieldErrors: { email: "Enter a valid email address." } };
   }
 
+  // Counted whether or not a draft exists, so hitting the limit reveals nothing about the email.
+  const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const allowed =
+    consumeResumeLinkSlot(`ip:${ip}`, RESUME_LINK_LIMITS.perIp).ok &&
+    consumeResumeLinkSlot(`email:${parsed.data}`, RESUME_LINK_LIMITS.perEmail).ok;
+  if (!allowed) {
+    return { ok: false, error: "Too many resume link requests. Please try again later." };
+  }
+
   const draft = await findDraftByEmail(job.id, parsed.data);
   // Always return success wording so we do not reveal whether an email has a draft.
   if (draft?.profile) {
-    const token = await rotateDraftResumeToken(draft.id);
+    const token = await issueResumeToken(draft.id);
     await sendDraftResume({
       applicationId: draft.id,
       offerId: job.id,
@@ -192,7 +203,8 @@ export async function resumeApplicationAction(offerId: string, token: string) {
   if (!job) {
     redirect(`/apply/${offerId}/unavailable`);
   }
-  const result = await resumeDraftWithToken(offerId, token);
+  const result =
+    typeof token === "string" ? await consumeResumeToken(offerId, token) : { ok: false as const };
   if (!result.ok) {
     redirect(`/apply/${offerId}?resume=invalid`);
   }

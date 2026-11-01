@@ -162,7 +162,7 @@ export function draftResumeEmail(vars: {
       </p>
       <p style="margin:0 0 16px;"><a href="${escapeHtml(vars.resumeUrl)}" style="color:#1d4ed8;">Continue application</a></p>
       <p style="margin:0;line-height:1.6;color:#5b6573;">
-        If you did not start this application, you can ignore this email. The link expires with your draft (about 30 days).
+        If you did not start this application, you can ignore this email. The link works once and expires with your draft (about 30 days).
       </p>
     `,
   );

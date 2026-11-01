@@ -79,7 +79,7 @@ export async function startOrResumeApplication(job: JobOffer) {
   return { draft: null, redirectTo: applyPath(job.id, "personal") };
 }
 
-/** Create the draft on first personal save (not on Start). Returns the plain token for email resume. */
+/** Create the draft on first personal save (not on Start). */
 export async function createDraftForJob(job: JobOffer) {
   const token = createDraftToken();
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
@@ -96,7 +96,7 @@ export async function createDraftForJob(job: JobOffer) {
   });
   await recordEvent({ name: "application_started", targetType: "Job", targetId: job.id });
   await writeDraftToken(job.id, token);
-  return { draft, token };
+  return { draft };
 }
 
 export async function findDraftByEmail(jobId: string, email: string) {
@@ -112,29 +112,58 @@ export async function findDraftByEmail(jobId: string, email: string) {
   });
 }
 
-/** Issue a fresh resume token (invalidates previous cookie/token) and return the plain value. */
-export async function rotateDraftResumeToken(applicationId: string) {
+/**
+ * Issue a single-use link token and return the plain value. The draft's session token is untouched,
+ * so requesting a link cannot sign anyone out; a newer link replaces any earlier unused one.
+ */
+export async function issueResumeToken(applicationId: string) {
   const token = createDraftToken();
   await prisma.application.update({
     where: { id: applicationId },
-    data: { tokenHash: hashDraftToken(token) },
+    data: { resumeTokenHash: hashDraftToken(token) },
   });
   return token;
 }
 
-export async function resumeDraftWithToken(jobId: string, token: string) {
-  const session = await findApplicationByToken(jobId, token);
+// Links emailed before resume tokens existed carry the session token, so both columns are matched.
+function resumeTokenWhere(jobId: string, token: string) {
+  const hash = hashDraftToken(token);
+  return { jobId, OR: [{ resumeTokenHash: hash }, { tokenHash: hash }] };
+}
+
+/** Read-only, because mail scanners open links: nothing changes until the applicant confirms. */
+export async function inspectResumeToken(jobId: string, token: string) {
+  const session = await prisma.application.findFirst({
+    where: resumeTokenWhere(jobId, token),
+    select: {
+      status: true,
+      referenceNumber: true,
+      expiresAt: true,
+      profile: { select: { email: true } },
+    },
+  });
+  if (!session) return { kind: "invalid" as const };
+  if (session.status !== "draft") {
+    return session.referenceNumber
+      ? { kind: "submitted" as const, referenceNumber: session.referenceNumber }
+      : { kind: "invalid" as const };
+  }
+  if (session.expiresAt < new Date()) return { kind: "invalid" as const };
+  return { kind: "draft" as const, email: session.profile?.email ?? null };
+}
+
+/** Spends the link and moves the draft to this browser, which signs out any other device. */
+export async function consumeResumeToken(jobId: string, token: string) {
+  const sessionToken = createDraftToken();
+  const updated = await prisma.application.updateMany({
+    where: { ...resumeTokenWhere(jobId, token), status: "draft", expiresAt: { gt: new Date() } },
+    data: { tokenHash: hashDraftToken(sessionToken), resumeTokenHash: null },
+  });
+  if (updated.count === 0) return { ok: false as const };
+  await writeDraftToken(jobId, sessionToken);
+  const session = await findApplicationByToken(jobId, sessionToken);
   if (!session) return { ok: false as const };
-  if (session.status !== "draft" && session.referenceNumber) {
-    await writeDraftToken(jobId, token);
-    return { ok: true as const, redirectTo: confirmationPath(session.referenceNumber) };
-  }
-  if (session.status !== "draft" || session.expiresAt < new Date()) {
-    return { ok: false as const };
-  }
-  await writeDraftToken(jobId, token);
-  const job = draftJob(session);
-  const next = getFirstIncompleteStep(job, session.stepsCompleted);
+  const next = getFirstIncompleteStep(draftJob(session), session.stepsCompleted);
   return { ok: true as const, redirectTo: applyPath(jobId, next.id) };
 }
 
@@ -210,7 +239,7 @@ export async function savePersonal(
   if (!applicationId) {
     const created = await createDraftForJob(job);
     applicationId = created.draft.id;
-    resumeToken = created.token;
+    resumeToken = await issueResumeToken(applicationId);
   }
 
   await prisma.applicantProfile.upsert({

@@ -175,6 +175,7 @@ export async function submitApplication(
         where: { id: session.id, status: "draft" },
         data: {
           status: "submitted",
+          resumeTokenHash: null,
           currentStep: "review",
           referenceNumber,
           submittedAt,
