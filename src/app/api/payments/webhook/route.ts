@@ -29,7 +29,17 @@ export async function POST(request: Request) {
   }
 
   if (event.event === "charge.success" && event.data?.reference) {
-    await markPaymentFromPaystack(event.data.reference).catch(() => undefined);
+    // Any non-200 makes Paystack retry, so a temporary failure cannot lose a real payment.
+    try {
+      const result = await markPaymentFromPaystack(event.data.reference);
+      if (!result.ok && !result.final) {
+        console.warn("payment webhook: not final yet, asking Paystack to retry", event.data.reference);
+        return NextResponse.json({ ok: false }, { status: 503 });
+      }
+    } catch (error) {
+      console.error("payment webhook failed", event.data.reference, error);
+      return NextResponse.json({ ok: false }, { status: 500 });
+    }
   }
 
   return NextResponse.json({ ok: true });

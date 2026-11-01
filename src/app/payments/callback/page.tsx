@@ -46,11 +46,17 @@ export default async function PaymentsCallbackPage({
       message = "Thank you. Your payment has been recorded against the details below.";
       receipt = receiptFromPayment(payment);
     } else if (payment) {
-      heading = "Payment not completed";
-      message =
-        result && "error" in result && result.error
-          ? result.error
-          : "Paystack did not confirm a successful charge for this reference.";
+      if (payment.status === "pending") {
+        heading = "Payment processing";
+        message =
+          "We have not had confirmation from Paystack yet. If you completed the payment it will be recorded automatically, so there is no need to pay again.";
+      } else {
+        heading = "Payment not completed";
+        message =
+          result && "error" in result && result.error
+            ? result.error
+            : "Paystack did not confirm a successful charge for this reference.";
+      }
       receipt = {
         payer: payment.payerName,
         email: payment.email,
