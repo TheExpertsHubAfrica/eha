@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
+import { TURNSTILE_ACTIONS, TURNSTILE_FAILED_MESSAGE } from "@/lib/turnstile";
 import { contactSchema } from "@/lib/validation/contact";
 import { submitContactEnquiry } from "@/server/contact/submit";
 import { clientIp, consumeRateLimit, RATE_LIMITS } from "@/server/rate-limit";
 import { getResolvedSite } from "@/server/settings";
+import { verifyTurnstile } from "@/server/turnstile";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -29,6 +31,10 @@ export async function POST(request: Request) {
 
   if (parsed.data._gotcha?.trim()) {
     return NextResponse.json({ ok: true });
+  }
+
+  if (!(await verifyTurnstile(parsed.data.turnstileToken, clientIp(request.headers), TURNSTILE_ACTIONS.contact))) {
+    return NextResponse.json({ ok: false, error: TURNSTILE_FAILED_MESSAGE }, { status: 403 });
   }
 
   const site = await getResolvedSite();

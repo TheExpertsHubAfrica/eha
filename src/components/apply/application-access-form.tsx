@@ -4,18 +4,27 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FieldError, Label } from "@/components/ui/label";
+import { useTurnstile } from "@/components/security/use-turnstile";
+import { TURNSTILE_ACTIONS, TURNSTILE_INCOMPLETE_MESSAGE } from "@/lib/turnstile";
 import { requestApplicationLinkAction } from "@/server/application/actions";
 
 export function ApplicationAccessForm({ reference }: { reference: string }) {
   const [pending, setPending] = useState(false);
   const [errors, setErrors] = useState<{ form?: string; reference?: string; email?: string }>({});
   const [sent, setSent] = useState(false);
+  const turnstile = useTurnstile(TURNSTILE_ACTIONS.applicationLink);
 
   async function onSubmit(formData: FormData) {
+    if (turnstile.enabled && !turnstile.token) {
+      setErrors({ form: TURNSTILE_INCOMPLETE_MESSAGE });
+      return;
+    }
     setPending(true);
     setErrors({});
+    formData.set("turnstileToken", turnstile.token);
     const result = await requestApplicationLinkAction(formData);
     if (!result.ok) {
+      turnstile.reset();
       setErrors({
         form: result.error,
         reference: result.fieldErrors?.reference,
@@ -55,6 +64,7 @@ export function ApplicationAccessForm({ reference }: { reference: string }) {
         <Input id="email" name="email" type="email" autoComplete="email" required placeholder="you@example.com" />
         {errors.email ? <FieldError>{errors.email}</FieldError> : null}
       </div>
+      {turnstile.widget}
       {errors.form ? <FieldError>{errors.form}</FieldError> : null}
       <Button type="submit" disabled={pending}>
         {pending ? "Sending…" : "Email me a secure link"}

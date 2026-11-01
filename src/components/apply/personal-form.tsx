@@ -16,6 +16,8 @@ import {
   genderLabel,
   type JobGenderEligibility,
 } from "@/lib/gender";
+import { useTurnstile } from "@/components/security/use-turnstile";
+import { TURNSTILE_ACTIONS, TURNSTILE_INCOMPLETE_MESSAGE } from "@/lib/turnstile";
 import { savePersonalAction } from "@/server/application/actions";
 import {
   personalSchema,
@@ -26,12 +28,15 @@ export function PersonalForm({
   offerId,
   defaults,
   genderEligibility,
+  isNewDraft,
 }: {
   offerId: string;
   defaults: PersonalInput;
   genderEligibility: JobGenderEligibility;
+  isNewDraft: boolean;
 }) {
   const [error, setError] = useState<string>();
+  const turnstile = useTurnstile(TURNSTILE_ACTIONS.applyStart, isNewDraft);
   const form = useForm<PersonalInput>({
     resolver: zodResolver(personalSchema),
     defaultValues: defaults,
@@ -42,9 +47,14 @@ export function PersonalForm({
   useUnsavedChanges(form.formState.isDirty);
 
   async function onSubmit(values: PersonalInput) {
+    if (turnstile.enabled && !turnstile.token) {
+      setError(TURNSTILE_INCOMPLETE_MESSAGE);
+      return;
+    }
     setError(undefined);
-    const result = await savePersonalAction(offerId, values);
+    const result = await savePersonalAction(offerId, values, turnstile.token);
     if (result && !result.ok) {
+      turnstile.reset();
       setError(result.error);
       if (result.fieldErrors) {
         for (const [key, message] of Object.entries(result.fieldErrors)) {
@@ -186,6 +196,7 @@ export function PersonalForm({
           </div>
         </fieldset>
       ) : null}
+      {turnstile.widget}
       <Button type="submit" size="lg" disabled={form.formState.isSubmitting}>
         {form.formState.isSubmitting ? "Saving…" : "Save and continue"}
       </Button>

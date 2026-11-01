@@ -5,17 +5,18 @@ const isDev = process.env.NODE_ENV === "development";
 
 // Dev only: React needs eval and hot reload needs websockets; scripts/figma-capture.mjs needs Figma.
 const FIGMA = "https://mcp.figma.com";
+const TURNSTILE = "https://challenges.cloudflare.com";
 
 // No nonces, because they would force every static page to render dynamically. Inline scripts stay
 // allowed, so the main value here is blocking third-party scripts and where page data can be sent.
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? ` 'unsafe-eval' ${FIGMA}` : ""}`,
+  `script-src 'self' 'unsafe-inline' ${TURNSTILE}${isDev ? ` 'unsafe-eval' ${FIGMA}` : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self'",
   `connect-src 'self'${isDev ? ` ws: ${FIGMA}` : ""}`,
-  "frame-src 'self' https://maps.google.com https://www.google.com",
+  `frame-src 'self' https://maps.google.com https://www.google.com ${TURNSTILE}`,
   "frame-ancestors 'self'",
   "object-src 'none'",
   "base-uri 'self'",

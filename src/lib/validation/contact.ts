@@ -13,6 +13,7 @@ export const contactSchema = z.object({
   _gotcha: z.string().optional(),
   offer: z.string().optional(),
   intent: z.string().optional(),
+  turnstileToken: z.string().optional(),
 });
 
 export type ContactInput = z.infer<typeof contactSchema>;

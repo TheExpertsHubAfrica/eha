@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 import { FieldError, FieldHint, Label } from "@/components/ui/label";
+import { useTurnstile } from "@/components/security/use-turnstile";
+import { TURNSTILE_ACTIONS, TURNSTILE_INCOMPLETE_MESSAGE } from "@/lib/turnstile";
 import { contactSchema } from "@/lib/validation/contact";
 
 const intentSubjects: Record<string, string> = {
@@ -28,6 +30,7 @@ export function ContactForm() {
 
   const [pending, setPending] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const turnstile = useTurnstile(TURNSTILE_ACTIONS.contact);
 
   function showValidationErrors(form: HTMLFormElement, next: Record<string, string>) {
     setErrors(next);
@@ -65,6 +68,11 @@ export function ContactForm() {
       return;
     }
 
+    if (turnstile.enabled && !turnstile.token) {
+      toast.error(TURNSTILE_INCOMPLETE_MESSAGE);
+      return;
+    }
+
     setErrors({});
     setPending(true);
 
@@ -72,7 +80,7 @@ export function ContactForm() {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(parsed.data),
+        body: JSON.stringify({ ...parsed.data, turnstileToken: turnstile.token }),
       });
       const result = (await response.json().catch(() => null)) as
         | { ok: true }
@@ -104,6 +112,7 @@ export function ContactForm() {
       toast.error("We could not send your message. Please check your connection and try again.");
     } finally {
       setPending(false);
+      turnstile.reset();
     }
   }
 
@@ -167,6 +176,7 @@ export function ContactForm() {
         <Textarea id="message" name="message" required />
         <FieldError>{errors.message}</FieldError>
       </div>
+      {turnstile.widget}
       <Button type="submit" size="lg" disabled={pending}>
         {pending ? "Sending…" : "Send message"}
       </Button>

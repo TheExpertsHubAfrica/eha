@@ -5,18 +5,27 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label, FieldError } from "@/components/ui/label";
+import { useTurnstile } from "@/components/security/use-turnstile";
+import { TURNSTILE_ACTIONS, TURNSTILE_INCOMPLETE_MESSAGE } from "@/lib/turnstile";
 import { requestResumeLinkAction } from "@/server/application/actions";
 
 export function ResumeDraftForm({ offerId }: { offerId: string }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
   const [sent, setSent] = useState(false);
+  const turnstile = useTurnstile(TURNSTILE_ACTIONS.resumeLink);
 
   async function onSubmit(formData: FormData) {
+    if (turnstile.enabled && !turnstile.token) {
+      setError(TURNSTILE_INCOMPLETE_MESSAGE);
+      return;
+    }
     setPending(true);
     setError(undefined);
+    formData.set("turnstileToken", turnstile.token);
     const result = await requestResumeLinkAction(offerId, formData);
     if (!result.ok) {
+      turnstile.reset();
       const message = result.fieldErrors?.email || result.error || "Could not send a resume link.";
       setError(message);
       toast.error(message);
@@ -50,6 +59,7 @@ export function ResumeDraftForm({ offerId }: { offerId: string }) {
         />
         {error ? <FieldError>{error}</FieldError> : null}
       </div>
+      {turnstile.widget}
       <Button type="submit" variant="outline" size="sm" disabled={pending}>
         {pending ? "Sending…" : "Email me a resume link"}
       </Button>

@@ -12,6 +12,7 @@
     "test:uploads": "node --import tsx --test src/lib/uploads/validate.test.ts",
     "test:apply": "node --import tsx --test src/lib/apply/reference.test.ts src/lib/apply/mask-name.test.ts src/lib/apply/mask-email.test.ts src/lib/validation/application.test.ts",
     "test:csv": "node --import tsx --test src/lib/csv.test.ts",
+    "test:turnstile": "node --import tsx --test src/server/turnstile.test.ts",
     "test:payments": "node --import tsx --test src/server/payments/status.test.ts",
     "db:generate": "prisma generate",
     "db:migrate": "node scripts/prisma.mjs migrate deploy",

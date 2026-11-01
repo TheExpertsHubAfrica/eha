@@ -6,6 +6,7 @@ import { z } from "zod";
 import { canAccessStep, jobRequiresEmergency, jobRequiresMilitary, jobRequiresTravel } from "@/lib/apply/steps";
 import { isGenderAllowed } from "@/lib/gender";
 import { siteConfig } from "@/lib/site-config";
+import { TURNSTILE_ACTIONS, TURNSTILE_FAILED_MESSAGE } from "@/lib/turnstile";
 import {
   educationSchema,
   employmentSchema,
@@ -16,6 +17,7 @@ import {
 } from "@/lib/validation/application";
 import { applicationAccessPath, confirmationPath, parseApplicationReference } from "@/lib/apply/reference";
 import { getJobById } from "@/server/jobs";
+import { verifyTurnstile } from "@/server/turnstile";
 import { clientIp, consumeApplicantEmailSlot, consumeRateLimit, RATE_LIMITS } from "@/server/rate-limit";
 import {
   consumeAccessLink,
@@ -135,6 +137,7 @@ export async function startApplicationAction(offerId: string) {
 export async function savePersonalAction(
   offerId: string,
   payload: unknown,
+  turnstileToken?: unknown,
 ): Promise<ActionState> {
   const job = await getJobById(offerId);
   if (!job || job.availability !== "open") {
@@ -160,7 +163,11 @@ export async function savePersonalAction(
   }
 
   if (!draft) {
-    const limited = await consumeRateLimit(RATE_LIMITS.draftCreateIp, clientIp(await headers()));
+    const ip = clientIp(await headers());
+    if (!(await verifyTurnstile(turnstileToken, ip, TURNSTILE_ACTIONS.applyStart))) {
+      return { ok: false, error: TURNSTILE_FAILED_MESSAGE };
+    }
+    const limited = await consumeRateLimit(RATE_LIMITS.draftCreateIp, ip);
     if (!limited.ok) {
       return { ok: false, error: "Too many new applications from this network. Please try again later." };
     }
@@ -203,6 +210,11 @@ export async function requestResumeLinkAction(
     return { ok: false, fieldErrors: { email: "Enter a valid email address." } };
   }
 
+  // Checked first, so bots cannot use up a real applicant's allowance.
+  const ip = clientIp(await headers());
+  if (!(await verifyTurnstile(formData.get("turnstileToken"), ip, TURNSTILE_ACTIONS.resumeLink))) {
+    return { ok: false, error: TURNSTILE_FAILED_MESSAGE };
+  }
   // Counted whether or not a draft exists, so hitting the limit reveals nothing about the email.
   if (!(await consumeDraftEmailSlot(parsed.data))) {
     return { ok: false, error: "Too many resume link requests. Please try again later." };
@@ -248,6 +260,11 @@ export async function requestApplicationLinkAction(formData: FormData): Promise<
   }
   if (!z.string().email().safeParse(email).success) {
     return { ok: false, fieldErrors: { email: "Enter a valid email address." } };
+  }
+  // Checked first, so bots cannot use up a real applicant's allowance.
+  const ip = clientIp(await headers());
+  if (!(await verifyTurnstile(formData.get("turnstileToken"), ip, TURNSTILE_ACTIONS.applicationLink))) {
+    return { ok: false, error: TURNSTILE_FAILED_MESSAGE };
   }
   // Counted whether or not the details match, so the limit reveals nothing about the application.
   if (!(await consumeDraftEmailSlot(email))) {

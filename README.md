@@ -44,6 +44,7 @@ Uploads use gitignored local disk (`storage/uploads`) unless `S3_BUCKET` and key
 - `npm run test:uploads` — invalid and valid file-type checks
 - `npm run test:apply` — application reference format checks
 - `npm run test:csv` — CSV export escaping
+- `npm run test:turnstile` — bot check verification
 - `npm run test:payments` — Paystack status handling
 - `npm run lint` — ESLint
 - `npm run typecheck` — TypeScript

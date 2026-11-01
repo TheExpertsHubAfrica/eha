@@ -29,6 +29,7 @@ export default async function PersonalStepPage({
           offerId={offerId}
           defaults={personalDefaults(result.draft, result.job.genderEligibility)}
           genderEligibility={result.job.genderEligibility}
+          isNewDraft={false}
         />
       </ApplyShell>
     );
@@ -41,6 +42,7 @@ export default async function PersonalStepPage({
         offerId={offerId}
         defaults={emptyPersonalDefaults(job.genderEligibility)}
         genderEligibility={job.genderEligibility}
+        isNewDraft
       />
     </ApplyShell>
   );
