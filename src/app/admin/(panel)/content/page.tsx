@@ -41,7 +41,7 @@ export default async function AdminContentPage() {
                   idleLabel="Delete"
                   confirmLabel="Confirm delete"
                   successMessage="FAQ deleted."
-                  onConfirm={() => deleteFaqAction(item.id)}
+                  onConfirm={deleteFaqAction.bind(null, item.id)}
                 />
               </div>
             </li>
@@ -70,7 +70,7 @@ export default async function AdminContentPage() {
                   idleLabel="Delete"
                   confirmLabel="Confirm delete"
                   successMessage="Testimonial deleted."
-                  onConfirm={() => deleteTestimonialAction(item.id)}
+                  onConfirm={deleteTestimonialAction.bind(null, item.id)}
                 />
               </div>
             </li>
