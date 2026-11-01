@@ -79,10 +79,11 @@ export default async function ApplicationSuccessPage({
         </dl>
         <p className="mt-6 text-sm text-muted" role="status">
           {emailStatus === "sent"
-            ? "A confirmation email with your work-profile PDF was sent to this address."
+            ? "A confirmation email was sent to this address."
             : emailStatus === "failed"
               ? "Your application was saved. We could not send the confirmation email yet — keep this reference number."
               : "Email delivery is not configured on this environment yet. Keep this reference number and download your work profile below."}
+          {" "}Access from this device ends on {formatDisplayDate(application.accessExpiresAt)}. You can request a new link at any time.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button asChild>

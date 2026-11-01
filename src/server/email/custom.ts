@@ -84,6 +84,13 @@ export const DEFAULT_EMAIL_TEMPLATES = [
       "Hello {{applicantName}},\n\nYour application {{reference}} for {{jobTitle}} is now marked as {{statusLabel}}.\n\n{{confirmationUrl}}\n\nThis is a status update from our team, not a visa or placement decision.",
   },
   {
+    key: "application_access",
+    name: "Applicant — secure link to application",
+    subject: "Open your application — {{reference}}",
+    bodyText:
+      "Hello {{applicantName}},\n\nUse this secure link to open application {{reference}} for {{jobTitle}}:\n\n{{confirmationUrl}}\n\nThe link works once and expires after 7 days. If you did not request it, you can ignore this email.",
+  },
+  {
     key: "draft_resume",
     name: "Applicant — resume draft",
     subject: "Continue your TEHA application — {{jobTitle}}",

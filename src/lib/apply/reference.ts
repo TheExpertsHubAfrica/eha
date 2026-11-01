@@ -26,6 +26,10 @@ export function parseApplicationReference(value: string) {
   return { prefix: match[1], year: Number(match[2]), sequence: Number(match[3]) };
 }
 
+export function applicationAccessPath(reference: string) {
+  return `/application/access?reference=${encodeURIComponent(reference)}`;
+}
+
 export function confirmationPath(reference: string) {
   return `/application/success/${encodeURIComponent(reference)}`;
 }

@@ -116,11 +116,11 @@ export async function findDraftByEmail(jobId: string, email: string) {
  * Issue a single-use link token and return the plain value. The draft's session token is untouched,
  * so requesting a link cannot sign anyone out; a newer link replaces any earlier unused one.
  */
-export async function issueResumeToken(applicationId: string) {
+export async function issueResumeToken(applicationId: string, expiresAt?: Date) {
   const token = createDraftToken();
   await prisma.application.update({
     where: { id: applicationId },
-    data: { resumeTokenHash: hashDraftToken(token) },
+    data: { resumeTokenHash: hashDraftToken(token), resumeTokenExpiresAt: expiresAt ?? null },
   });
   return token;
 }

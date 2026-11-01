@@ -24,3 +24,8 @@ export function draftCookieName(jobId: string) {
 }
 
 export const DRAFT_MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
+
+// Submitted applications show passport details, and many applicants use shared computers.
+export const SUBMITTED_ACCESS_SECONDS = 60 * 60 * 24 * 7;
+export const LINK_SESSION_SECONDS = 60 * 60 * 24;
+export const ACCESS_LINK_TTL_SECONDS = 60 * 60 * 24 * 7;

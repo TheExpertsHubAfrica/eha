@@ -14,8 +14,14 @@ import {
   supportingSchemaForJob,
   type SupportingInput,
 } from "@/lib/validation/application";
+import { applicationAccessPath, confirmationPath, parseApplicationReference } from "@/lib/apply/reference";
 import { getJobById } from "@/server/jobs";
 import { clientIp, consumeRateLimit, RATE_LIMITS } from "@/server/rate-limit";
+import {
+  consumeAccessLink,
+  findSubmittedByReferenceAndEmail,
+  issueAccessLink,
+} from "@/server/application/access";
 import { completeDocuments } from "@/server/application/documents";
 import { submitApplication } from "@/server/application/submit";
 import {
@@ -31,7 +37,7 @@ import {
 } from "@/server/application/service";
 import { overlayEmailTemplate } from "@/server/email/custom";
 import { deliverEmail } from "@/server/email/send";
-import { draftResumeEmail } from "@/server/email/templates";
+import { applicationAccessEmail, draftResumeEmail } from "@/server/email/templates";
 
 function flattenIssues(issues: { path: (string | number | symbol)[]; message: string }[]) {
   const fieldErrors: Record<string, string> = {};
@@ -223,6 +229,50 @@ export async function resumeApplicationAction(offerId: string, token: string) {
     redirect(`/apply/${offerId}?resume=invalid`);
   }
   redirect(result.redirectTo);
+}
+
+export async function requestApplicationLinkAction(formData: FormData): Promise<ActionState> {
+  const reference = String(formData.get("reference") ?? "").trim().toUpperCase();
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  if (!parseApplicationReference(reference)) {
+    return { ok: false, fieldErrors: { reference: "Enter your application reference." } };
+  }
+  if (!z.string().email().safeParse(email).success) {
+    return { ok: false, fieldErrors: { email: "Enter a valid email address." } };
+  }
+  // Counted whether or not the details match, so the limit reveals nothing about the application.
+  if (!(await consumeDraftEmailSlot(email))) {
+    return { ok: false, error: "Too many link requests. Please try again later." };
+  }
+
+  const application = await findSubmittedByReferenceAndEmail(reference, email);
+  if (application?.profile) {
+    const vars = {
+      applicantName: application.profile.fullName,
+      reference,
+      jobTitle: application.job.title,
+      confirmationUrl: await issueAccessLink(application.id, reference),
+    };
+    const message = await overlayEmailTemplate(
+      "application_access",
+      vars,
+      applicationAccessEmail(vars),
+      siteConfig.name,
+    );
+    await deliverEmail({ applicationId: application.id, to: email, allowResend: true, ...message }).catch(
+      () => undefined,
+    );
+  }
+  return { ok: true };
+}
+
+export async function openApplicationAction(reference: string, token: string) {
+  const opened =
+    typeof reference === "string" && typeof token === "string" && (await consumeAccessLink(reference, token));
+  if (!opened) {
+    redirect(`${applicationAccessPath(String(reference))}&link=expired`);
+  }
+  redirect(confirmationPath(reference));
 }
 
 export async function saveEducationAction(

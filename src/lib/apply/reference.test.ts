@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { formatApplicationReference, parseApplicationReference } from "./reference";
+import {
+  applicationAccessPath,
+  formatApplicationReference,
+  parseApplicationReference,
+} from "./reference";
 
 describe("application reference", () => {
   it("formats TEHA-YYYY-NNNNNN", () => {
@@ -19,6 +23,14 @@ describe("application reference", () => {
       year: 2026,
       sequence: 124,
     });
+  });
+
+  it("encodes the reference in the access path", () => {
+    assert.equal(
+      applicationAccessPath("TEHA-2026-000124-K7M2QX"),
+      "/application/access?reference=TEHA-2026-000124-K7M2QX",
+    );
+    assert.equal(applicationAccessPath("a&b=c"), "/application/access?reference=a%26b%3Dc");
   });
 
   it("parses a valid reference", () => {

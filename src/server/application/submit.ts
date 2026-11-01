@@ -2,14 +2,14 @@ import { formatDisplayDate } from "@/lib/utils";
 import { siteConfig } from "@/lib/site-config";
 import { confirmationPath, formatApplicationReference } from "@/lib/apply/reference";
 import { canAccessStep } from "@/lib/apply/steps";
-import { createReferenceSuffix } from "@/lib/apply/token";
+import { createReferenceSuffix, SUBMITTED_ACCESS_SECONDS } from "@/lib/apply/token";
 import { missingRequiredDocuments } from "@/lib/apply/documents";
 import { prisma } from "@/server/db";
 import { getEmailConfig } from "@/server/email/config";
 import { deliverEmail } from "@/server/email/send";
 import { overlayEmailTemplate } from "@/server/email/custom";
 import { adminNewApplicationEmail, applicationReceivedEmail } from "@/server/email/templates";
-import { buildWorkProfilePdf } from "@/server/pdf/work-profile";
+import { issueAccessLink } from "@/server/application/access";
 import {
   draftJob,
   loadApplicationSession,
@@ -18,13 +18,8 @@ import {
 import { readDraftToken } from "@/server/application/cookies";
 import { recordEvent } from "@/server/analytics/events";
 
-function confirmationUrl(reference: string, token: string) {
-  return `${siteConfig.url}${confirmationPath(reference)}?t=${encodeURIComponent(token)}`;
-}
-
 async function notifySubmission(
   application: DraftApplication & { referenceNumber: string; submittedAt: Date },
-  token: string,
 ) {
   const job = draftJob(application);
   const profile = application.profile;
@@ -37,15 +32,8 @@ async function notifySubmission(
     jobTitle: job.title,
     location: `${job.city}, ${job.country}`,
     submittedAt: application.submittedAt,
-    confirmationUrl: confirmationUrl(application.referenceNumber, token),
+    confirmationUrl: await issueAccessLink(application.id, application.referenceNumber),
   };
-
-  let pdf: Uint8Array | null = null;
-  try {
-    pdf = await buildWorkProfilePdf(application, job);
-  } catch {
-    pdf = null;
-  }
 
   const applicant = applicationReceivedEmail(vars);
   await deliverEmail({
@@ -65,9 +53,6 @@ async function notifySubmission(
       applicant,
       siteConfig.name,
     )),
-    attachments: pdf
-      ? [{ filename: `${application.referenceNumber}-work-profile.pdf`, content: Buffer.from(pdf) }]
-      : undefined,
   });
 
   const adminTo = getEmailConfig().adminTo;
@@ -176,6 +161,8 @@ export async function submitApplication(
         data: {
           status: "submitted",
           resumeTokenHash: null,
+          resumeTokenExpiresAt: null,
+          accessExpiresAt: new Date(submittedAt.getTime() + SUBMITTED_ACCESS_SECONDS * 1000),
           currentStep: "review",
           referenceNumber,
           submittedAt,
@@ -215,7 +202,6 @@ export async function submitApplication(
   if (fresh?.referenceNumber && fresh.submittedAt) {
     await notifySubmission(
       fresh as DraftApplication & { referenceNumber: string; submittedAt: Date },
-      token,
     ).catch(() => undefined);
   }
 

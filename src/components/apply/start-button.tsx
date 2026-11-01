@@ -12,11 +12,11 @@ export function StartApplicationButton() {
   );
 }
 
-export function ContinueApplicationButton() {
+export function ContinueApplicationButton({ label = "Continue this application" }: { label?: string }) {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" size="lg" disabled={pending}>
-      {pending ? "Opening…" : "Continue this application"}
+      {pending ? "Opening…" : label}
     </Button>
   );
 }

@@ -50,15 +50,15 @@ export function applicationReceivedEmail(vars: ApplicationReceivedVars) {
   const submitted = formatDisplayDate(vars.submittedAt);
   const support = siteConfig.email
     ? `If you need to update anything, write to ${siteConfig.email} and quote your reference.`
-    : "Keep this reference. Use the confirmation page on this device if you need a copy of your work profile.";
+    : "Keep this reference. You can request a new link to your application at any time.";
   const html = layout(
     "Application received",
     `
       <p style="margin:0 0 12px;line-height:1.6;">Hello ${escapeHtml(vars.applicantName)},</p>
       <p style="margin:0 0 12px;line-height:1.6;">We have received your application for <strong>${escapeHtml(vars.jobTitle)}</strong> (${escapeHtml(vars.location)}).</p>
       <p style="margin:0 0 12px;line-height:1.6;"><strong>Reference:</strong> ${escapeHtml(vars.reference)}<br /><strong>Submitted:</strong> ${escapeHtml(submitted)}</p>
-      <p style="margin:0 0 12px;line-height:1.6;">A PDF copy of your work profile is attached when email delivery is configured. You can also open your confirmation page:</p>
-      <p style="margin:0 0 16px;"><a href="${escapeHtml(vars.confirmationUrl)}" style="color:#1d4ed8;">View confirmation</a></p>
+      <p style="margin:0 0 12px;line-height:1.6;">You can open your application and download your work profile with this secure link. It works once and expires after 7 days:</p>
+      <p style="margin:0 0 16px;"><a href="${escapeHtml(vars.confirmationUrl)}" style="color:#1d4ed8;">Open your application</a></p>
       <p style="margin:0;line-height:1.6;color:#5b6573;">${escapeHtml(support)} This is a receipt of your submitted profile — it is not a visa or placement decision.</p>
     `,
   );
@@ -129,7 +129,7 @@ export function applicationStatusChangedEmail(vars: {
     `
       <p style="margin:0 0 12px;line-height:1.6;">Hello ${escapeHtml(vars.applicantName)},</p>
       <p style="margin:0 0 12px;line-height:1.6;">Your application <strong>${escapeHtml(vars.reference)}</strong> for ${escapeHtml(vars.jobTitle)} is now marked as <strong>${escapeHtml(vars.statusLabel)}</strong>.</p>
-      <p style="margin:0 0 16px;"><a href="${escapeHtml(vars.confirmationUrl)}" style="color:#1d4ed8;">View your confirmation</a></p>
+      <p style="margin:0 0 16px;"><a href="${escapeHtml(vars.confirmationUrl)}" style="color:#1d4ed8;">Open your application</a></p>
       <p style="margin:0;line-height:1.6;color:#5b6573;">This is a status update from our team, not a visa or placement decision.</p>
     `,
   );
@@ -141,6 +141,37 @@ export function applicationStatusChangedEmail(vars: {
   return {
     template: "application_status_changed" as const,
     subject: `Application update — ${vars.reference}`,
+    html,
+    text,
+  };
+}
+
+export function applicationAccessEmail(vars: {
+  applicantName: string;
+  reference: string;
+  jobTitle: string;
+  confirmationUrl: string;
+}) {
+  const html = layout(
+    "Open your application",
+    `
+      <p style="margin:0 0 12px;line-height:1.6;">Hello ${escapeHtml(vars.applicantName)},</p>
+      <p style="margin:0 0 12px;line-height:1.6;">Use this secure link to open application <strong>${escapeHtml(vars.reference)}</strong> for ${escapeHtml(vars.jobTitle)}.</p>
+      <p style="margin:0 0 16px;"><a href="${escapeHtml(vars.confirmationUrl)}" style="color:#1d4ed8;">Open your application</a></p>
+      <p style="margin:0;line-height:1.6;color:#5b6573;">The link works once and expires after 7 days. If you did not request it, you can ignore this email.</p>
+    `,
+  );
+  const text = [
+    `Hello ${vars.applicantName},`,
+    "",
+    `Open application ${vars.reference} for ${vars.jobTitle}:`,
+    vars.confirmationUrl,
+    "",
+    "The link works once and expires after 7 days. If you did not request it, you can ignore this email.",
+  ].join("\n");
+  return {
+    template: "application_access" as const,
+    subject: `Open your application — ${vars.reference}`,
     html,
     text,
   };

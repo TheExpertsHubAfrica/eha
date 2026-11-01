@@ -6,13 +6,13 @@ export async function readDraftToken(jobId: string) {
   return store.get(draftCookieName(jobId))?.value ?? null;
 }
 
-export async function writeDraftToken(jobId: string, token: string) {
+export async function writeDraftToken(jobId: string, token: string, maxAge = DRAFT_MAX_AGE_SECONDS) {
   const store = await cookies();
   store.set(draftCookieName(jobId), token, {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    maxAge: DRAFT_MAX_AGE_SECONDS,
+    maxAge,
   });
 }

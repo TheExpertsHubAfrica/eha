@@ -2,7 +2,7 @@
 
 import type { ApplicationStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { confirmationPath } from "@/lib/apply/reference";
+import { applicationAccessPath } from "@/lib/apply/reference";
 import { siteConfig } from "@/lib/site-config";
 import { adminStatuses, statusLabel } from "@/lib/admin/status";
 import { requireAdmin, writeAdminAudit } from "@/server/admin/auth";
@@ -73,7 +73,7 @@ export async function updateApplicationStatusAction(applicationId: string, formD
     application.referenceNumber &&
     application.status !== toStatus
   ) {
-    const confirmationUrl = `${siteConfig.url}${confirmationPath(application.referenceNumber)}`;
+    const confirmationUrl = `${siteConfig.url}${applicationAccessPath(application.referenceNumber)}`;
     const message = applicationStatusChangedEmail({
       applicantName: application.profile.fullName,
       reference: application.referenceNumber,
